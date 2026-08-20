@@ -1,0 +1,15 @@
+.git
+.build
+.swiftpm
+Diffuse.xcodeproj
+DerivedData
+node_modules
+dist
+artifacts
+coverage
+*.xcresult
+docs/screenshots
+**/.DS_Store
+.env
+.env.*
+!.env.example

@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+*.swift text
+*.yml text
+*.md text
+*.sh text eol=lf
+*.py text
+*.json text
+
+*.png binary
+*.icns binary
+*.ico binary
+*.pdf binary
+
+# Generated Xcode project is not in git; if it appears, treat as generated.
+*.pbxproj linguist-generated=true
+*.xcuserstate linguist-generated=true

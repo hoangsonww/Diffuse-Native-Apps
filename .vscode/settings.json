@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": false,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/.build": true,
+    "**/Diffuse.xcodeproj": true
+  }
+}

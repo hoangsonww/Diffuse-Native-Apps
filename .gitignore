@@ -1,0 +1,64 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*~
+
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Generated Xcode project — source of truth is project.yml
+Diffuse.xcodeproj/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Scripts / local
+.env
+.env.*
+!.env.example
+
+# Coverage and test output
+*.xcresult
+coverage/
+TestResults/
+_site/
+
+# Release artifacts
+dist/
+artifacts/
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
+
+# Node (Husky only)
+node_modules/
+.husky/_
+
+# Python (dashboard / helpers, if any)
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
+
+# Local landing QA (Playwright)
+.playwright-mcp/
+/landing-*.png

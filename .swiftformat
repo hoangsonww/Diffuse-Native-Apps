@@ -1,0 +1,12 @@
+# Diffuse SwiftFormat configuration.
+# Conservative: match the existing style rather than invent a new one.
+
+--swiftversion 6.0
+--indent 4
+--maxwidth 120
+--tabwidth 4
+--ifdef no-indent
+--disable wrapMultilineStatementBraces
+--disable wrapMultilineFunctionChains
+--disable redundantSelf
+--exclude .build,Diffuse.xcodeproj,Fixtures
