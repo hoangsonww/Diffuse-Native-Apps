@@ -1,0 +1,161 @@
+{
+  "diff" : {
+    "base" : {
+      "capturedAt" : "2026-08-19T11:37:00Z",
+      "deviceName" : "Sample MacBook Pro",
+      "id" : "sample-mac-after-workday",
+      "label" : "After the Node upgrade",
+      "origin" : "manual",
+      "platform" : "macOS"
+    },
+    "clusters" : [
+
+    ],
+    "generatedAt" : "2026-08-19T14:10:00Z",
+    "sectionDiffs" : [
+      {
+        "baseStatus" : "collected",
+        "capability" : "system.info",
+        "category" : "system",
+        "changes" : [
+
+        ],
+        "displayName" : "System",
+        "symbol" : "cpu",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "display.configuration",
+        "category" : "display",
+        "changes" : [
+
+        ],
+        "displayName" : "Displays",
+        "symbol" : "display",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "power.battery",
+        "category" : "power",
+        "changes" : [
+
+        ],
+        "displayName" : "Battery",
+        "symbol" : "battery.100",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "network.path",
+        "category" : "network",
+        "changes" : [
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "detail" : "Diffuse could not read this section in the later snapshot, so its contents are not compared.",
+            "entity" : {
+              "displayName" : "Connectivity",
+              "identity" : {
+                "kind" : "__section",
+                "value" : "network.path"
+              },
+              "subtitle" : "Collection status",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#__section:network.path#__status#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T14:10:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "string",
+                "value" : "Permission required"
+              },
+              "before" : {
+                "type" : "string",
+                "value" : "Collected"
+              },
+              "displayName" : "Collection status",
+              "key" : "__status",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Connectivity collected → permission required"
+          }
+        ],
+        "displayName" : "Connectivity",
+        "symbol" : "wifi",
+        "targetStatus" : "permissionRequired",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "storage.volumes",
+        "category" : "storage",
+        "changes" : [
+
+        ],
+        "displayName" : "Storage",
+        "symbol" : "internaldrive",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "development.tools",
+        "category" : "development",
+        "changes" : [
+
+        ],
+        "displayName" : "Developer tools",
+        "symbol" : "hammer",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 3
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "development.git",
+        "category" : "development",
+        "changes" : [
+
+        ],
+        "displayName" : "Git repositories",
+        "symbol" : "arrow.triangle.branch",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      }
+    ],
+    "summary" : {
+      "asymmetricSections" : [
+
+      ],
+      "changedSections" : 1,
+      "comparedSections" : 7,
+      "countsByKind" : {
+        "modified" : 1
+      },
+      "countsBySeverity" : {
+        "significant" : 1
+      },
+      "elapsed" : 9180,
+      "totalChanges" : 1
+    },
+    "target" : {
+      "capturedAt" : "2026-08-19T14:10:00Z",
+      "deviceName" : "Sample MacBook Pro",
+      "id" : "sample-mac-permission-problem",
+      "origin" : "scheduled",
+      "platform" : "macOS"
+    }
+  },
+  "exportedAt" : "2026-08-19T14:10:00Z",
+  "format" : "diffuse.diff",
+  "schemaVersion" : 1
+}

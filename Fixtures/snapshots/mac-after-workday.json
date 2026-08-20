@@ -1,0 +1,797 @@
+{
+  "exportedAt" : "2026-08-19T11:37:00Z",
+  "format" : "diffuse.snapshot",
+  "schemaVersion" : 1,
+  "snapshot" : {
+    "capturedAt" : "2026-08-19T11:37:00Z",
+    "device" : {
+      "architecture" : "arm64",
+      "id" : "sample-device",
+      "model" : "Mac15,3",
+      "name" : "Sample MacBook Pro",
+      "systemName" : "macOS",
+      "systemVersion" : "26.0.0"
+    },
+    "id" : "sample-mac-after-workday",
+    "isPinned" : false,
+    "label" : "After the Node upgrade",
+    "metadata" : {
+      "appVersion" : "1.0.0",
+      "appliedRedaction" : "none",
+      "collectionDuration" : 0.51,
+      "skippedCapabilities" : [
+
+      ]
+    },
+    "origin" : "manual",
+    "platform" : "macOS",
+    "schemaVersion" : 1,
+    "sections" : [
+      {
+        "attributes" : {
+
+        },
+        "capability" : "system.info",
+        "collectedAt" : "2026-08-19T11:37:00Z",
+        "collector" : "sample.system",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "macOS",
+            "identity" : {
+              "kind" : "system",
+              "value" : "primary"
+            },
+            "properties" : {
+              "os.name" : {
+                "type" : "string",
+                "value" : "macOS"
+              },
+              "os.version" : {
+                "type" : "version",
+                "value" : "26.0.0"
+              },
+              "uptime" : {
+                "type" : "duration",
+                "value" : 91980
+              }
+            },
+            "subtitle" : "26.0.0",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "system.info",
+          "category" : "system",
+          "displayName" : "System",
+          "displayOrder" : 0,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "informational",
+              "kind" : "system",
+              "pluralName" : "System",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Operating system",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "os.name",
+                  "privacy" : "public",
+                  "severity" : "critical",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "semanticVersion" : {
+
+                    }
+                  },
+                  "displayName" : "Version",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "os.version",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "version"
+                },
+                {
+                  "comparison" : {
+                    "ignored" : {
+
+                    }
+                  },
+                  "displayName" : "Uptime",
+                  "displayOrder" : 2,
+                  "isPrimary" : false,
+                  "key" : "uptime",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "seconds"
+                }
+              ],
+              "removalSeverity" : "informational",
+              "singularName" : "System",
+              "symbol" : "cpu"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Operating system version, uptime and locale.",
+          "symbol" : "cpu"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "display.configuration",
+        "collectedAt" : "2026-08-19T11:37:00Z",
+        "collector" : "sample.display",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Built-in Display",
+            "identity" : {
+              "kind" : "display",
+              "value" : "builtin-0-0"
+            },
+            "properties" : {
+              "refreshRate" : {
+                "type" : "double",
+                "value" : 120
+              },
+              "resolution" : {
+                "type" : "string",
+                "value" : "3456 × 2234"
+              }
+            },
+            "subtitle" : "3456 × 2234",
+            "tags" : [
+              "built-in"
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "display.configuration",
+          "category" : "display",
+          "displayName" : "Displays",
+          "displayOrder" : 20,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "significant",
+              "kind" : "display",
+              "pluralName" : "Displays",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Resolution",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "resolution",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "pixels"
+                },
+                {
+                  "comparison" : {
+                    "numeric" : {
+                      "tolerance" : 0.5
+                    }
+                  },
+                  "displayName" : "Refresh rate",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "refreshRate",
+                  "privacy" : "public",
+                  "severity" : "notable",
+                  "unit" : "hertz"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Display",
+              "symbol" : "display"
+            }
+          ],
+          "privacy" : "public",
+          "summary" : "Connected displays and their configuration.",
+          "symbol" : "display"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "power.battery",
+        "collectedAt" : "2026-08-19T11:37:30Z",
+        "collector" : "sample.battery",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Battery",
+            "identity" : {
+              "kind" : "battery",
+              "value" : "internal"
+            },
+            "properties" : {
+              "batteryLevel" : {
+                "type" : "percentage",
+                "value" : 0.61
+              },
+              "batteryState" : {
+                "type" : "string",
+                "value" : "Charging"
+              }
+            },
+            "subtitle" : "Charging",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "power.battery",
+          "category" : "power",
+          "displayName" : "Battery",
+          "displayOrder" : 25,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "informational",
+              "kind" : "battery",
+              "pluralName" : "Battery",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "numeric" : {
+                      "tolerance" : 0.05
+                    }
+                  },
+                  "displayName" : "Charge",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "batteryLevel",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "percent"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "State",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "batteryState",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "none"
+                }
+              ],
+              "removalSeverity" : "notable",
+              "singularName" : "Battery",
+              "symbol" : "battery.100"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Charge level and charging state.",
+          "symbol" : "battery.100"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "network.path",
+        "collectedAt" : "2026-08-19T11:39:00Z",
+        "collector" : "sample.network",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Office",
+            "identity" : {
+              "kind" : "networkPath",
+              "value" : "default"
+            },
+            "properties" : {
+              "interfaceType" : {
+                "type" : "string",
+                "value" : "Wi-Fi"
+              },
+              "ssid" : {
+                "type" : "string",
+                "value" : "Office"
+              },
+              "usesVPN" : {
+                "type" : "boolean",
+                "value" : true
+              }
+            },
+            "subtitle" : "Wi-Fi",
+            "tags" : [
+              "vpn"
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "network.path",
+          "category" : "network",
+          "displayName" : "Connectivity",
+          "displayOrder" : 30,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "notable",
+              "kind" : "networkPath",
+              "pluralName" : "Connections",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Network",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "ssid",
+                  "privacy" : "sensitive",
+                  "severity" : "significant",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Connection",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "interfaceType",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "VPN",
+                  "displayOrder" : 2,
+                  "isPrimary" : false,
+                  "key" : "usesVPN",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "none"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Connection",
+              "symbol" : "wifi"
+            }
+          ],
+          "privacy" : "sensitive",
+          "summary" : "How this device is reaching the network.",
+          "symbol" : "wifi"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "storage.volumes",
+        "collectedAt" : "2026-08-19T11:40:00Z",
+        "collector" : "sample.storage",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Macintosh HD",
+            "identity" : {
+              "kind" : "volume",
+              "value" : "macintosh-hd"
+            },
+            "properties" : {
+              "availableCapacity" : {
+                "type" : "bytes",
+                "value" : 191000000000
+              },
+              "totalCapacity" : {
+                "type" : "bytes",
+                "value" : 1000000000000
+              }
+            },
+            "subtitle" : "Internal",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "storage.volumes",
+          "category" : "storage",
+          "displayName" : "Storage",
+          "displayOrder" : 40,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "significant",
+              "kind" : "volume",
+              "pluralName" : "Volumes",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "relative" : {
+                      "tolerance" : 0.01
+                    }
+                  },
+                  "displayName" : "Free space",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "availableCapacity",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "bytes"
+                },
+                {
+                  "comparison" : {
+                    "relative" : {
+                      "tolerance" : 0.001
+                    }
+                  },
+                  "displayName" : "Capacity",
+                  "displayOrder" : 1,
+                  "isPrimary" : false,
+                  "key" : "totalCapacity",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "bytes"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Volume",
+              "symbol" : "internaldrive"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Mounted volumes and free space.",
+          "symbol" : "internaldrive"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+          "toolCount" : {
+            "type" : "integer",
+            "value" : 3
+          }
+        },
+        "capability" : "development.tools",
+        "collectedAt" : "2026-08-19T11:41:00Z",
+        "collector" : "sample.tools",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Node.js",
+            "identity" : {
+              "kind" : "developerTool",
+              "value" : "node"
+            },
+            "properties" : {
+              "executablePath" : {
+                "type" : "path",
+                "value" : "/opt/homebrew/bin/node"
+              },
+              "version" : {
+                "type" : "version",
+                "value" : "24.6.0"
+              }
+            },
+            "subtitle" : "24.6.0",
+            "tags" : [
+
+            ]
+          },
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Git",
+            "identity" : {
+              "kind" : "developerTool",
+              "value" : "git"
+            },
+            "properties" : {
+              "executablePath" : {
+                "type" : "path",
+                "value" : "/opt/homebrew/bin/git"
+              },
+              "version" : {
+                "type" : "version",
+                "value" : "2.46.0"
+              }
+            },
+            "subtitle" : "2.46.0",
+            "tags" : [
+
+            ]
+          },
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Rust",
+            "identity" : {
+              "kind" : "developerTool",
+              "value" : "rustc"
+            },
+            "properties" : {
+              "executablePath" : {
+                "type" : "path",
+                "value" : "/opt/homebrew/bin/rustc"
+              },
+              "version" : {
+                "type" : "version",
+                "value" : "1.81.0"
+              }
+            },
+            "subtitle" : "1.81.0",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+            {
+              "comparison" : {
+                "exact" : {
+
+                }
+              },
+              "displayName" : "Tools detected",
+              "displayOrder" : 0,
+              "isPrimary" : false,
+              "key" : "toolCount",
+              "privacy" : "public",
+              "severity" : "notable",
+              "unit" : "count"
+            }
+          ],
+          "capability" : "development.tools",
+          "category" : "development",
+          "displayName" : "Developer tools",
+          "displayOrder" : 60,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "significant",
+              "kind" : "developerTool",
+              "pluralName" : "Tools",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "semanticVersion" : {
+
+                    }
+                  },
+                  "displayName" : "Version",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "version",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "version"
+                },
+                {
+                  "comparison" : {
+                    "pathNormalized" : {
+
+                    }
+                  },
+                  "displayName" : "Path",
+                  "displayOrder" : 1,
+                  "isPrimary" : false,
+                  "key" : "executablePath",
+                  "privacy" : "sensitive",
+                  "severity" : "significant",
+                  "unit" : "path"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Tool",
+              "symbol" : "terminal"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Command line toolchains and their versions.",
+          "symbol" : "hammer"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "development.git",
+        "collectedAt" : "2026-08-19T11:42:00Z",
+        "collector" : "sample.git",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "relayone",
+            "identity" : {
+              "kind" : "gitRepository",
+              "value" : "~/dev/relayone"
+            },
+            "properties" : {
+              "branch" : {
+                "type" : "string",
+                "value" : "feature/webrtc"
+              },
+              "commit" : {
+                "type" : "identifier",
+                "value" : "c31a8207"
+              },
+              "modifiedFileCount" : {
+                "type" : "integer",
+                "value" : 5
+              }
+            },
+            "subtitle" : "feature/webrtc",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "development.git",
+          "category" : "development",
+          "displayName" : "Git repositories",
+          "displayOrder" : 61,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "notable",
+              "kind" : "gitRepository",
+              "pluralName" : "Repositories",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Branch",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "branch",
+                  "privacy" : "sensitive",
+                  "severity" : "significant",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Commit",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "commit",
+                  "privacy" : "sensitive",
+                  "severity" : "notable",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Modified files",
+                  "displayOrder" : 2,
+                  "isPrimary" : false,
+                  "key" : "modifiedFileCount",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "count"
+                }
+              ],
+              "removalSeverity" : "notable",
+              "singularName" : "Repository",
+              "symbol" : "arrow.triangle.branch"
+            }
+          ],
+          "privacy" : "sensitive",
+          "summary" : "Branch and working tree state.",
+          "symbol" : "arrow.triangle.branch"
+        },
+        "status" : "collected"
+      }
+    ],
+    "tags" : [
+
+    ]
+  }
+}

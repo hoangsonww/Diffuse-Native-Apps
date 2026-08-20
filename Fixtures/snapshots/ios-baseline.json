@@ -1,0 +1,439 @@
+{
+  "exportedAt" : "2026-08-19T09:04:00Z",
+  "format" : "diffuse.snapshot",
+  "schemaVersion" : 1,
+  "snapshot" : {
+    "capturedAt" : "2026-08-19T09:04:00Z",
+    "device" : {
+      "architecture" : "arm64",
+      "id" : "sample-iphone",
+      "model" : "iPhone17,1",
+      "name" : "Sample iPhone",
+      "systemName" : "iOS",
+      "systemVersion" : "26.0.0"
+    },
+    "id" : "sample-ios-baseline",
+    "isPinned" : false,
+    "label" : "Morning snapshot",
+    "metadata" : {
+      "appVersion" : "1.0.0",
+      "appliedRedaction" : "none",
+      "collectionDuration" : 0.18,
+      "skippedCapabilities" : [
+
+      ]
+    },
+    "origin" : "scheduled",
+    "platform" : "iOS",
+    "schemaVersion" : 1,
+    "sections" : [
+      {
+        "attributes" : {
+
+        },
+        "capability" : "system.info",
+        "collectedAt" : "2026-08-19T09:04:00Z",
+        "collector" : "sample.system",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "macOS",
+            "identity" : {
+              "kind" : "system",
+              "value" : "primary"
+            },
+            "properties" : {
+              "os.name" : {
+                "type" : "string",
+                "value" : "macOS"
+              },
+              "os.version" : {
+                "type" : "version",
+                "value" : "26.0.0"
+              },
+              "uptime" : {
+                "type" : "duration",
+                "value" : 340000
+              }
+            },
+            "subtitle" : "26.0.0",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "system.info",
+          "category" : "system",
+          "displayName" : "System",
+          "displayOrder" : 0,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "informational",
+              "kind" : "system",
+              "pluralName" : "System",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Operating system",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "os.name",
+                  "privacy" : "public",
+                  "severity" : "critical",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "semanticVersion" : {
+
+                    }
+                  },
+                  "displayName" : "Version",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "os.version",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "version"
+                },
+                {
+                  "comparison" : {
+                    "ignored" : {
+
+                    }
+                  },
+                  "displayName" : "Uptime",
+                  "displayOrder" : 2,
+                  "isPrimary" : false,
+                  "key" : "uptime",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "seconds"
+                }
+              ],
+              "removalSeverity" : "informational",
+              "singularName" : "System",
+              "symbol" : "cpu"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Operating system version, uptime and locale.",
+          "symbol" : "cpu"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "power.battery",
+        "collectedAt" : "2026-08-19T09:04:00Z",
+        "collector" : "sample.battery",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Battery",
+            "identity" : {
+              "kind" : "battery",
+              "value" : "internal"
+            },
+            "properties" : {
+              "batteryLevel" : {
+                "type" : "percentage",
+                "value" : 0.82
+              },
+              "batteryState" : {
+                "type" : "string",
+                "value" : "On battery"
+              }
+            },
+            "subtitle" : "On battery",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "power.battery",
+          "category" : "power",
+          "displayName" : "Battery",
+          "displayOrder" : 25,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "informational",
+              "kind" : "battery",
+              "pluralName" : "Battery",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "numeric" : {
+                      "tolerance" : 0.05
+                    }
+                  },
+                  "displayName" : "Charge",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "batteryLevel",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "percent"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "State",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "batteryState",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "none"
+                }
+              ],
+              "removalSeverity" : "notable",
+              "singularName" : "Battery",
+              "symbol" : "battery.100"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Charge level and charging state.",
+          "symbol" : "battery.100"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "network.path",
+        "collectedAt" : "2026-08-19T09:04:00Z",
+        "collector" : "sample.network",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Home",
+            "identity" : {
+              "kind" : "networkPath",
+              "value" : "default"
+            },
+            "properties" : {
+              "interfaceType" : {
+                "type" : "string",
+                "value" : "Wi-Fi"
+              },
+              "ssid" : {
+                "type" : "string",
+                "value" : "Home"
+              },
+              "usesVPN" : {
+                "type" : "boolean",
+                "value" : false
+              }
+            },
+            "subtitle" : "Wi-Fi",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "network.path",
+          "category" : "network",
+          "displayName" : "Connectivity",
+          "displayOrder" : 30,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "notable",
+              "kind" : "networkPath",
+              "pluralName" : "Connections",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Network",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "ssid",
+                  "privacy" : "sensitive",
+                  "severity" : "significant",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "Connection",
+                  "displayOrder" : 1,
+                  "isPrimary" : true,
+                  "key" : "interfaceType",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "none"
+                },
+                {
+                  "comparison" : {
+                    "exact" : {
+
+                    }
+                  },
+                  "displayName" : "VPN",
+                  "displayOrder" : 2,
+                  "isPrimary" : false,
+                  "key" : "usesVPN",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "none"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Connection",
+              "symbol" : "wifi"
+            }
+          ],
+          "privacy" : "sensitive",
+          "summary" : "How this device is reaching the network.",
+          "symbol" : "wifi"
+        },
+        "status" : "collected"
+      },
+      {
+        "attributes" : {
+
+        },
+        "capability" : "storage.volumes",
+        "collectedAt" : "2026-08-19T09:04:00Z",
+        "collector" : "sample.storage",
+        "collectorVersion" : "1.0.0",
+        "diagnostics" : [
+
+        ],
+        "duration" : 0.012,
+        "entities" : [
+          {
+            "children" : [
+
+            ],
+            "displayName" : "Macintosh HD",
+            "identity" : {
+              "kind" : "volume",
+              "value" : "macintosh-hd"
+            },
+            "properties" : {
+              "availableCapacity" : {
+                "type" : "bytes",
+                "value" : 121200000000
+              },
+              "totalCapacity" : {
+                "type" : "bytes",
+                "value" : 256000000000
+              }
+            },
+            "subtitle" : "Internal",
+            "tags" : [
+
+            ]
+          }
+        ],
+        "schema" : {
+          "attributes" : [
+
+          ],
+          "capability" : "storage.volumes",
+          "category" : "storage",
+          "displayName" : "Storage",
+          "displayOrder" : 40,
+          "entityKinds" : [
+            {
+              "additionSeverity" : "significant",
+              "kind" : "volume",
+              "pluralName" : "Volumes",
+              "properties" : [
+                {
+                  "comparison" : {
+                    "relative" : {
+                      "tolerance" : 0.01
+                    }
+                  },
+                  "displayName" : "Free space",
+                  "displayOrder" : 0,
+                  "isPrimary" : true,
+                  "key" : "availableCapacity",
+                  "privacy" : "public",
+                  "severity" : "informational",
+                  "unit" : "bytes"
+                },
+                {
+                  "comparison" : {
+                    "relative" : {
+                      "tolerance" : 0.001
+                    }
+                  },
+                  "displayName" : "Capacity",
+                  "displayOrder" : 1,
+                  "isPrimary" : false,
+                  "key" : "totalCapacity",
+                  "privacy" : "public",
+                  "severity" : "significant",
+                  "unit" : "bytes"
+                }
+              ],
+              "removalSeverity" : "significant",
+              "singularName" : "Volume",
+              "symbol" : "internaldrive"
+            }
+          ],
+          "privacy" : "local",
+          "summary" : "Mounted volumes and free space.",
+          "symbol" : "internaldrive"
+        },
+        "status" : "collected"
+      }
+    ],
+    "tags" : [
+
+    ]
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "diff" : {
+    "base" : {
+      "capturedAt" : "2026-08-19T09:04:00Z",
+      "deviceName" : "Sample MacBook Pro",
+      "id" : "sample-mac-baseline",
+      "label" : "Morning snapshot",
+      "origin" : "scheduled",
+      "platform" : "macOS"
+    },
+    "clusters" : [
+      {
+        "capabilities" : [
+          "display.configuration",
+          "network.path",
+          "development.tools",
+          "development.git"
+        ],
+        "changeIDs" : [
+          "development.git#gitRepository:~_dev_relayone#branch#modified",
+          "development.tools#developerTool:docker#removed",
+          "development.tools#developerTool:node#version#modified",
+          "development.tools#developerTool:rustc#added",
+          "display.configuration#display:apple-9243-1#removed",
+          "network.path#networkPath:default#ssid#modified",
+          "network.path#networkPath:default#usesVPN#modified"
+        ],
+        "end" : "2026-08-19T11:42:00Z",
+        "id" : "cluster:2026-08-19T11:37:00Z..2026-08-19T11:42:00Z#7",
+        "peakSeverity" : "significant",
+        "start" : "2026-08-19T11:37:00Z"
+      }
+    ],
+    "generatedAt" : "2026-08-19T11:37:00Z",
+    "sectionDiffs" : [
+      {
+        "baseStatus" : "collected",
+        "capability" : "system.info",
+        "category" : "system",
+        "changes" : [
+
+        ],
+        "displayName" : "System",
+        "symbol" : "cpu",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "display.configuration",
+        "category" : "display",
+        "changes" : [
+          {
+            "capability" : "display.configuration",
+            "category" : "display",
+            "confidence" : 1,
+            "detail" : "Display — Resolution 5120 × 2880, Refresh rate 60",
+            "entity" : {
+              "displayName" : "Studio Display",
+              "identity" : {
+                "kind" : "display",
+                "value" : "apple-9243-1"
+              },
+              "subtitle" : "5120 × 2880",
+              "symbol" : "display"
+            },
+            "id" : "display.configuration#display:apple-9243-1#removed",
+            "kind" : "removed",
+            "observedAt" : "2026-08-19T11:37:00Z",
+            "privacy" : "public",
+            "sectionName" : "Displays",
+            "severity" : "significant",
+            "summary" : "Studio Display removed"
+          }
+        ],
+        "displayName" : "Displays",
+        "symbol" : "display",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "power.battery",
+        "category" : "power",
+        "changes" : [
+
+        ],
+        "displayName" : "Battery",
+        "symbol" : "battery.100",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "network.path",
+        "category" : "network",
+        "changes" : [
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Office",
+              "identity" : {
+                "kind" : "networkPath",
+                "value" : "default"
+              },
+              "subtitle" : "Wi-Fi",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#networkPath:default#ssid#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T11:39:00Z",
+            "privacy" : "sensitive",
+            "property" : {
+              "after" : {
+                "type" : "string",
+                "value" : "Office"
+              },
+              "before" : {
+                "type" : "string",
+                "value" : "Home"
+              },
+              "displayName" : "Network",
+              "key" : "ssid",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Office Home → Office"
+          },
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Office",
+              "identity" : {
+                "kind" : "networkPath",
+                "value" : "default"
+              },
+              "subtitle" : "Wi-Fi",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#networkPath:default#usesVPN#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T11:39:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "boolean",
+                "value" : true
+              },
+              "before" : {
+                "type" : "boolean",
+                "value" : false
+              },
+              "displayName" : "VPN",
+              "key" : "usesVPN",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Office · VPN Off → On"
+          }
+        ],
+        "displayName" : "Connectivity",
+        "symbol" : "wifi",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "storage.volumes",
+        "category" : "storage",
+        "changes" : [
+
+        ],
+        "displayName" : "Storage",
+        "symbol" : "internaldrive",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "development.tools",
+        "category" : "development",
+        "changes" : [
+          {
+            "capability" : "development.tools",
+            "category" : "development",
+            "confidence" : 1,
+            "detail" : "Tool — Version 27.2.0",
+            "entity" : {
+              "displayName" : "Docker",
+              "identity" : {
+                "kind" : "developerTool",
+                "value" : "docker"
+              },
+              "subtitle" : "27.2.0",
+              "symbol" : "terminal"
+            },
+            "id" : "development.tools#developerTool:docker#removed",
+            "kind" : "removed",
+            "observedAt" : "2026-08-19T11:41:00Z",
+            "privacy" : "local",
+            "sectionName" : "Developer tools",
+            "severity" : "significant",
+            "summary" : "Docker removed"
+          },
+          {
+            "capability" : "development.tools",
+            "category" : "development",
+            "confidence" : 1,
+            "detail" : "Semantic version change: minor.",
+            "entity" : {
+              "displayName" : "Node.js",
+              "identity" : {
+                "kind" : "developerTool",
+                "value" : "node"
+              },
+              "subtitle" : "24.6.0",
+              "symbol" : "terminal"
+            },
+            "id" : "development.tools#developerTool:node#version#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T11:41:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "version",
+                "value" : "24.6.0"
+              },
+              "before" : {
+                "type" : "version",
+                "value" : "24.5.0"
+              },
+              "displayName" : "Version",
+              "key" : "version",
+              "unit" : "version"
+            },
+            "sectionName" : "Developer tools",
+            "severity" : "significant",
+            "summary" : "Node.js 24.5.0 → 24.6.0"
+          },
+          {
+            "capability" : "development.tools",
+            "category" : "development",
+            "confidence" : 1,
+            "detail" : "Tool — Version 1.81.0",
+            "entity" : {
+              "displayName" : "Rust",
+              "identity" : {
+                "kind" : "developerTool",
+                "value" : "rustc"
+              },
+              "subtitle" : "1.81.0",
+              "symbol" : "terminal"
+            },
+            "id" : "development.tools#developerTool:rustc#added",
+            "kind" : "added",
+            "observedAt" : "2026-08-19T11:41:00Z",
+            "privacy" : "local",
+            "sectionName" : "Developer tools",
+            "severity" : "significant",
+            "summary" : "Rust added"
+          }
+        ],
+        "displayName" : "Developer tools",
+        "symbol" : "hammer",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "development.git",
+        "category" : "development",
+        "changes" : [
+          {
+            "capability" : "development.git",
+            "category" : "development",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "relayone",
+              "identity" : {
+                "kind" : "gitRepository",
+                "value" : "~/dev/relayone"
+              },
+              "subtitle" : "feature/webrtc",
+              "symbol" : "arrow.triangle.branch"
+            },
+            "id" : "development.git#gitRepository:~_dev_relayone#branch#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T11:42:00Z",
+            "privacy" : "sensitive",
+            "property" : {
+              "after" : {
+                "type" : "string",
+                "value" : "feature/webrtc"
+              },
+              "before" : {
+                "type" : "string",
+                "value" : "feature/auth"
+              },
+              "displayName" : "Branch",
+              "key" : "branch",
+              "unit" : "none"
+            },
+            "sectionName" : "Git repositories",
+            "severity" : "significant",
+            "summary" : "relayone feature/auth → feature/webrtc"
+          }
+        ],
+        "displayName" : "Git repositories",
+        "symbol" : "arrow.triangle.branch",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      }
+    ],
+    "summary" : {
+      "asymmetricSections" : [
+
+      ],
+      "changedSections" : 4,
+      "comparedSections" : 7,
+      "countsByKind" : {
+        "added" : 1,
+        "modified" : 4,
+        "removed" : 2
+      },
+      "countsBySeverity" : {
+        "significant" : 7
+      },
+      "elapsed" : 9180,
+      "totalChanges" : 7
+    },
+    "target" : {
+      "capturedAt" : "2026-08-19T11:37:00Z",
+      "deviceName" : "Sample MacBook Pro",
+      "id" : "sample-mac-after-workday",
+      "label" : "After the Node upgrade",
+      "origin" : "manual",
+      "platform" : "macOS"
+    }
+  },
+  "exportedAt" : "2026-08-19T11:37:00Z",
+  "format" : "diffuse.diff",
+  "schemaVersion" : 1
+}

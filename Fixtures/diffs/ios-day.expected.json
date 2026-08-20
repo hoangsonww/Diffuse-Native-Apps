@@ -1,0 +1,241 @@
+{
+  "diff" : {
+    "base" : {
+      "capturedAt" : "2026-08-19T09:04:00Z",
+      "deviceName" : "Sample iPhone",
+      "id" : "sample-ios-baseline",
+      "label" : "Morning snapshot",
+      "origin" : "scheduled",
+      "platform" : "iOS"
+    },
+    "clusters" : [
+      {
+        "capabilities" : [
+          "network.path",
+          "power.battery"
+        ],
+        "changeIDs" : [
+          "network.path#networkPath:default#interfaceType#modified",
+          "network.path#networkPath:default#ssid#modified",
+          "network.path#networkPath:default#usesVPN#modified",
+          "power.battery#battery:internal#batteryLevel#modified"
+        ],
+        "end" : "2026-08-19T14:16:00Z",
+        "id" : "cluster:2026-08-19T14:16:00Z..2026-08-19T14:16:00Z#4",
+        "peakSeverity" : "significant",
+        "start" : "2026-08-19T14:16:00Z"
+      }
+    ],
+    "generatedAt" : "2026-08-19T14:16:00Z",
+    "sectionDiffs" : [
+      {
+        "baseStatus" : "collected",
+        "capability" : "system.info",
+        "category" : "system",
+        "changes" : [
+
+        ],
+        "displayName" : "System",
+        "symbol" : "cpu",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "power.battery",
+        "category" : "power",
+        "changes" : [
+          {
+            "capability" : "power.battery",
+            "category" : "power",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Battery",
+              "identity" : {
+                "kind" : "battery",
+                "value" : "internal"
+              },
+              "subtitle" : "On battery",
+              "symbol" : "battery.100"
+            },
+            "id" : "power.battery#battery:internal#batteryLevel#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T14:16:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "percentage",
+                "value" : 0.61
+              },
+              "before" : {
+                "type" : "percentage",
+                "value" : 0.82
+              },
+              "displayName" : "Charge",
+              "key" : "batteryLevel",
+              "unit" : "percent"
+            },
+            "sectionName" : "Battery",
+            "severity" : "notable",
+            "summary" : "Battery 82% → 61%"
+          }
+        ],
+        "displayName" : "Battery",
+        "symbol" : "battery.100",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "network.path",
+        "category" : "network",
+        "changes" : [
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Cellular",
+              "identity" : {
+                "kind" : "networkPath",
+                "value" : "default"
+              },
+              "subtitle" : "Cellular",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#networkPath:default#interfaceType#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T14:16:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "string",
+                "value" : "Cellular"
+              },
+              "before" : {
+                "type" : "string",
+                "value" : "Wi-Fi"
+              },
+              "displayName" : "Connection",
+              "key" : "interfaceType",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Cellular Wi-Fi → Cellular"
+          },
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Cellular",
+              "identity" : {
+                "kind" : "networkPath",
+                "value" : "default"
+              },
+              "subtitle" : "Cellular",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#networkPath:default#ssid#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T14:16:00Z",
+            "privacy" : "sensitive",
+            "property" : {
+              "after" : {
+                "type" : "string",
+                "value" : "Cellular"
+              },
+              "before" : {
+                "type" : "string",
+                "value" : "Home"
+              },
+              "displayName" : "Network",
+              "key" : "ssid",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Cellular Home → Cellular"
+          },
+          {
+            "capability" : "network.path",
+            "category" : "network",
+            "confidence" : 1,
+            "entity" : {
+              "displayName" : "Cellular",
+              "identity" : {
+                "kind" : "networkPath",
+                "value" : "default"
+              },
+              "subtitle" : "Cellular",
+              "symbol" : "wifi"
+            },
+            "id" : "network.path#networkPath:default#usesVPN#modified",
+            "kind" : "modified",
+            "observedAt" : "2026-08-19T14:16:00Z",
+            "privacy" : "public",
+            "property" : {
+              "after" : {
+                "type" : "boolean",
+                "value" : true
+              },
+              "before" : {
+                "type" : "boolean",
+                "value" : false
+              },
+              "displayName" : "VPN",
+              "key" : "usesVPN",
+              "unit" : "none"
+            },
+            "sectionName" : "Connectivity",
+            "severity" : "significant",
+            "summary" : "Cellular · VPN Off → On"
+          }
+        ],
+        "displayName" : "Connectivity",
+        "symbol" : "wifi",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 0
+      },
+      {
+        "baseStatus" : "collected",
+        "capability" : "storage.volumes",
+        "category" : "storage",
+        "changes" : [
+
+        ],
+        "displayName" : "Storage",
+        "symbol" : "internaldrive",
+        "targetStatus" : "collected",
+        "unchangedEntityCount" : 1
+      }
+    ],
+    "summary" : {
+      "asymmetricSections" : [
+
+      ],
+      "changedSections" : 2,
+      "comparedSections" : 4,
+      "countsByKind" : {
+        "modified" : 4
+      },
+      "countsBySeverity" : {
+        "notable" : 1,
+        "significant" : 3
+      },
+      "elapsed" : 18720,
+      "totalChanges" : 4
+    },
+    "target" : {
+      "capturedAt" : "2026-08-19T14:16:00Z",
+      "deviceName" : "Sample iPhone",
+      "id" : "sample-ios-afternoon",
+      "origin" : "manual",
+      "platform" : "iOS"
+    }
+  },
+  "exportedAt" : "2026-08-19T14:16:00Z",
+  "format" : "diffuse.diff",
+  "schemaVersion" : 1
+}
