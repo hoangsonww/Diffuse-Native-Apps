@@ -1,0 +1,23 @@
+{
+  "name": "diffuse",
+  "private": true,
+  "description": "Git hooks for Diffuse. The product is Swift; this file exists so Husky can run.",
+  "scripts": {
+    "prepare": "husky",
+    "format": "./Scripts/format.sh",
+    "format:check": "swiftformat Packages Apps Tools Tests --config .swiftformat --lint",
+    "test": "swift test --parallel",
+    "verify": "./Scripts/verify.sh",
+    "bootstrap": "./Scripts/bootstrap.sh"
+  },
+  "lint-staged": {
+    "*.swift": "swiftformat --config .swiftformat"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

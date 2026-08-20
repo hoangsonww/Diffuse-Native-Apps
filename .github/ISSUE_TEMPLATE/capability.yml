@@ -1,0 +1,83 @@
+name: Capability
+description: Something new Diffuse should be able to observe on a device.
+title: "[Capability] "
+labels: ["capability"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Adding a capability should not require edits to the diff engine, the
+        store, search, export, or app screens. Read
+        `Documentation/CapabilityGuide.md` and `Documentation/CollectorGuide.md`
+        first. A new *tool version* (Deno, Zig) is usually a `ToolAdapter` row,
+        not a capability.
+  - type: input
+    id: id
+    attributes:
+      label: Capability ID
+      description: Dotted identifier, never renamed. e.g. `network.wifi`.
+      placeholder: category.name
+    validations:
+      required: true
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Platforms that can actually observe this
+      multiple: true
+      options:
+        - macOS
+        - iOS
+        - iPadOS
+        - watchOS
+    validations:
+      required: true
+  - type: textarea
+    id: observes
+    attributes:
+      label: What it observes
+      placeholder: The facts, not the UI. One sentence if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: identity
+    attributes:
+      label: Stable entity identity
+      placeholder: Bundle id, volume UUID, BSD name — not a display name that renames.
+    validations:
+      required: true
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Highest privacy classification of any collected field
+      options:
+        - public
+        - local
+        - sensitive
+        - restricted (probably should not be collected)
+    validations:
+      required: true
+  - type: dropdown
+    id: cost
+    attributes:
+      label: Collection cost
+      options:
+        - low (fine on background / wake)
+        - high (skip on background captures)
+    validations:
+      required: true
+  - type: dropdown
+    id: default_on
+    attributes:
+      label: Enabled by default?
+      options:
+        - Yes
+        - No (opt-in, like processes)
+    validations:
+      required: true
+  - type: textarea
+    id: never
+    attributes:
+      label: What it must never collect
+      placeholder: File contents, tokens, message bodies, coordinates, …
+    validations:
+      required: true

@@ -1,0 +1,71 @@
+name: Release macOS
+
+on:
+  push:
+    tags: ["v*"]
+
+# Produces an unsigned Mac app zip. Signing and notarization happen outside
+# this repository, by whoever ships the build.
+
+concurrency:
+  group: release-macos-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Version from tag
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -project Diffuse.xcodeproj \
+            -scheme DiffuseMac \
+            -configuration Release \
+            -destination generic/platform=macOS \
+            -derivedDataPath .build/dd \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=- \
+            build
+
+      - name: Stage artifact
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          mkdir -p dist
+          APP=$(find .build/dd/Build/Products/Release -maxdepth 1 -name 'Diffuse.app' -type d | head -1)
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Diffuse-macOS-v${VERSION}.zip"
+          (cd dist && shasum -a 256 Diffuse-macOS-v${VERSION}.zip > SHA256SUMS)
+          {
+            echo "# Diffuse v${VERSION}"
+            echo
+            echo "Unsigned macOS build. Sign and notarize before distributing to other machines."
+            echo
+            awk '/^## /{if(found){exit} found=1} found' CHANGELOG.md | tail -n +2
+          } > dist/NOTES.md
+          cat dist/SHA256SUMS
+
+      - name: Upload GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Diffuse-macOS-v${{ steps.ver.outputs.version }}.zip
+            dist/SHA256SUMS
+          body_path: dist/NOTES.md
+          generate_release_notes: true
+          draft: false

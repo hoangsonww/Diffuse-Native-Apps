@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: diffuse-pre-commit
+        name: Diffuse pre-commit
+        entry: ./Scripts/hooks/pre-commit.sh
+        language: system
+        pass_filenames: false

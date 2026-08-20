@@ -1,0 +1,55 @@
+name: Feature
+description: A change to what Diffuse can show or how an app works.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Diffuse answers one question: *what changed on this device between these
+        two points in time?* Features that do not serve that question are out of
+        scope. There is no account, no cloud, and no telemetry — proposals that
+        need those will be closed.
+
+        Read [Documentation/README.md](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md)
+        and the ADRs first. A new observation is usually a Capability issue, not a Feature.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      placeholder: What can you not tell from two snapshots today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      placeholder: What should Diffuse do instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where it would live
+      options:
+        - New capability / collector (prefer the Capability issue)
+        - Existing app UI
+        - CLI
+        - Store / export / search
+        - Scheduler / retention
+        - Unsure
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints you have read
+      options:
+        - label: I have read Documentation/README.md, Architecture.md, and the ADRs.
+          required: true
+        - label: This does not require a server, an account, or leaving the device.
+          required: true
+        - label: This does not add a third-party Swift package.
+          required: true
+        - label: This does not add a per-capability SwiftUI screen.
+          required: true

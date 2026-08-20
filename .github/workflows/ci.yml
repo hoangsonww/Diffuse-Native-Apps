@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+# Unsigned, hermetic, first-party. No developer-account secrets, no code
+# scanning products, no third-party linters that natter about style the
+# repo does not use.
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+
+jobs:
+  format:
+    name: Format
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SwiftFormat
+        run: brew install swiftformat
+      - name: Lint
+        run: swiftformat Packages Apps Tools Tests --config .swiftformat --lint
+
+  test:
+    name: Package tests
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Swift PM
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.swift') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+      - name: Swift tests with coverage
+        run: ./Scripts/coverage.sh
+      - name: Coverage summary
+        if: always()
+        run: |
+          if [ -f coverage/summary.md ]; then
+            cat coverage/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  crosscheck:
+    name: SDK cross-check (${{ matrix.platform }})
+    runs-on: macos-15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ios, watchos]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Type-check shared packages
+        run: ./Scripts/crosscheck.sh ${{ matrix.platform }}
+
+  build:
+    name: Build ${{ matrix.scheme }}
+    runs-on: macos-15
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scheme: DiffuseMac
+            destination: generic/platform=macOS
+          - scheme: DiffuseiOS
+            destination: generic/platform=iOS
+          - scheme: DiffuseiPadOS
+            destination: generic/platform=iOS
+          - scheme: DiffuseWatch
+            destination: generic/platform=watchOS
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build unsigned
+        run: |
+          xcodebuild \
+            -project Diffuse.xcodeproj \
+            -scheme "${{ matrix.scheme }}" \
+            -configuration Release \
+            -destination "${{ matrix.destination }}" \
+            -derivedDataPath .build/dd \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=- \
+            build
+
+  scripts:
+    name: Scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck -x Scripts/*.sh Scripts/hooks/*.sh .claude/hooks/*.sh
+
+  # Single required check for branch protection: every matrix cell above
+  # must have succeeded. Do not add CodeQL, Super-Linter, or scorecard jobs.
+  ci:
+    name: All green
+    if: always()
+    needs: [format, test, crosscheck, build, scripts]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check job results
+        run: |
+          set -- \
+            "${{ needs.format.result }}" \
+            "${{ needs.test.result }}" \
+            "${{ needs.crosscheck.result }}" \
+            "${{ needs.build.result }}" \
+            "${{ needs.scripts.result }}"
+          for result in "$@"; do
+            echo "$result"
+            [ "$result" = success ] || exit 1
+          done

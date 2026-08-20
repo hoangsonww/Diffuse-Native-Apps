@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+./Scripts/hooks/pre-push.sh

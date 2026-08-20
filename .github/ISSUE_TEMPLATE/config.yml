@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security advisory
+    url: https://github.com/hoangsonww/Diffuse/security/advisories/new
+    about: Report a vulnerability privately. Do not open a public issue.
+  - name: Documentation
+    url: https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md
+    about: Architecture, guides, ADRs, apps, CLI, testing, privacy.
+  - name: Support / FAQ
+    url: https://github.com/hoangsonww/Diffuse/blob/main/SUPPORT.md
+    about: Where snapshots live, widgets, retention, redaction, CLI.

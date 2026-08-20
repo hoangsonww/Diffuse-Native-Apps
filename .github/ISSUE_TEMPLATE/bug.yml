@@ -1,0 +1,67 @@
+name: Bug
+description: Something Diffuse does not do, or does incorrectly.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Please do **not** paste snapshot JSON that
+        contains host names, Wi-Fi names, process lists, or repository paths —
+        redact first (`RedactionPolicy.strict`, or strip those fields by hand).
+        Security issues belong in a private advisory, not here.
+  - type: dropdown
+    id: app
+    attributes:
+      label: App
+      options:
+        - macOS
+        - iOS
+        - iPadOS
+        - watchOS
+        - CLI (`diffuse-dev`)
+        - Domain engine (packages)
+        - Unsure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "1.0.0 or abc1234"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS version
+      placeholder: "macOS 15.5, iOS 18.5, …"
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      placeholder: What you did, what you expected, what you saw.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Extra context
+      placeholder: Permissions granted, whether it happens on a clean install, capability toggles, skip-if-unchanged, schedule.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Attachments
+      options:
+        - label: I have redacted host names, SSIDs, process lists, and repo paths from any JSON or screenshots.
+          required: true

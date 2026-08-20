@@ -1,0 +1,100 @@
+name: Release Apple platforms
+
+on:
+  push:
+    tags: ["v*"]
+
+# Unsigned iOS, iPadOS, and watchOS .app zips. These are build artifacts, not
+# App Store packages. No signing, no provisioning, no App Store Connect.
+
+concurrency:
+  group: release-apple-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  apple:
+    runs-on: macos-15
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scheme: DiffuseiOS
+            destination: generic/platform=iOS
+            product_dir: Release-iphoneos
+            artifact: ios
+          - scheme: DiffuseiPadOS
+            destination: generic/platform=iOS
+            product_dir: Release-iphoneos
+            artifact: ipados
+          - scheme: DiffuseWatch
+            destination: generic/platform=watchOS
+            product_dir: Release-watchos
+            artifact: watchos
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Version from tag
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -project Diffuse.xcodeproj \
+            -scheme "${{ matrix.scheme }}" \
+            -configuration Release \
+            -destination "${{ matrix.destination }}" \
+            -derivedDataPath .build/dd \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=- \
+            build
+
+      - name: Stage artifact
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          mkdir -p dist
+          APP=$(find ".build/dd/Build/Products/${{ matrix.product_dir }}" -maxdepth 2 -name '*.app' -type d | head -1)
+          NAME="Diffuse-${{ matrix.artifact }}-v${VERSION}.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/${NAME}"
+          (cd dist && shasum -a 256 "$NAME" > "SHA256SUMS-${{ matrix.artifact }}")
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Diffuse-${{ matrix.artifact }}-v${{ steps.ver.outputs.version }}
+          path: dist/
+
+  publish:
+    needs: apple
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Combined checksums
+        run: |
+          cd dist
+          cat SHA256SUMS-* | sort > SHA256SUMS
+          cat SHA256SUMS
+      - name: Upload GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            dist/SHA256SUMS
+          generate_release_notes: true
+          append_body: true
