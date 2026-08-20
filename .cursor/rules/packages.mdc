@@ -1,0 +1,7 @@
+---
+description: Packages — domain engine, no UI, no third-party Swift deps
+globs: Packages/**
+alwaysApply: false
+---
+
+Read `Packages/AGENTS.md` and `Documentation/Architecture.md`. Core packages must not import UIKit/AppKit. Adding a capability must not edit the diff engine, store, search, export, or app screens. Run `./Scripts/crosscheck.sh ios` after core edits.

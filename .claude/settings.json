@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./Scripts/*)",
+      "Bash(swift test*)",
+      "Bash(swift run*)",
+      "Bash(swiftformat *)",
+      "Bash(xcodegen *)",
+      "Bash(xcodebuild *)",
+      "Bash(git *)",
+      "Bash(npm *)"
+    ],
+    "deny": [
+      "Read(**/*.p12)",
+      "Read(**/*.mobileprovision)",
+      "Read(**/*.cer)",
+      "Read(**/*.p8)",
+      "Read(.env)",
+      "Read(**/.env)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-secrets.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-swift.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/remind-tests.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
