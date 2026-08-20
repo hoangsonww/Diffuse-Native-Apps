@@ -32,7 +32,8 @@ Package.resolved
 
 # Coverage and test output
 *.xcresult
-coverage/
+# Coverage reports (repo root only — do not ignore skills named coverage/)
+/coverage/
 TestResults/
 _site/
 
