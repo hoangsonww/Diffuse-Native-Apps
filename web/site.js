@@ -1,0 +1,102 @@
+(() => {
+  document.documentElement.classList.add("js");
+  const nav = document.querySelector(".nav");
+  const toggle = document.querySelector(".menu-toggle");
+  const overlay = document.querySelector(".overlay");
+  const lightbox = document.querySelector(".lightbox");
+  const lightboxImg = lightbox?.querySelector("img");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const onScroll = () => {
+    nav?.classList.toggle("is-scrolled", window.scrollY > 12);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const setMenu = (open) => {
+    toggle?.classList.toggle("is-open", open);
+    overlay?.classList.toggle("is-open", open);
+    toggle?.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+
+  toggle?.addEventListener("click", () => {
+    setMenu(!toggle.classList.contains("is-open"));
+  });
+
+  overlay?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setMenu(false);
+      closeLightbox();
+    }
+  });
+
+  if (!reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-in");
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll(".reveal").forEach((el, i) => {
+      el.style.transitionDelay = `${Math.min(i % 6, 5) * 70}ms`;
+      io.observe(el);
+    });
+  } else {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("is-in"));
+  }
+
+  const openLightbox = (src, alt) => {
+    if (!lightbox || !lightboxImg) return;
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || "";
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeLightbox = () => {
+    lightbox?.classList.remove("is-open");
+    lightbox?.setAttribute("aria-hidden", "true");
+    if (!overlay?.classList.contains("is-open")) {
+      document.body.style.overflow = "";
+    }
+  };
+
+  document.querySelectorAll("[data-zoom]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const img = el.querySelector("img") || el;
+      openLightbox(img.currentSrc || img.src, img.alt);
+    });
+  });
+
+  lightbox?.addEventListener("click", (event) => {
+    if (event.target === lightbox || event.target.closest("button")) closeLightbox();
+  });
+
+  document.querySelectorAll("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const text = document.querySelector(button.getAttribute("data-copy"))?.innerText;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text.trim());
+        const previous = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => {
+          button.textContent = previous;
+        }, 1600);
+      } catch {
+        button.textContent = "Select & copy";
+      }
+    });
+  });
+})();

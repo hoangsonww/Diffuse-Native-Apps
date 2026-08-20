@@ -1,0 +1,41 @@
+# Deploy the marketing site to GitHub Pages.
+# Only the landing files ship — not the Swift tree.
+
+name: Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy site
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site
+        run: |
+          mkdir -p _site/web _site/.well-known
+          cp index.html 404.html robots.txt sitemap.xml llms.txt humans.txt site.webmanifest .nojekyll _site/
+          cp -R web/. _site/web/
+          cp .well-known/security.txt _site/.well-known/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4

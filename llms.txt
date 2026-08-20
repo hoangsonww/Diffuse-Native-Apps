@@ -1,0 +1,32 @@
+# Diffuse
+
+> Local-first Apple apps that answer one question: what changed on this device between two points in time?
+
+Diffuse is not a cloud product. Four genuinely native apps — macOS, iOS, iPadOS, watchOS — share a capability-driven domain engine. Snapshots never leave the device. There is no account, no telemetry, and no third-party Swift packages.
+
+- Site: https://hoangsonww.github.io/Diffuse/
+- Source: https://github.com/hoangsonww/Diffuse
+- License: MIT
+
+## Product
+
+- [Landing page](https://hoangsonww.github.io/Diffuse/): marketing site with screenshots and FAQ
+- [README](https://github.com/hoangsonww/Diffuse/blob/main/README.md): public summary, setup, architecture sketch
+
+## Docs
+
+- [Documentation index](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md)
+- [Architecture](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Architecture.md)
+- [Privacy](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Privacy.md)
+- [Apps](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Apps.md)
+- [CLI](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/CLI.md)
+- [Testing](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Testing.md)
+- [Glossary](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Glossary.md)
+- [ADRs](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/adr/README.md)
+
+## Optional
+
+- [Security policy](https://github.com/hoangsonww/Diffuse/blob/main/SECURITY.md)
+- [Support / FAQ](https://github.com/hoangsonww/Diffuse/blob/main/SUPPORT.md)
+- [Contributing](https://github.com/hoangsonww/Diffuse/blob/main/CONTRIBUTING.md)
+- [Changelog](https://github.com/hoangsonww/Diffuse/blob/main/CHANGELOG.md)

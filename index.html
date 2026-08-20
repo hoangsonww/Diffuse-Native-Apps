@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diffuse — See what changed on this device</title>
+    <meta
+      name="description"
+      content="Diffuse is a local-first Apple app that answers one question: what changed on this Mac, iPhone, iPad, or Watch between two points in time? No account. No cloud. No telemetry."
+    />
+    <meta
+      name="keywords"
+      content="Diffuse, local-first, device snapshot, system diff, macOS, iOS, iPadOS, watchOS, privacy, changelog, developer tools, Git snapshot"
+    />
+    <meta name="author" content="Diffuse contributors" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#2F4A8A" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="application-name" content="Diffuse" />
+    <meta name="apple-mobile-web-app-title" content="Diffuse" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="canonical" href="https://hoangsonww.github.io/Diffuse/" />
+    <link rel="alternate" type="text/plain" href="https://hoangsonww.github.io/Diffuse/llms.txt" title="llms.txt" />
+    <link rel="sitemap" type="application/xml" href="https://hoangsonww.github.io/Diffuse/sitemap.xml" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="icon" href="./web/media/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="./web/media/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="./web/media/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Diffuse" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://hoangsonww.github.io/Diffuse/" />
+    <meta property="og:title" content="Diffuse — See what changed" />
+    <meta
+      property="og:description"
+      content="Four native Apple apps. One local-first engine. Snapshots never leave the device."
+    />
+    <meta property="og:image" content="https://hoangsonww.github.io/Diffuse/web/media/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:image:alt" content="Diffuse mark: seven cream rings on blueprint indigo, with the line See what changed." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Diffuse — See what changed" />
+    <meta
+      name="twitter:description"
+      content="Local-first snapshots for Mac, iPhone, iPad, and Watch. No account. No cloud."
+    />
+    <meta name="twitter:image" content="https://hoangsonww.github.io/Diffuse/web/media/og.jpg" />
+    <meta name="twitter:image:alt" content="Diffuse mark and the line See what changed." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="./web/site.css" />
+    <link rel="preload" as="image" href="./web/media/macos-overview.jpg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://hoangsonww.github.io/Diffuse/#website",
+            "url": "https://hoangsonww.github.io/Diffuse/",
+            "name": "Diffuse",
+            "description": "Local-first snapshots that show what changed on an Apple device.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://hoangsonww.github.io/Diffuse/#org" }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://hoangsonww.github.io/Diffuse/#org",
+            "name": "Diffuse",
+            "url": "https://hoangsonww.github.io/Diffuse/",
+            "logo": "https://hoangsonww.github.io/Diffuse/web/media/app-icon.png",
+            "sameAs": ["https://github.com/hoangsonww/Diffuse"]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://hoangsonww.github.io/Diffuse/#app",
+            "name": "Diffuse",
+            "url": "https://hoangsonww.github.io/Diffuse/",
+            "image": "https://hoangsonww.github.io/Diffuse/web/media/og.jpg",
+            "description": "See what changed on this device between two points in time. Four native apps share a capability-driven domain engine. Snapshots never leave the device.",
+            "applicationCategory": "UtilitiesApplication",
+            "applicationSubCategory": "System monitor",
+            "operatingSystem": "macOS 14, iOS 17, iPadOS 17, watchOS 10",
+            "softwareVersion": "1.0.0",
+            "license": "https://github.com/hoangsonww/Diffuse/blob/main/LICENSE",
+            "downloadUrl": "https://github.com/hoangsonww/Diffuse/releases",
+            "installUrl": "https://github.com/hoangsonww/Diffuse",
+            "author": { "@id": "https://hoangsonww.github.io/Diffuse/#org" },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Local-first snapshots with no account or cloud",
+              "Native apps for macOS, iOS, iPadOS, and watchOS",
+              "Schema-driven diff of OS, storage, network, apps, and developer tools",
+              "Classification-driven redaction on export",
+              "diffuse-dev CLI for capture, inspect, diff, and validate"
+            ],
+            "screenshot": [
+              "https://hoangsonww.github.io/Diffuse/web/media/macos-overview.jpg",
+              "https://hoangsonww.github.io/Diffuse/web/media/ios-overview.jpg",
+              "https://hoangsonww.github.io/Diffuse/web/media/ipados-workspace.jpg",
+              "https://hoangsonww.github.io/Diffuse/web/media/watchos-glance.jpg"
+            ]
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://hoangsonww.github.io/Diffuse/#webpage",
+            "url": "https://hoangsonww.github.io/Diffuse/",
+            "name": "Diffuse — See what changed on this device",
+            "isPartOf": { "@id": "https://hoangsonww.github.io/Diffuse/#website" },
+            "about": { "@id": "https://hoangsonww.github.io/Diffuse/#app" },
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://hoangsonww.github.io/Diffuse/web/media/og.jpg"
+            },
+            "inLanguage": "en",
+            "datePublished": "2026-08-17",
+            "dateModified": "2026-08-19"
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://hoangsonww.github.io/Diffuse/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Does Diffuse sync my Mac history to my iPhone?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Each device is a closed history. If you need a copy off the device, you export it yourself — Files, AirDrop, or the diffuse-dev CLI — with a redaction policy."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Where are snapshots stored?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "On the device that captured them, as readable JSON in Application Support / Diffuse. There is no Diffuse account and no Diffuse cloud."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Diffuse free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Diffuse is open source under the MIT License. GitHub hosts the source and unsigned CI artifacts. You sign local shipping builds yourself."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What does Diffuse never collect?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Passwords, tokens, Keychain, SSH or GPG keys, environment variable values, file contents, messages, mail, photos, browsing history, location coordinates, and anything sent off the device."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="nav-wrap">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="#top">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="45.2" cy="39.6" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="32" cy="47.2" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="18.8" cy="39.6" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="18.8" cy="24.4" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="32" cy="16.8" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            <circle cx="45.2" cy="24.4" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+          </svg>
+          Diffuse
+        </a>
+        <div class="nav-links">
+          <a href="#product">Product</a>
+          <a href="#platforms">Apps</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#cli">CLI</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <a class="nav-cta" href="https://github.com/hoangsonww/Diffuse">
+          Get Diffuse
+          <span class="icon-orb" aria-hidden="true">↗</span>
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="overlay">
+      <a href="#product">Product</a>
+      <a href="#platforms">Apps</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#cli">CLI</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/hoangsonww/Diffuse">GitHub</a>
+    </div>
+
+    <header class="hero" id="top">
+      <div class="hero__constellation" aria-hidden="true">
+        <svg viewBox="0 0 1024 1024" role="presentation">
+          <circle class="orbit-ring" cx="512" cy="512" r="248" />
+          <circle class="orbit-ring" cx="512" cy="512" r="390" />
+          <circle class="node" cx="512" cy="512" r="110" />
+          <circle class="node" cx="719.7" cy="631.9" r="110" />
+          <circle class="node" cx="512" cy="751.8" r="110" />
+          <circle class="node" cx="304.3" cy="631.9" r="110" />
+          <circle class="node" cx="304.3" cy="392.1" r="110" />
+          <circle class="node" cx="512" cy="272.2" r="110" />
+          <circle class="node" cx="719.7" cy="392.1" r="110" />
+        </svg>
+      </div>
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Local-first · Four native apps</p>
+        <h1>See what <em>changed.</em></h1>
+        <p class="lede">
+          Take a snapshot. Use your machine. Take another. Diffuse diffs the two — on this device, in
+          this session, without an account, a cloud, or a telemetry pipeline.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/hoangsonww/Diffuse/releases">
+            Download
+            <span class="icon-orb" aria-hidden="true">↓</span>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/hoangsonww/Diffuse">
+            View source
+            <span class="icon-orb" aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="hero__meta">
+          <div>
+            <strong>macOS · iOS · iPadOS · watchOS</strong>
+            Genuinely native. Not one max-target.
+          </div>
+          <div>
+            <strong>MIT · unsigned CI</strong>
+            You own the bits. GitHub hosts the code.
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="marquee-band" aria-label="What Diffuse can observe">
+      <div class="marquee">
+        <div class="marquee__track">
+          <span class="chip">OS version</span><span class="chip">Hardware</span><span class="chip">Displays</span>
+          <span class="chip">Power</span><span class="chip">Storage volumes</span><span class="chip">Network path</span>
+          <span class="chip">Interfaces</span><span class="chip">Wi-Fi name</span><span class="chip">Applications</span>
+          <span class="chip">Developer tools</span><span class="chip">Git metadata</span><span class="chip">Processes · opt-in</span>
+          <span class="chip">OS version</span><span class="chip">Hardware</span><span class="chip">Displays</span>
+          <span class="chip">Power</span><span class="chip">Storage volumes</span><span class="chip">Network path</span>
+          <span class="chip">Interfaces</span><span class="chip">Wi-Fi name</span><span class="chip">Applications</span>
+          <span class="chip">Developer tools</span><span class="chip">Git metadata</span><span class="chip">Processes · opt-in</span>
+        </div>
+      </div>
+      <div class="marquee marquee--reverse">
+        <div class="marquee__track">
+          <span class="chip chip--ok">No account</span><span class="chip chip--ok">No cloud</span>
+          <span class="chip chip--ok">No telemetry</span><span class="chip chip--quiet">No Keychain</span>
+          <span class="chip chip--quiet">No file contents</span><span class="chip chip--quiet">No coordinates</span>
+          <span class="chip chip--ok">Redaction on export</span><span class="chip chip--ok">JSON on disk</span>
+          <span class="chip chip--ok">No account</span><span class="chip chip--ok">No cloud</span>
+          <span class="chip chip--ok">No telemetry</span><span class="chip chip--quiet">No Keychain</span>
+          <span class="chip chip--quiet">No file contents</span><span class="chip chip--quiet">No coordinates</span>
+          <span class="chip chip--ok">Redaction on export</span><span class="chip chip--ok">JSON on disk</span>
+        </div>
+      </div>
+    </div>
+
+    <main id="main">
+      <section class="section" id="product">
+        <div class="section__head reveal">
+          <p class="kicker">The question</p>
+          <h2>Two points in time. <em>One honest diff.</em></h2>
+          <p class="sub">
+            Diffuse is not a dashboard of everything. It is a record of what moved — Node upgraded,
+            a volume vanished, Wi-Fi flipped from Home to Office, a watched repo changed branch.
+          </p>
+        </div>
+        <div class="stage reveal">
+          <figure class="shell shot shot--mac device" data-zoom>
+            <div class="shell__inner">
+              <img
+                src="./web/media/macos-overview.jpg"
+                width="1440"
+                height="985"
+                alt="Diffuse for Mac: overview showing 12 changes, a Studio Display removed, network Home to Office, and a Git branch switch."
+              />
+            </div>
+            <figcaption>macOS · Overview</figcaption>
+          </figure>
+          <div class="side-stack">
+            <div class="phone-row">
+              <figure class="shell shot device" data-zoom>
+                <div class="shell__inner">
+                  <img
+                    src="./web/media/ios-overview.jpg"
+                    width="720"
+                    height="1565"
+                    alt="Diffuse on iPhone: four changes since the previous snapshot, Wi-Fi to Cellular."
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>iPhone</figcaption>
+              </figure>
+              <figure class="shell shot device" data-zoom>
+                <div class="shell__inner">
+                  <img
+                    src="./web/media/ios-compare.jpg"
+                    width="720"
+                    height="1565"
+                    alt="Diffuse on iPhone compare screen with before and after values."
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>Compare</figcaption>
+              </figure>
+            </div>
+            <article class="watch-card">
+              <img
+                src="./web/media/watchos-glance.jpg"
+                width="640"
+                height="779"
+                alt="Diffuse on Apple Watch showing Δ 4 changes at a glance."
+                loading="lazy"
+                data-zoom
+              />
+              <div>
+                <h3>Δ on your wrist</h3>
+                <p>
+                  Standalone watch app and complications. No paired iPhone required. The widget never
+                  decodes a snapshot — just a count and a peak severity.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight" id="platforms">
+        <div class="section__head reveal">
+          <p class="kicker">Four apps</p>
+          <h2>Written for the device, <em>not scaled down.</em></h2>
+          <p class="sub">
+            Same question everywhere. Split view on Mac. Tabs on iPhone. Three columns on iPad,
+            including portrait. A glance on Watch.
+          </p>
+        </div>
+        <div class="platforms">
+          <article class="card card--dark reveal">
+            <span class="tag">macOS</span>
+            <h3>The full workspace</h3>
+            <p>
+              Navigation split view, menu bar extra, scheduled capture on a timer and on wake,
+              repository watch list, developer-tool collectors. Not sandboxed — because spawning
+              <code>node --version</code> should not hide behind a temporary exception.
+            </p>
+            <img
+              src="./web/media/macos-compare.jpg"
+              width="1440"
+              height="985"
+              alt="Mac compare workspace with a timeline of snapshots and a detailed diff."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">iPadOS</span>
+            <h3>Three columns, always</h3>
+            <p>Snapshots, changes, and clusters side by side. Regular width never collapses to a phone layout.</p>
+            <img
+              src="./web/media/ipados-workspace.jpg"
+              width="1440"
+              height="1920"
+              alt="iPad three-column workspace: snapshots, changes, and clusters."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">iOS</span>
+            <h3>Phone, not a shrunk Mac</h3>
+            <p>Overview, timeline, compare, settings. Capture on open, on demand, and via background refresh.</p>
+            <img
+              src="./web/media/ios-timeline.jpg"
+              width="720"
+              height="1565"
+              alt="iPhone snapshots timeline."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="how">
+        <div class="section__head reveal">
+          <p class="kicker">How it works</p>
+          <h2>Capabilities travel with <em>their own schema.</em></h2>
+          <p class="sub">
+            Adding something new to observe is a typed model, a collector, a registry line, and a
+            test. Not a new screen. Not a new diff algorithm.
+          </p>
+        </div>
+        <div class="principles">
+          <article class="principle reveal">
+            <p class="delta">01 · Capture</p>
+            <h3>Snapshot</h3>
+            <p>
+              Collectors run concurrently with a deadline. One failure never fails the snapshot.
+              Manual captures always persist. Automatic ones can skip if nothing moved.
+            </p>
+          </article>
+          <article class="principle reveal">
+            <p class="delta">02 · Compare</p>
+            <h3>Schema-driven diff</h3>
+            <p>
+              Identity matching, semantic versions, relative free-space noise, severity, clustering.
+              <code>diff(A, A)</code> is empty. Change ids are content-derived — no random UUIDs.
+            </p>
+          </article>
+          <article class="principle reveal">
+            <p class="delta">03 · Keep</p>
+            <h3>Files you can read</h3>
+            <p>
+              Application Support. One JSON file per snapshot plus a rebuildable index. Retention
+              never deletes the newest. Export redacts by classification.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="privacy">
+        <div class="privacy">
+          <div class="section__head reveal" style="margin-bottom: 0">
+            <p class="kicker">Privacy</p>
+            <h2>Useful on device. <em>Quiet on export.</em></h2>
+            <p class="sub">
+              An SSID is how you see Home → Office. It is also how a gist becomes a map of your
+              life. Collection stores the real value. Sharing applies a policy.
+            </p>
+            <p class="sub" style="margin-top: 1rem">
+              Restricted fields never leave — even on “full detail.” Process listing is off until
+              you turn it on. Git records branch, dirty, ahead/behind, and a remote host. Not file
+              names. Not diffs.
+            </p>
+          </div>
+          <div class="reveal">
+            <ul class="ledger">
+              <li>
+                <span class="cls cls-public">Public</span>
+                <span>OS version, model identifier</span>
+                <span>Always included</span>
+              </li>
+              <li>
+                <span class="cls cls-local">Local</span>
+                <span>Device name</span>
+                <span>Standard export</span>
+              </li>
+              <li>
+                <span class="cls cls-sensitive">Sensitive</span>
+                <span>SSID, repository path</span>
+                <span>Redacted unless full detail</span>
+              </li>
+              <li>
+                <span class="cls cls-restricted">Restricted</span>
+                <span>Never designed to leave</span>
+                <span>Always stripped</span>
+              </li>
+            </ul>
+            <div class="never">
+              <strong>Never collected</strong>
+              Passwords · tokens · Keychain · SSH/GPG keys · .env values · file contents ·
+              messages, mail, photos, browsing · location coordinates · anything sent off-device.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section cli" id="cli">
+        <div class="section__head reveal">
+          <p class="kicker">diffuse-dev</p>
+          <h2>The same engine. <em>No UI framework.</em></h2>
+          <p class="sub">
+            Capture, inspect, diff, validate, and print the generated privacy ledger from a
+            terminal. Proof that the product is a domain, not a SwiftUI screen.
+          </p>
+        </div>
+        <div class="terminal reveal">
+          <div class="terminal__bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span>diffuse-dev</span>
+            <button class="copy-btn" type="button" data-copy="#cli-sample">Copy</button>
+          </div>
+          <pre id="cli-sample"><span class="cmt"># What can this Mac observe right now?</span>
+<span class="cmd">swift run diffuse-dev capabilities</span>
+
+<span class="cmt"># Capture, then compare</span>
+<span class="cmd">swift run diffuse-dev snapshot /tmp/before.json --repos "$HOME/code/Diffuse"</span>
+<span class="cmd">swift run diffuse-dev snapshot /tmp/after.json --label "after lunch"</span>
+<span class="cmd">swift run diffuse-dev diff /tmp/before.json /tmp/after.json --markdown</span>
+
+<span class="cmt"># Fail a job if the build environment drifted</span>
+<span class="cmd">swift run diffuse-dev diff "$BEFORE" "$AFTER" --fail-on-change</span></pre>
+        </div>
+      </section>
+
+      <section class="section" id="gallery">
+        <div class="section__head reveal">
+          <p class="kicker">Inside the apps</p>
+          <h2>From the running product. <em>Not mockups.</em></h2>
+        </div>
+        <div class="platforms">
+          <article class="card reveal">
+            <span class="tag">macOS · Snapshots</span>
+            <img
+              src="./web/media/macos-snapshots.jpg"
+              width="1440"
+              height="985"
+              alt="Mac snapshots inspector with the latest capture selected."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">macOS · Privacy</span>
+            <img
+              src="./web/media/macos-privacy.jpg"
+              width="1440"
+              height="985"
+              alt="Mac privacy ledger generated from live capability metadata."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">iPad · Privacy</span>
+            <img
+              src="./web/media/ipados-privacy.jpg"
+              width="1440"
+              height="1920"
+              alt="iPad privacy sheet over the three-column workspace."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="section__head reveal" style="margin-inline: auto; text-align: center">
+          <p class="kicker">FAQ</p>
+          <h2>Straight answers</h2>
+        </div>
+        <div class="faq reveal">
+          <details>
+            <summary>Does Diffuse sync my Mac to my iPhone?</summary>
+            <p>
+              No. Each device is a closed history. Export if you need a copy — Files, AirDrop, or
+              <code>diffuse-dev</code> — with a redaction policy.
+            </p>
+          </details>
+          <details>
+            <summary>Where do snapshots live?</summary>
+            <p>
+              Application Support / <code>Diffuse/</code> on that device. Pretty-printed JSON plus a
+              rebuildable index. You can open one in a text editor.
+            </p>
+          </details>
+          <details>
+            <summary>Why isn’t the Mac app sandboxed?</summary>
+            <p>
+              Developer-tool collectors spawn <code>git</code> and <code>node --version</code>. The
+              App Sandbox forbids that without a temporary exception per binary. Documented, not
+              papered over.
+            </p>
+          </details>
+          <details>
+            <summary>Is there telemetry?</summary>
+            <p>No account, no cloud, no crash reporter that uploads snapshots. GitHub is for source and CI artifacts only.</p>
+          </details>
+          <details>
+            <summary>How much does it cost?</summary>
+            <p>Nothing. MIT licensed. Unsigned CI builds; you sign whatever you ship.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="close" id="get">
+        <h2 class="reveal">Your machine, observed by you.</h2>
+        <p class="reveal">
+          Clone it. Capture once. Capture again. Read the diff. Nothing in this product requires
+          permission from a server.
+        </p>
+        <div class="cta-row reveal">
+          <a class="btn btn-ink" href="https://github.com/hoangsonww/Diffuse">
+            Open the repository
+            <span class="icon-orb" aria-hidden="true">↗</span>
+          </a>
+          <a class="btn btn-primary" href="https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md">
+            Read the architecture
+            <span class="icon-orb" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <div>
+          <a class="brand" href="#top">
+            <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+              <circle cx="32" cy="32" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="45.2" cy="39.6" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="32" cy="47.2" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="18.8" cy="39.6" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="18.8" cy="24.4" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="32" cy="16.8" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+              <circle cx="45.2" cy="24.4" r="7.2" fill="none" stroke="#F3F0E8" stroke-width="2.6" />
+            </svg>
+          </a>
+          <h2>Diffuse</h2>
+          <p>Local-first snapshots for Apple devices. See what changed — and nothing else.</p>
+        </div>
+        <div>
+          <h3>Product</h3>
+          <a href="#product">Overview</a>
+          <a href="#platforms">Apps</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#cli">CLI</a>
+        </div>
+        <div>
+          <h3>Source</h3>
+          <a href="https://github.com/hoangsonww/Diffuse">GitHub</a>
+          <a href="https://github.com/hoangsonww/Diffuse/releases">Releases</a>
+          <a href="https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md">Documentation</a>
+          <a href="https://github.com/hoangsonww/Diffuse/blob/main/SECURITY.md">Security</a>
+        </div>
+        <div>
+          <h3>For machines</h3>
+          <a href="./llms.txt">llms.txt</a>
+          <a href="./sitemap.xml">Sitemap</a>
+          <a href="./robots.txt">Robots</a>
+          <a href="./humans.txt">Humans</a>
+        </div>
+      </div>
+      <div class="legal">
+        <span>© 2026 Diffuse contributors. MIT License.</span>
+        <span>No telemetry. Snapshots stay on-device.</span>
+      </div>
+    </footer>
+
+    <div class="lightbox" aria-hidden="true" role="dialog" aria-label="Screenshot">
+      <button type="button" aria-label="Close">✕</button>
+      <img alt="" />
+    </div>
+
+    <script src="./web/site.js" defer></script>
+  </body>
+</html>

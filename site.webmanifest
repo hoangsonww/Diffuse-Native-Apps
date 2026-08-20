@@ -1,0 +1,29 @@
+{
+  "name": "Diffuse",
+  "short_name": "Diffuse",
+  "description": "See what changed on this Mac, iPhone, iPad, or Watch. Local-first. No account. No cloud.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0A0B0F",
+  "theme_color": "#2F4A8A",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "./web/media/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "./web/media/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "./web/media/app-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+/* TEAM */
+
+  Diffuse contributors
+  Site: https://hoangsonww.github.io/Diffuse/
+  GitHub: https://github.com/hoangsonww/Diffuse
+
+/* SITE */
+
+  Last update: 2026-08-19
+  Language: English
+  Standards: HTML5, CSS3, JSON-LD
+  License: MIT
+  Doctype: HTML5
+  Software: Four native Apple apps + a static landing page
+  Idea: See what changed on this device between two points in time
