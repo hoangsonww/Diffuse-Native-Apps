@@ -1,0 +1,431 @@
+# XcodeGen definition for the four Diffuse apps.
+#
+# The project file is generated rather than checked in: an .xcodeproj is a
+# merge-conflict magnet, and this file is a readable, reviewable description of
+# exactly what each target is. Run Scripts/bootstrap.sh to generate it.
+#
+# Note what is *not* here: signing identities, provisioning profiles and team
+# identifiers. CI builds unsigned artifacts, and distribution is configured
+# outside source control.
+
+name: Diffuse
+
+options:
+  bundleIdPrefix: com.diffuse
+  createIntermediateGroups: true
+  deploymentTarget:
+    macOS: "14.0"
+    iOS: "17.0"
+    watchOS: "10.0"
+  groupSortPosition: top
+  generateEmptyDirectories: false
+  xcodeVersion: "1600"
+
+fileGroups:
+  - Design
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    CLANG_ENABLE_MODULES: YES
+    DEAD_CODE_STRIPPING: YES
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Diffuse is distributed without a developer account in CI. Signing is
+    # configured by whoever ships it, not by the repository.
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGNING_ALLOWED: NO
+  configs:
+    Debug:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      ONLY_ACTIVE_ARCH: YES
+    Release:
+      SWIFT_COMPILATION_MODE: wholemodule
+      ENABLE_TESTABILITY: NO
+
+packages:
+  Diffuse:
+    path: .
+
+targets:
+  # ---------------------------------------------------------------- macOS ----
+
+  DiffuseMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: Apps/DiffuseMac
+        excludes: ["**/.DS_Store"]
+      - path: Design/AppIcon.icon
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseCollectors
+      - package: Diffuse
+        product: DiffuseCore
+      - package: Diffuse
+        product: DiffuseStorage
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: Diffuse
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.mac
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_KEY_CFBundleIconName: AppIcon
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+        # The menu bar extra is an addition, not the product, so the app keeps
+        # a normal Dock presence and a normal main window.
+        INFOPLIST_KEY_LSUIElement: NO
+        ENABLE_HARDENED_RUNTIME: YES
+        COMBINE_HIDPI_IMAGES: YES
+    info:
+      path: Apps/DiffuseMac/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleIconFile: AppIcon
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSMinimumSystemVersion: "$(MACOSX_DEPLOYMENT_TARGET)"
+        NSLocationUsageDescription: >-
+          macOS only reveals the name of the Wi-Fi network you are joined to
+          when an app has location access. Diffuse uses it solely to record
+          which network you were on, and never reads your coordinates.
+        NSHumanReadableCopyright: ""
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Diffuse Snapshot
+            CFBundleTypeRole: Viewer
+            CFBundleTypeIconFile: Snapshot
+            LSHandlerRank: Alternate
+            LSItemContentTypes:
+              - com.diffuse.snapshot
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.diffuse.snapshot
+            UTTypeDescription: Diffuse Snapshot
+            UTTypeConformsTo:
+              - public.json
+            UTTypeIconFile: Snapshot
+            UTTypeTagSpecification:
+              public.filename-extension:
+                - diffuse
+              public.mime-type:
+                - application/json
+    entitlements:
+      path: Apps/DiffuseMac/Resources/Diffuse.entitlements
+      properties:
+        # Not sandboxed: reading the developer environment means running
+        # `git`, `node --version` and friends, which the sandbox forbids. This
+        # is a deliberate, documented trade-off — see Documentation/Privacy.md.
+        com.apple.security.app-sandbox: false
+        com.apple.security.cs.disable-library-validation: false
+
+  # ------------------------------------------------------------------ iOS ----
+
+  DiffuseiOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Apps/DiffuseiOS
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+        excludes: ["ChangeCountWidget.swift", "**/.DS_Store"]
+      - path: Design/AppIcon.icon
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - target: DiffuseiOSWidget
+        embed: true
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseCollectors
+      - package: Diffuse
+        product: DiffuseCore
+      - package: Diffuse
+        product: DiffuseStorage
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: Diffuse
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.ios
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: >-
+          UIInterfaceOrientationPortrait
+          UIInterfaceOrientationLandscapeLeft
+          UIInterfaceOrientationLandscapeRight
+    info:
+      path: Apps/DiffuseiOS/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [com.diffuse.ios.snapshot]
+        UILaunchStoryboardName: LaunchScreen
+        UILaunchScreen:
+          UIImageRespectsSafeAreaInsets: false
+    entitlements:
+      path: Apps/DiffuseiOS/Resources/Diffuse.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.diffuse.ios]
+
+  # --------------------------------------------------------------- iPadOS ----
+  #
+  # A separate target rather than a device family flag on the iOS app. The two
+  # products differ in more than layout: the iPad app is an analytical
+  # three-column workspace, and keeping them apart means neither has to carry
+  # size-class branches for the other's benefit.
+
+  DiffuseiPadOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Apps/DiffuseiPadOS
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+        excludes: ["ChangeCountWidget.swift", "**/.DS_Store"]
+      - path: Design/AppIcon.icon
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - target: DiffuseiPadOSWidget
+        embed: true
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseCollectors
+      - package: Diffuse
+        product: DiffuseCore
+      - package: Diffuse
+        product: DiffuseStorage
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: Diffuse for iPad
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.ipados
+        TARGETED_DEVICE_FAMILY: "2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
+        INFOPLIST_KEY_UIRequiresFullScreen: NO
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: >-
+          UIInterfaceOrientationPortrait
+          UIInterfaceOrientationPortraitUpsideDown
+          UIInterfaceOrientationLandscapeLeft
+          UIInterfaceOrientationLandscapeRight
+    info:
+      path: Apps/DiffuseiPadOS/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [com.diffuse.ipados.snapshot]
+        UILaunchStoryboardName: LaunchScreen
+        UILaunchScreen:
+          UIImageRespectsSafeAreaInsets: false
+    entitlements:
+      path: Apps/DiffuseiPadOS/Resources/Diffuse.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.diffuse.ipados]
+
+  # -------------------------------------------------------------- watchOS ----
+
+  DiffuseWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: Apps/DiffuseWatch
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+      - path: Design/AppIcon.icon
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - target: DiffuseWatchComplication
+        embed: true
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseCollectors
+      - package: Diffuse
+        product: DiffuseCore
+      - package: Diffuse
+        product: DiffuseStorage
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: Diffuse
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.watch
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        # A standalone watch app: it takes its own snapshots of the watch and
+        # does not require a paired iPhone app.
+        WATCHOS_DEPLOYMENT_TARGET: "10.0"
+        SKIP_INSTALL: NO
+    info:
+      path: Apps/DiffuseWatch/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        WKApplication: true
+        WKWatchOnly: true
+    entitlements:
+      path: Apps/DiffuseWatch/Resources/Diffuse.entitlements
+      properties:
+        # The complication runs in its own process with its own container, so
+        # the app publishes its change count into a shared group.
+        com.apple.security.application-groups: [group.com.diffuse.watch]
+
+  DiffuseWatchComplication:
+    type: app-extension
+    platform: watchOS
+    sources:
+      - path: Apps/DiffuseWatchComplication
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+    dependencies:
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: DiffuseComplication
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.watch.complication
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SKIP_INSTALL: YES
+    info:
+      path: Apps/DiffuseWatchComplication/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Apps/DiffuseWatchComplication/Resources/Complication.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.diffuse.watch]
+
+  DiffuseiOSWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Apps/DiffuseiOSWidget
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+    dependencies:
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: DiffuseWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.ios.widget
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SKIP_INSTALL: YES
+    info:
+      path: Apps/DiffuseiOSWidget/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Apps/DiffuseiOSWidget/Resources/Widget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.diffuse.ios]
+
+  DiffuseiPadOSWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Apps/DiffuseiPadOSWidget
+        excludes: ["**/.DS_Store"]
+      - path: Apps/Shared
+    dependencies:
+      - package: Diffuse
+        product: DiffuseUI
+      - package: Diffuse
+        product: DiffuseModels
+    settings:
+      base:
+        PRODUCT_NAME: DiffuseWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.diffuse.ipados.widget
+        TARGETED_DEVICE_FAMILY: "2"
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SKIP_INSTALL: YES
+    info:
+      path: Apps/DiffuseiPadOSWidget/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Diffuse
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Apps/DiffuseiPadOSWidget/Resources/Widget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.diffuse.ipados]
+
+schemes:
+  DiffuseMac:
+    build:
+      targets:
+        DiffuseMac: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+  DiffuseiOS:
+    build:
+      targets:
+        DiffuseiOS: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+  DiffuseiPadOS:
+    build:
+      targets:
+        DiffuseiPadOS: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+  DiffuseWatch:
+    build:
+      targets:
+        DiffuseWatch: all
+    run:
+      config: Debug
+    archive:
+      config: Release
