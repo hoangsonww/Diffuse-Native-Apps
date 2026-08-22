@@ -15,7 +15,7 @@ Android is the one place with an external dependency graph, and it is limited to
 | --- | --- | --- |
 | Language | Swift 6, language mode `.v6`, complete concurrency | Kotlin 2.0.21, JVM target 17 |
 | UI | SwiftUI (+ AppKit / UIKit / WatchKit hosts) | Jetpack Compose, Material 3 |
-| Build | Swift Package Manager + XcodeGen + `xcodebuild` | Gradle 8.11.1, Android Gradle Plugin 8.10.1 |
+| Build | Swift Package Manager + XcodeGen + `xcodebuild` | Gradle 8.13, Android Gradle Plugin 8.10.1 |
 | Serialization | `Codable` / `JSONEncoder` (first-party `SnapshotCoding`) | `kotlinx.serialization` JSON |
 | Concurrency | Swift structured concurrency, actors, `TaskGroup` | Kotlin coroutines, `Flow`, `StateFlow` |
 | Scheduling | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` periodic work |
@@ -76,7 +76,7 @@ Deployment targets: macOS 14, iOS 17, iPadOS 17, watchOS 10. `Package.swift` add
 | Technology | Version | Role |
 | --- | --- | --- |
 | **Android Gradle Plugin** | 8.10.1 | `compileSdk` / `targetSdk` 36, `minSdk` 26. |
-| **Gradle** | 8.11.1 wrapper, Kotlin DSL | `Android/build.gradle.kts`, `Android/app/build.gradle.kts`. `FAIL_ON_PROJECT_REPOS` keeps repository declarations centralized. |
+| **Gradle** | 8.13 wrapper, Kotlin DSL | `Android/build.gradle.kts`, `Android/app/build.gradle.kts`. `FAIL_ON_PROJECT_REPOS` keeps repository declarations centralized. |
 | **Jetpack Compose** | BOM `2024.12.01` | The whole UI. Adaptive: bottom bar under 720dp, navigation rail at and above it. |
 | **Material 3** | via the Compose BOM | `material3` plus `material-icons-extended`. Dynamic-capable theme in `ui/Theme.kt`. |
 | **AndroidX Activity Compose** | 1.13.0 | `ComponentActivity`, `setContent`, edge-to-edge, and the file-picker activity results. |

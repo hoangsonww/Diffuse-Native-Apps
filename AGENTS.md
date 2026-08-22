@@ -45,6 +45,8 @@ Core packages have no UIKit/AppKit imports. They type-check against iOS and watc
 ## Commands
 
 ```bash
+make doctor                # what can this machine build?
+make help                  # every supported command
 ./Scripts/bootstrap.sh     # XcodeGen + tools
 ./Scripts/format.sh        # SwiftFormat in place
 ./Scripts/verify.sh        # format lint, tests, cross-check, unsigned builds
@@ -54,7 +56,18 @@ swift test --filter DiffuseDomainTests
 swift run diffuse-dev --help
 ```
 
-On macOS, `npm install` installs Husky git hooks. Docker and the Dev Container are for docs/scripts/hooks only — they cannot build the apps.
+Running an app:
+
+```bash
+make ios-run / ipados-run / watch-run / mac-run   # Apple, on a resolved simulator
+make android-run                                  # Android, on a device or emulator
+make android-test / android-lint / android-build
+make gradle ARGS="<task>"                         # any other Gradle task
+```
+
+Never call `adb`, `xcrun`, or `./gradlew` bare from a script or Make target. Use `Scripts/android.sh` and `Scripts/apple.sh`, which resolve a JDK 17, an `adb` binary, and a simulator UDID. Bare `adb` is not on `PATH` after a default Android Studio install, and Android builds must not assume a JDK — Gradle provisions its own from `Android/gradle/gradle-daemon-jvm.properties`.
+
+On macOS, `npm install` installs Husky git hooks. Docker and the Dev Container cover docs, scripts, hooks, and the Android build — they cannot build the Apple apps, which need Xcode on macOS.
 
 ## Skills
 

@@ -384,7 +384,16 @@ Argument parsing is hand-rolled — there is no `swift-argument-parser` ([ADR 00
 
 ## Develop
 
-Requires macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
+Start here on any machine:
+
+```bash
+make doctor    # what can this machine build?
+make help      # every supported command
+```
+
+`make doctor` reports the Apple, Android, and shared toolchains separately, so you learn up front which suites are available instead of discovering it when one fails halfway through.
+
+The Apple apps require macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/XcodeGen), and [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
 
 ```bash
 ./Scripts/bootstrap.sh    # generates Diffuse.xcodeproj (gitignored)
@@ -392,6 +401,18 @@ Requires macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/Xco
 ```
 
 A healthy checkout prints `Diffuse is healthy.`
+
+Running any of the five apps takes one command — no Xcode UI, no simulator UDID, no JDK setup:
+
+```bash
+make ios-run        # DiffuseiOS on an iPhone simulator
+make ipados-run     # DiffuseiPadOS on an iPad simulator
+make watch-run      # DiffuseWatch on a watch simulator
+make mac-run        # DiffuseMac on this machine
+make android-run    # the Android app on a device or emulator
+```
+
+Each resolves and boots a simulator or checks for a connected device, builds, installs, and launches. `make apple-devices` and `make android-devices` list what is available; set `DIFFUSE_SIMULATOR_ID` to pin a specific one.
 
 ```bash
 swift test --parallel               # Swift Testing (~445 tests)
@@ -406,18 +427,33 @@ Git hooks (optional, Node 20+):
 npm install    # Husky + lint-staged; also installed by ./Scripts/bootstrap.sh
 ```
 
-Docker / Dev Container cover docs, scripts, and hooks — **not** Xcode builds:
+Docker / Dev Container cover docs, scripts, hooks, and the full **Android** build — **not** Xcode builds, which need macOS:
 
 ```bash
 docker compose up -d
 docker compose exec dev bash
+
+make verify-devcontainer                    # build the image, assert its toolchain works
+./Scripts/verify-devcontainer.sh --build    # also build the Android app inside it
 ```
+
+The image is pinned to `linux/amd64` because Google ships the Android command-line tools and build-tools for Linux as x86_64 binaries only. On Apple silicon it runs under emulation and is noticeably slower.
 
 Signing is not part of this repository. CI produces unsigned artifacts. Whoever ships Diffuse configures identities outside source control.
 
 ### Android
 
-Requires JDK 17+, Android SDK 36, and an emulator or device for instrumentation tests.
+Requires Android SDK 36, and an emulator or device for instrumentation tests. **A JDK is not a prerequisite** — `Android/gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so Gradle 8.13 downloads and runs on its own Adoptium JDK 17 for the host OS and architecture. `./gradlew` works on a clean checkout whatever `java` is on `PATH`, including no JDK at all; the first build pays a one-time ~180 MB download.
+
+```bash
+make android-run        # build, install, and launch
+make android-test       # unit tests with coverage
+make android-lint
+make android-release    # unsigned release APK
+make gradle ARGS="bundleRelease"
+```
+
+Raw Gradle works too:
 
 ```bash
 cd Android
@@ -473,7 +509,7 @@ Two native families, one contract, and a deliberately short dependency list.
 | --- | --- | --- |
 | Language | Swift 6, language mode `.v6`, complete concurrency | Kotlin 2.0.21 on JVM 17 |
 | UI | SwiftUI, with AppKit / UIKit / WatchKit hosts | Jetpack Compose, Material 3 |
-| Build | Swift Package Manager, XcodeGen, `xcodebuild` | Gradle 8.11.1, AGP 8.10.1 |
+| Build | Swift Package Manager, XcodeGen, `xcodebuild` | Gradle 8.13, AGP 8.10.1 |
 | Concurrency | Structured concurrency, actors, `TaskGroup` | Coroutines, `Flow`, `StateFlow` |
 | Serialization | `Codable` via first-party `SnapshotCoding` | `kotlinx.serialization` |
 | Background work | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` |

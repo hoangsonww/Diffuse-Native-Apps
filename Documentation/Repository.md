@@ -23,7 +23,7 @@ docs/screenshots/  README marketing shots from the live apps
 
 `Diffuse.xcodeproj` is **generated** (`./Scripts/bootstrap.sh` / XcodeGen from `project.yml`) and gitignored. Do not check it in. [ADR 0005](adr/0005-generated-unsigned.md).
 
-Swift package graph is first-party only. [ADR 0004](adr/0004-no-third-party-deps.md). Node exists solely so Husky can run git hooks (`package.json`). Docker / Dev Container cover docs, scripts, and hooks — **not** `swift test` or app builds.
+Swift package graph is first-party only. [ADR 0004](adr/0004-no-third-party-deps.md). Node exists solely so Husky can run git hooks (`package.json`). Docker / Dev Container cover docs, scripts, hooks, and the **Android** build — but not `swift test` or the Apple apps, which need Xcode on macOS. Verify the image with `make verify-devcontainer`.
 
 ## Scripts
 
@@ -38,12 +38,24 @@ Run from the repository root. All need macOS + Xcode except where noted.
 | `./Scripts/crosscheck.sh ios` / `watchos` | Type-check shared packages against that SDK. |
 | `./Scripts/generate-fixtures.sh` | Writes `Fixtures/` from `FixtureGenerator`. Review the git diff. |
 | `./Scripts/generate-icons.py` | Regenerates `Design/Icons/` masters (Pillow). |
+| `./Scripts/doctor.sh` | Reports which parts of Diffuse this machine can build. Runs anywhere. |
+| `./Scripts/apple.sh <build\|run\|boot\|devices> <ios\|ipados\|watch\|mac>` | Builds, installs, and launches an Apple app on a resolved simulator. No Xcode UI, no UDID. |
+| `./Scripts/android.sh <task…\|run\|devices>` | Gradle for the Android app with a guaranteed JDK and a resolved `adb`. Runs anywhere. |
+| `./Scripts/verify-devcontainer.sh [--build]` | Builds the toolbox image and asserts its toolchain works. Runs anywhere with Docker. |
+| `./Scripts/lib.sh` | Shared helpers (JDK, `adb`, and simulator resolution). Sourced, not executed. |
 
-Makefile mirrors the common ones: `make bootstrap`, `format`, `test`, `coverage`, `verify`, `hooks`, `docker-up` / `docker-down` / `docker-shell`.
+Run `make help` for the full command list. `make doctor` is the right first command on a new machine — it reports whether the Apple apps, the Android app, or only the docs surface are available before a suite fails halfway through.
+
+### No JDK setup for Android
+
+`Android/gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so Gradle 8.13 downloads and runs on its own Adoptium JDK 17 matching the host OS and architecture. `./gradlew` therefore works on a clean checkout whatever `java` happens to be on `PATH` — including no JDK at all. The first build pays a one-time ~180 MB download into `~/.gradle/jdks/`.
+
+`Scripts/android.sh` additionally prefers a local JDK 17 when one exists, and resolves `adb` from `ANDROID_HOME` because `platform-tools` is not on `PATH` after a default Android Studio install.
 
 ## Local loop
 
 ```bash
+make doctor                    # what can this machine build?
 ./Scripts/bootstrap.sh
 ./Scripts/format.sh
 swift test --parallel
@@ -51,6 +63,16 @@ swift test --parallel
 ./Scripts/verify.sh            # before you call a change done
 swift run diffuse-dev --help
 open Diffuse.xcodeproj         # generated; gitignored
+```
+
+Running an app, one command each — no Xcode UI, no simulator UDID, no JDK setup:
+
+```bash
+make ios-run        # DiffuseiOS on an iPhone simulator
+make ipados-run     # DiffuseiPadOS on an iPad simulator
+make watch-run      # DiffuseWatch on a watch simulator
+make mac-run        # DiffuseMac on this machine
+make android-run    # the Android app on a device or emulator
 ```
 
 Git hooks (optional, Node 20+):

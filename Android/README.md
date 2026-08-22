@@ -102,7 +102,27 @@ flowchart TD
 
 ## Build and test
 
-Requirements: JDK 17, Android SDK 36, and an emulator or device for instrumented UI tests.
+Requirements: Android SDK 36, and an emulator or device for instrumented UI tests. **A JDK is not a prerequisite** — `gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so Gradle 8.13 downloads and runs on its own Adoptium JDK 17 matching the host OS and architecture. `./gradlew` therefore works on a clean checkout whatever `java` is on `PATH`, including no JDK at all. The first build pays a one-time ~180 MB download into `~/.gradle/jdks/`.
+
+From the repository root, one command builds, installs, and launches on a connected device or emulator:
+
+```bash
+make android-run
+```
+
+Other entry points, all of which resolve a JDK and `adb` for you:
+
+```bash
+make android-build      # debug APK
+make android-release    # unsigned release APK
+make android-test       # unit tests with a coverage report
+make android-lint       # Android lint
+make android-devices    # list connected devices and emulators
+make android-tasks      # list every Gradle task
+make gradle ARGS="bundleRelease"
+```
+
+Raw Gradle works too:
 
 ```bash
 cd Android

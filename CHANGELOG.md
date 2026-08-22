@@ -4,6 +4,35 @@ All notable changes to Diffuse are documented here.
 
 ## Unreleased
 
+### Developer experience
+
+- Android no longer requires a preinstalled JDK. The Gradle wrapper moves from
+  8.11.1 to 8.13, `Android/settings.gradle.kts` applies the foojay resolver, and
+  `Android/gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so
+  Gradle downloads and runs on its own Adoptium JDK 17 for the host OS and
+  architecture. `./gradlew` works on a clean checkout whatever `java` is on
+  `PATH`.
+- `Scripts/apple.sh` builds, installs, and launches any of the four Apple apps
+  on an automatically resolved simulator — no Xcode UI and no device UDID.
+- `Scripts/android.sh` runs Gradle with a guaranteed JDK and resolves `adb`
+  from `ANDROID_HOME`, which is not on `PATH` after a default Android Studio
+  install.
+- `Scripts/doctor.sh` reports which parts of the repository this machine can
+  build, grouped by Apple, Android, and shared tooling.
+- `Scripts/lib.sh` holds the shared JDK, `adb`, and simulator resolution.
+- The Makefile gains a `help` target and one-command entry points:
+  `ios-run`, `ipados-run`, `watch-run`, `mac-run`, `android-run`, plus build,
+  test, lint, device-listing, and `gradle ARGS="…"` passthrough.
+- The Docker toolbox now carries a Temurin JDK 17 and the Android SDK, so
+  Linux and Codespaces contributors can build and test the Android app.
+  `Scripts/verify-devcontainer.sh` builds the image and asserts the toolchain
+  inside it actually works; `--build` compiles the Android app from an isolated
+  `git archive` copy so a container build never shares `app/build/` with a host
+  build. The Apple apps still require Xcode on macOS.
+- `.github/workflows/release-android.yml` attaches an unsigned release APK and
+  its checksum to each tagged release, matching the unsigned stance of
+  `release-apple.yml`.
+
 ### Apps
 
 - Native Kotlin / Jetpack Compose Android app with an independent domain engine,

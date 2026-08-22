@@ -1,14 +1,22 @@
-# Optional local toolbox. Does not build the Apple apps.
+# Optional local toolbox. Builds the Android app; does not build the Apple
+# apps, which require macOS + Xcode.
 #
 #   docker compose up -d
 #   docker compose exec dev bash
 #   docker compose down
+#
+# Pinned to linux/amd64: Google ships the Android command-line tools and
+# build-tools for Linux as x86_64 binaries only, so an arm64 image cannot run
+# aapt2 or d8. On Apple silicon this runs under emulation and is slower.
 
 services:
   dev:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
     image: diffuse-dev:local
     working_dir: /workspace
     volumes:
