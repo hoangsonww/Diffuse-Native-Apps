@@ -10,6 +10,18 @@
     <link rel="icon" href="./web/media/favicon-32.png" type="image/png" />
   </head>
   <body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="sprites" aria-hidden="true" focusable="false">
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <path
+          d="M5 12h14M13 6l6 6-6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
     <main class="close" style="min-height: 100dvh; display: grid; place-content: center">
       <p class="kicker">404</p>
       <h2>This snapshot isn’t here.</h2>
@@ -17,7 +29,9 @@
       <div class="cta-row">
         <a class="btn btn-ink" href="./">
           Back to Diffuse
-          <span class="icon-orb" aria-hidden="true">→</span>
+          <span class="icon-orb" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+          </span>
         </a>
       </div>
     </main>

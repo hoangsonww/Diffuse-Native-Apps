@@ -6,10 +6,10 @@
 
 /* SITE */
 
-  Last update: 2026-08-19
+  Last update: 2026-08-20
   Language: English
   Standards: HTML5, CSS3, JSON-LD
   License: MIT
   Doctype: HTML5
-  Software: Four native Apple apps + a static landing page
+  Software: Five native apps (Android, macOS, iOS, iPadOS, watchOS) + a static landing page
   Idea: See what changed on this device between two points in time

@@ -99,4 +99,34 @@
       }
     });
   });
+
+  const navLinks = [...document.querySelectorAll(".nav-links a, .overlay a[href^='#']")];
+  const sectionIds = [...new Set(navLinks.map((link) => link.getAttribute("href")?.slice(1)).filter(Boolean))];
+
+  const setActive = (id) => {
+    navLinks.forEach((link) => {
+      const on = link.getAttribute("href") === `#${id}`;
+      link.classList.toggle("is-active", on);
+      if (on) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  };
+
+  const spy = () => {
+    const line = 128;
+    let current = "";
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      if (el.getBoundingClientRect().top <= line) current = id;
+    }
+    const atBottom =
+      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 48;
+    if (atBottom) current = sectionIds.at(-1) || current;
+    setActive(current);
+  };
+
+  spy();
+  window.addEventListener("scroll", spy, { passive: true });
+  window.addEventListener("resize", spy);
 })();

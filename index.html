@@ -2,15 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Diffuse — See what changed on this device</title>
     <meta
       name="description"
-      content="Diffuse is a local-first Apple app that answers one question: what changed on this Mac, iPhone, iPad, or Watch between two points in time? No account. No cloud. No telemetry."
+      content="Diffuse is a local-first native app that shows what changed on Android, Mac, iPhone, iPad, or Watch between two points in time. No account. No cloud. No telemetry."
     />
     <meta
       name="keywords"
-      content="Diffuse, local-first, device snapshot, system diff, macOS, iOS, iPadOS, watchOS, privacy, changelog, developer tools, Git snapshot"
+      content="Diffuse, local-first, device snapshot, system diff, Android, Kotlin, Jetpack Compose, macOS, iOS, iPadOS, watchOS, privacy, changelog, developer tools, Git snapshot"
     />
     <meta name="author" content="Diffuse contributors" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -35,7 +35,7 @@
     <meta property="og:title" content="Diffuse — See what changed" />
     <meta
       property="og:description"
-      content="Four native Apple apps. One local-first engine. Snapshots never leave the device."
+      content="Five native apps across Android and Apple platforms. Snapshots never leave the device."
     />
     <meta property="og:image" content="https://hoangsonww.github.io/Diffuse/web/media/og.jpg" />
     <meta property="og:image:width" content="1200" />
@@ -45,7 +45,7 @@
     <meta name="twitter:title" content="Diffuse — See what changed" />
     <meta
       name="twitter:description"
-      content="Local-first snapshots for Mac, iPhone, iPad, and Watch. No account. No cloud."
+      content="Local-first snapshots for Android, Mac, iPhone, iPad, and Watch. No account. No cloud."
     />
     <meta name="twitter:image" content="https://hoangsonww.github.io/Diffuse/web/media/og.jpg" />
     <meta name="twitter:image:alt" content="Diffuse mark and the line See what changed." />
@@ -71,7 +71,7 @@
             "@id": "https://hoangsonww.github.io/Diffuse/#website",
             "url": "https://hoangsonww.github.io/Diffuse/",
             "name": "Diffuse",
-            "description": "Local-first snapshots that show what changed on an Apple device.",
+            "description": "Local-first snapshots that show what changed on Android and Apple devices.",
             "inLanguage": "en",
             "publisher": { "@id": "https://hoangsonww.github.io/Diffuse/#org" }
           },
@@ -89,10 +89,10 @@
             "name": "Diffuse",
             "url": "https://hoangsonww.github.io/Diffuse/",
             "image": "https://hoangsonww.github.io/Diffuse/web/media/og.jpg",
-            "description": "See what changed on this device between two points in time. Four native apps share a capability-driven domain engine. Snapshots never leave the device.",
+            "description": "See what changed on this device between two points in time. Five native apps use capability-driven Swift and Kotlin engines. Snapshots never leave the device.",
             "applicationCategory": "UtilitiesApplication",
             "applicationSubCategory": "System monitor",
-            "operatingSystem": "macOS 14, iOS 17, iPadOS 17, watchOS 10",
+            "operatingSystem": "Android 8+, macOS 14, iOS 17, iPadOS 17, watchOS 10",
             "softwareVersion": "1.0.0",
             "license": "https://github.com/hoangsonww/Diffuse/blob/main/LICENSE",
             "downloadUrl": "https://github.com/hoangsonww/Diffuse/releases",
@@ -105,7 +105,7 @@
             },
             "featureList": [
               "Local-first snapshots with no account or cloud",
-              "Native apps for macOS, iOS, iPadOS, and watchOS",
+              "Native apps for Android, macOS, iOS, iPadOS, and watchOS",
               "Schema-driven diff of OS, storage, network, apps, and developer tools",
               "Classification-driven redaction on export",
               "diffuse-dev CLI for capture, inspect, diff, and validate"
@@ -114,7 +114,9 @@
               "https://hoangsonww.github.io/Diffuse/web/media/macos-overview.jpg",
               "https://hoangsonww.github.io/Diffuse/web/media/ios-overview.jpg",
               "https://hoangsonww.github.io/Diffuse/web/media/ipados-workspace.jpg",
-              "https://hoangsonww.github.io/Diffuse/web/media/watchos-glance.jpg"
+              "https://hoangsonww.github.io/Diffuse/web/media/watchos-glance.jpg",
+              "https://hoangsonww.github.io/Diffuse/web/media/android-overview.jpg",
+              "https://hoangsonww.github.io/Diffuse/web/media/android-compare.jpg"
             ]
           },
           {
@@ -130,7 +132,7 @@
             },
             "inLanguage": "en",
             "datePublished": "2026-08-17",
-            "dateModified": "2026-08-19"
+            "dateModified": "2026-08-20"
           },
           {
             "@type": "FAQPage",
@@ -149,7 +151,7 @@
                 "name": "Where are snapshots stored?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "On the device that captured them, as readable JSON in Application Support / Diffuse. There is no Diffuse account and no Diffuse cloud."
+                  "text": "On the device that captured them, as readable JSON. Apple uses Application Support / Diffuse. Android uses the app-private files directory and excludes it from backup. There is no Diffuse account and no Diffuse cloud."
                 }
               },
               {
@@ -167,6 +169,38 @@
                   "@type": "Answer",
                   "text": "Passwords, tokens, Keychain, SSH or GPG keys, environment variable values, file contents, messages, mail, photos, browsing history, location coordinates, and anything sent off the device."
                 }
+              },
+              {
+                "@type": "Question",
+                "name": "How often does Diffuse capture?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Default cadence is every four hours with a 15-minute floor, including wake. Automatic captures can skip persist when nothing changed. Manual capture always saves."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do tests require Node or Docker?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Collectors use process-runner doubles. CI never requires a particular Wi-Fi network, Node, or a Docker daemon. Android JVM tests read the shared Fixtures/ directory."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Android a wrapper around the Apple apps?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Diffuse for Android is native Kotlin and Jetpack Compose with its own domain engine. The two families interoperate through schema-v1 JSON snapshots and golden fixtures, not a shared UI runtime."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does the Android app need Internet?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. It observes ACCESS_NETWORK_STATE so connectivity can be recorded. There is no INTERNET permission, no account, and snapshots are excluded from Android backup."
+                }
               }
             ]
           }
@@ -177,6 +211,56 @@
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
+    <svg xmlns="http://www.w3.org/2000/svg" class="sprites" aria-hidden="true" focusable="false">
+      <symbol id="icon-arrow-up-right" viewBox="0 0 24 24">
+        <path
+          d="M7 17L17 7M17 7h-7M17 7v7"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <path
+          d="M5 12h14M13 6l6 6-6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path
+          d="M12 4v12M8 12l4 4 4-4M5 19h14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path
+          d="M12 5v14M5 12h14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24">
+        <path
+          d="M6 6l12 12M18 6L6 18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </symbol>
+    </svg>
 
     <div class="nav-wrap">
       <nav class="nav" aria-label="Primary">
@@ -195,13 +279,16 @@
         <div class="nav-links">
           <a href="#product">Product</a>
           <a href="#platforms">Apps</a>
+          <a href="#observe">Observe</a>
           <a href="#privacy">Privacy</a>
           <a href="#cli">CLI</a>
           <a href="#faq">FAQ</a>
         </div>
         <a class="nav-cta" href="https://github.com/hoangsonww/Diffuse">
           Get Diffuse
-          <span class="icon-orb" aria-hidden="true">↗</span>
+          <span class="icon-orb" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+          </span>
         </a>
         <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span>
@@ -212,6 +299,7 @@
     <div class="overlay">
       <a href="#product">Product</a>
       <a href="#platforms">Apps</a>
+      <a href="#observe">Observe</a>
       <a href="#privacy">Privacy</a>
       <a href="#cli">CLI</a>
       <a href="#faq">FAQ</a>
@@ -233,7 +321,7 @@
         </svg>
       </div>
       <div class="hero__copy">
-        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Local-first · Four native apps</p>
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Local-first · Five native apps</p>
         <h1>See what <em>changed.</em></h1>
         <p class="lede">
           Take a snapshot. Use your machine. Take another. Diffuse diffs the two — on this device, in
@@ -242,17 +330,21 @@
         <div class="cta-row">
           <a class="btn btn-primary" href="https://github.com/hoangsonww/Diffuse/releases">
             Download
-            <span class="icon-orb" aria-hidden="true">↓</span>
+            <span class="icon-orb" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-download"></use></svg>
+            </span>
           </a>
           <a class="btn btn-ghost" href="https://github.com/hoangsonww/Diffuse">
             View source
-            <span class="icon-orb" aria-hidden="true">↗</span>
+            <span class="icon-orb" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </span>
           </a>
         </div>
         <div class="hero__meta">
           <div>
-            <strong>macOS · iOS · iPadOS · watchOS</strong>
-            Genuinely native. Not one max-target.
+            <strong>Android · macOS · iOS · iPadOS · watchOS</strong>
+            Kotlin and Swift. Genuinely native.
           </div>
           <div>
             <strong>MIT · unsigned CI</strong>
@@ -361,11 +453,11 @@
 
       <section class="section section--tight" id="platforms">
         <div class="section__head reveal">
-          <p class="kicker">Four apps</p>
+          <p class="kicker">Five apps</p>
           <h2>Written for the device, <em>not scaled down.</em></h2>
           <p class="sub">
-            Same question everywhere. Split view on Mac. Tabs on iPhone. Three columns on iPad,
-            including portrait. A glance on Watch.
+            Same question everywhere. Adaptive Compose on Android. Split view on Mac. Tabs on
+            iPhone. Three columns on iPad, including portrait. A glance on Watch.
           </p>
         </div>
         <div class="platforms">
@@ -412,6 +504,120 @@
               data-zoom
             />
           </article>
+          <article class="card reveal">
+            <span class="tag">Android</span>
+            <h3>Kotlin, all the way down</h3>
+            <p>Native Compose UI, adaptive navigation, local JSON history, privacy-led export, and WorkManager scheduling. No Swift bridge and no Internet permission.</p>
+            <img
+              src="./web/media/android-overview.jpg"
+              width="1080"
+              height="2400"
+              alt="Diffuse for Android overview showing changes since the previous snapshot."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="observe">
+        <div class="section__head reveal">
+          <p class="kicker">What it observes</p>
+          <h2>Honest per platform. <em>Not a pretend Mac on a Watch.</em></h2>
+          <p class="sub">
+            A capability is a stable id, a travelling schema, and a collector. Register it only where
+            the hardware can actually see it. Adding Bun is a tool adapter. Adding Bluetooth
+            peripherals would be a new capability.
+          </p>
+        </div>
+        <div class="observe reveal">
+          <figure class="shell shot device" data-zoom>
+            <div class="shell__inner">
+              <img
+                src="./web/media/macos-capabilities.jpg"
+                width="1440"
+                height="985"
+                alt="Mac capabilities list: system, hardware, displays, network, storage, developer tools, and git watch list."
+                loading="lazy"
+              />
+            </div>
+            <figcaption>macOS · Capabilities</figcaption>
+          </figure>
+          <figure class="shell shot device" data-zoom>
+            <div class="shell__inner">
+              <img
+                src="./web/media/android-settings.jpg"
+                width="1080"
+                height="2400"
+                alt="Diffuse for Android settings: capture cadence, skip-unchanged, and capability toggles. No Internet permission."
+                loading="lazy"
+              />
+            </div>
+            <figcaption>Android · Settings</figcaption>
+          </figure>
+        </div>
+        <div class="cap-grid">
+          <article class="cap-card reveal">
+            <h3>Mac</h3>
+            <ul>
+              <li><strong>System</strong> OS, model</li>
+              <li><strong>Hardware</strong> chip, memory</li>
+              <li><strong>Displays</strong> resolution, refresh</li>
+              <li><strong>Power</strong> battery, adapter</li>
+              <li><strong>Network</strong> path, interfaces, SSID</li>
+              <li><strong>Storage</strong> all volumes</li>
+              <li><strong>Apps</strong> bundle id</li>
+              <li><strong>Tools</strong> node, git, docker…</li>
+              <li><strong>Git</strong> watched repos</li>
+              <li><strong>Processes</strong> opt-in</li>
+            </ul>
+          </article>
+          <article class="cap-card reveal">
+            <h3>iPhone &amp; iPad</h3>
+            <ul>
+              <li><strong>Device</strong> model, name</li>
+              <li><strong>System</strong> version</li>
+              <li><strong>Battery</strong> charge, state</li>
+              <li><strong>Screen</strong> size, scale</li>
+              <li><strong>Network</strong> path, interfaces</li>
+              <li><strong>Storage</strong> app container</li>
+              <li>No process list</li>
+              <li>No git spawn</li>
+              <li>No developer-tool probes</li>
+            </ul>
+          </article>
+          <article class="cap-card reveal">
+            <h3>Watch</h3>
+            <ul>
+              <li><strong>Device</strong> model, size</li>
+              <li><strong>Battery</strong> charge</li>
+              <li><strong>System</strong> version</li>
+              <li><strong>Storage</strong> container</li>
+              <li><strong>Network</strong> path</li>
+              <li>Standalone — no iPhone required</li>
+              <li>Glance + Δ complications</li>
+            </ul>
+          </article>
+          <article class="cap-card reveal">
+            <h3>Android</h3>
+            <ul>
+              <li><strong>Device</strong> model, API, architecture</li>
+              <li><strong>System</strong> kernel, locale, memory</li>
+              <li><strong>Battery</strong> level, health, temperature</li>
+              <li><strong>Display</strong> resolution, density, refresh</li>
+              <li><strong>Storage</strong> app data volume</li>
+              <li><strong>Network</strong> connectivity, VPN, interfaces</li>
+              <li>No accounts or hardware IDs</li>
+              <li>No installed-app or process inventory</li>
+              <li>No Internet permission</li>
+            </ul>
+          </article>
+        </div>
+        <div class="tools reveal" aria-label="Developer tools Diffuse can version">
+          <span>node</span><span>python</span><span>swift</span><span>rustc</span><span>go</span>
+          <span>ruby</span><span>java</span><span>deno</span><span>bun</span><span>npm</span>
+          <span>pnpm</span><span>yarn</span><span>brew</span><span>docker</span><span>terraform</span>
+          <span>git</span><span>xcodebuild</span><span>cargo</span><span>uv</span>
         </div>
       </section>
 
@@ -448,6 +654,89 @@
               Application Support. One JSON file per snapshot plus a rebuildable index. Retention
               never deletes the newest. Export redacts by classification.
             </p>
+          </article>
+        </div>
+        <div class="rhythm">
+          <article class="reveal">
+            <span class="tag">Schedule</span>
+            <h3>Every four hours</h3>
+            <p>Default cadence, with a 15-minute floor so a laptop that sleeps repeatedly does not flood the timeline.</p>
+          </article>
+          <article class="reveal">
+            <span class="tag">Wake</span>
+            <h3>System events</h3>
+            <p>Mac captures on unlock. iPhone and iPad use background refresh. Watch uses its own refresh task. Android uses WorkManager. Same decide function.</p>
+          </article>
+          <article class="reveal">
+            <span class="tag">Quiet</span>
+            <h3>Skip if unchanged</h3>
+            <p>Automatic captures may skip persist when the latest snapshot diffs empty. Pressing capture always saves.</p>
+          </article>
+          <article class="reveal">
+            <span class="tag">Keep</span>
+            <h3>90 days · 1 GiB</h3>
+            <p>Retention never deletes the newest snapshot. Pinned and labelled ones are protected. Preview before prune.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="day">
+        <div class="section__head reveal">
+          <p class="kicker">A workday</p>
+          <h2>The story the fixtures tell.</h2>
+          <p class="sub">
+            Same Mac, morning to evening. Diffuse does not infer why — it reports what moved, with
+            severity, and groups changes a few minutes apart.
+          </p>
+        </div>
+        <ol class="day reveal">
+          <li>
+            <time datetime="09:04">09:04</time>
+            <span>Scheduled snapshot. Quiet morning: volumes, Wi-Fi Home, tools as yesterday.</span>
+          </li>
+          <li>
+            <time datetime="11:42">11:42</time>
+            <span>Node upgraded. Homebrew prefix unchanged. Significant, not a new capability.</span>
+          </li>
+          <li>
+            <time datetime="17:18">17:18</time>
+            <span>Network Home → Office, VPN off → on. SSID is sensitive on export.</span>
+          </li>
+          <li>
+            <time datetime="18:03">18:03</time>
+            <span>Watched repo switched branch. Git stores host + dirty + ahead/behind — not the diff.</span>
+          </li>
+          <li>
+            <time datetime="19:11">19:11</time>
+            <span>Studio Display gone. Identity is the display, not the name on the bezel.</span>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section" id="bounds">
+        <div class="section__head reveal">
+          <p class="kicker">Scope</p>
+          <h2>Deliberate non-goals.</h2>
+          <p class="sub">These are product decisions, recorded as ADRs — not missing features.</p>
+        </div>
+        <div class="bounds">
+          <article class="bounds--in reveal">
+            <h3>Diffuse does</h3>
+            <ul>
+              <li>Capture and diff on the device that observed it</li>
+              <li>Redact by classification when you export</li>
+              <li>Ship five native apps and a UI-free CLI</li>
+              <li>Keep snapshots as readable JSON you can copy</li>
+            </ul>
+          </article>
+          <article class="bounds--out reveal">
+            <h3>Diffuse will not</h3>
+            <ul>
+              <li>Sync Mac history to iPhone — or Android to anything else</li>
+              <li>Open an account or a cloud</li>
+              <li>Put a signing identity in this repository</li>
+              <li>Infer “why” with a model in the diff path</li>
+            </ul>
           </article>
         </div>
       </section>
@@ -525,6 +814,24 @@
 <span class="cmt"># Fail a job if the build environment drifted</span>
 <span class="cmd">swift run diffuse-dev diff "$BEFORE" "$AFTER" --fail-on-change</span></pre>
         </div>
+        <div class="cli-grid">
+          <article class="reveal">
+            <code>capabilities</code>
+            <p>What this machine can observe right now, and why a collector is unavailable.</p>
+          </article>
+          <article class="reveal">
+            <code>inspect · validate</code>
+            <p>Summarise a file. Fail if the snapshot does not match the current schema.</p>
+          </article>
+          <article class="reveal">
+            <code>privacy</code>
+            <p>Print the generated ledger — the same contract the in-app Privacy screen uses.</p>
+          </article>
+          <article class="reveal">
+            <code>--fail-on-change</code>
+            <p>Exit 2 when significant changes exist. A CI gate for environment drift.</p>
+          </article>
+        </div>
       </section>
 
       <section class="section" id="gallery">
@@ -556,6 +863,39 @@
             />
           </article>
           <article class="card reveal">
+            <span class="tag">Android · Compare</span>
+            <img
+              src="./web/media/android-compare.jpg"
+              width="1080"
+              height="2400"
+              alt="Android compare screen with battery and system changes and a share-redacted-report action."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">Android · Privacy</span>
+            <img
+              src="./web/media/android-privacy.jpg"
+              width="1080"
+              height="2400"
+              alt="Android privacy ledger: on-device storage, never-collected list, and classification."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
+            <span class="tag">iPhone · Privacy</span>
+            <img
+              src="./web/media/ios-privacy.jpg"
+              width="720"
+              height="1565"
+              alt="iPhone privacy screen: everything stays on this device, never collected."
+              loading="lazy"
+              data-zoom
+            />
+          </article>
+          <article class="card reveal">
             <span class="tag">iPad · Privacy</span>
             <img
               src="./web/media/ipados-privacy.jpg"
@@ -569,6 +909,43 @@
         </div>
       </section>
 
+      <section class="section" id="start">
+        <div class="section__head reveal">
+          <p class="kicker">Start</p>
+          <h2>Clone. Capture. Compare.</h2>
+          <p class="sub">
+            macOS, Xcode 16+ / Swift 6, XcodeGen, SwiftFormat for Apple. JDK 17+ and Android SDK 36
+            for the Kotlin app. A healthy Apple checkout prints Diffuse is healthy.
+          </p>
+        </div>
+        <div class="steps">
+          <article class="reveal">
+            <span class="tag">01</span>
+            <h3>Bootstrap</h3>
+            <p>Generates the Xcode project from project.yml. The .xcodeproj is gitignored on purpose.</p>
+            <pre>./Scripts/bootstrap.sh</pre>
+          </article>
+          <article class="reveal">
+            <span class="tag">02</span>
+            <h3>Verify</h3>
+            <p>Format lint, tests, iOS/watchOS cross-check, unsigned Apple builds, plus a separate Android test, lint, coverage, and build pipeline.</p>
+            <pre>./Scripts/verify.sh</pre>
+          </article>
+          <article class="reveal">
+            <span class="tag">03</span>
+            <h3>Snapshot</h3>
+            <p>Same engine as the Apple apps. Writes a file you name — it does not open Application Support.</p>
+            <pre>swift run diffuse-dev snapshot</pre>
+          </article>
+          <article class="reveal">
+            <span class="tag">04</span>
+            <h3>Android</h3>
+            <p>Independent Kotlin engine. Fixture tests decode the same golden snapshots the Swift suite pins.</p>
+            <pre>cd Android && ./gradlew testDebugUnitTest</pre>
+          </article>
+        </div>
+      </section>
+
       <section class="section" id="faq">
         <div class="section__head reveal" style="margin-inline: auto; text-align: center">
           <p class="kicker">FAQ</p>
@@ -576,21 +953,30 @@
         </div>
         <div class="faq reveal">
           <details>
-            <summary>Does Diffuse sync my Mac to my iPhone?</summary>
+            <summary>
+              Does Diffuse sync my Mac to my iPhone?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
             <p>
               No. Each device is a closed history. Export if you need a copy — Files, AirDrop, or
               <code>diffuse-dev</code> — with a redaction policy.
             </p>
           </details>
           <details>
-            <summary>Where do snapshots live?</summary>
+            <summary>
+              Where do snapshots live?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
             <p>
               Application Support / <code>Diffuse/</code> on that device. Pretty-printed JSON plus a
               rebuildable index. You can open one in a text editor.
             </p>
           </details>
           <details>
-            <summary>Why isn’t the Mac app sandboxed?</summary>
+            <summary>
+              Why isn’t the Mac app sandboxed?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
             <p>
               Developer-tool collectors spawn <code>git</code> and <code>node --version</code>. The
               App Sandbox forbids that without a temporary exception per binary. Documented, not
@@ -598,12 +984,76 @@
             </p>
           </details>
           <details>
-            <summary>Is there telemetry?</summary>
+            <summary>
+              Is there telemetry?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
             <p>No account, no cloud, no crash reporter that uploads snapshots. GitHub is for source and CI artifacts only.</p>
           </details>
           <details>
-            <summary>How much does it cost?</summary>
+            <summary>
+              How much does it cost?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
             <p>Nothing. MIT licensed. Unsigned CI builds; you sign whatever you ship.</p>
+          </details>
+          <details>
+            <summary>
+              How often does it capture?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>
+              Default cadence is every four hours, with a 15-minute floor on every trigger including
+              wake. Skip-if-unchanged applies to automatic captures only.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why are widgets empty in a CI build?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>
+              Unsigned builds have no app-group container. The extension still compiles and shows
+              empty rather than crashing.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Do tests need Node or Docker installed?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>No. Collectors take a fake process runner. Live capture tests stay on cheap, stable Mac collectors. Android JVM tests read Fixtures/ directly.</p>
+          </details>
+          <details>
+            <summary>
+              Is Android a wrapper around the Apple apps?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>
+              No. It is native Kotlin and Jetpack Compose with its own domain engine. Compatibility is
+              schema-v1 JSON and golden fixtures — not a shared runtime, JNI bridge, or Flutter shell.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Does the Android app need Internet?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>
+              No. It reads <code>ACCESS_NETWORK_STATE</code> so connectivity can be observed. There is no
+              <code>INTERNET</code> permission, no account, and no backup of snapshots.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Where do Android snapshots live?
+              <svg class="faq-plus" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            </summary>
+            <p>
+              The app-private files directory as pretty-printed JSON. They are excluded from Android
+              backup and device transfer. Export is a user-picked share with the same classification
+              rules as Apple.
+            </p>
           </details>
         </div>
       </section>
@@ -617,11 +1067,15 @@
         <div class="cta-row reveal">
           <a class="btn btn-ink" href="https://github.com/hoangsonww/Diffuse">
             Open the repository
-            <span class="icon-orb" aria-hidden="true">↗</span>
+            <span class="icon-orb" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </span>
           </a>
-          <a class="btn btn-primary" href="https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md">
+          <a class="btn btn-primary" href="https://github.com/hoangsonww/Diffuse/blob/main/ARCHITECTURE.md">
             Read the architecture
-            <span class="icon-orb" aria-hidden="true">→</span>
+            <span class="icon-orb" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+            </span>
           </a>
         </div>
       </section>
@@ -642,12 +1096,13 @@
             </svg>
           </a>
           <h2>Diffuse</h2>
-          <p>Local-first snapshots for Apple devices. See what changed — and nothing else.</p>
+          <p>Local-first snapshots for Android and Apple devices. See what changed — and nothing else.</p>
         </div>
         <div>
           <h3>Product</h3>
           <a href="#product">Overview</a>
           <a href="#platforms">Apps</a>
+          <a href="#observe">Observe</a>
           <a href="#privacy">Privacy</a>
           <a href="#cli">CLI</a>
         </div>
@@ -655,6 +1110,7 @@
           <h3>Source</h3>
           <a href="https://github.com/hoangsonww/Diffuse">GitHub</a>
           <a href="https://github.com/hoangsonww/Diffuse/releases">Releases</a>
+          <a href="https://github.com/hoangsonww/Diffuse/blob/main/ARCHITECTURE.md">Architecture</a>
           <a href="https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md">Documentation</a>
           <a href="https://github.com/hoangsonww/Diffuse/blob/main/SECURITY.md">Security</a>
         </div>
@@ -673,7 +1129,9 @@
     </footer>
 
     <div class="lightbox" aria-hidden="true" role="dialog" aria-label="Screenshot">
-      <button type="button" aria-label="Close">✕</button>
+      <button type="button" aria-label="Close">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-x"></use></svg>
+      </button>
       <img alt="" />
     </div>
 

@@ -1,8 +1,8 @@
 # Diffuse
 
-> Local-first Apple apps that answer one question: what changed on this device between two points in time?
+> Local-first native apps that answer one question: what changed on this device between two points in time?
 
-Diffuse is not a cloud product. Four genuinely native apps — macOS, iOS, iPadOS, watchOS — share a capability-driven domain engine. Snapshots never leave the device. There is no account, no telemetry, and no third-party Swift packages.
+Diffuse is not a cloud product. Five genuinely native apps — Android, macOS, iOS, iPadOS, watchOS — capture and compare snapshots on the device that observed them. The four Apple apps share a Swift domain engine. Android is native Kotlin. Snapshots never leave the device. There is no account, no telemetry, and no third-party Swift packages.
 
 - Site: https://hoangsonww.github.io/Diffuse/
 - Source: https://github.com/hoangsonww/Diffuse
@@ -12,16 +12,21 @@ Diffuse is not a cloud product. Four genuinely native apps — macOS, iOS, iPadO
 
 - [Landing page](https://hoangsonww.github.io/Diffuse/): marketing site with screenshots and FAQ
 - [README](https://github.com/hoangsonww/Diffuse/blob/main/README.md): public summary, setup, architecture sketch
+- [Root architecture](https://github.com/hoangsonww/Diffuse/blob/main/ARCHITECTURE.md): Swift + Kotlin system map
 
 ## Docs
 
 - [Documentation index](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md)
-- [Architecture](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Architecture.md)
+- [Swift architecture](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Architecture.md)
+- [Android](https://github.com/hoangsonww/Diffuse/blob/main/Android/README.md)
 - [Privacy](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Privacy.md)
 - [Apps](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Apps.md)
 - [CLI](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/CLI.md)
 - [Testing](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Testing.md)
 - [Glossary](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Glossary.md)
+- [Tech stack](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/TechStack.md): every technology used and why
+- [Troubleshooting](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Troubleshooting.md): build, test, and emulator failures
+- [Releasing](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Releasing.md): tags, unsigned artifacts, versioning
 - [ADRs](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/adr/README.md)
 
 ## Optional
@@ -30,3 +35,4 @@ Diffuse is not a cloud product. Four genuinely native apps — macOS, iOS, iPadO
 - [Support / FAQ](https://github.com/hoangsonww/Diffuse/blob/main/SUPPORT.md)
 - [Contributing](https://github.com/hoangsonww/Diffuse/blob/main/CONTRIBUTING.md)
 - [Changelog](https://github.com/hoangsonww/Diffuse/blob/main/CHANGELOG.md)
+- [Citation](https://github.com/hoangsonww/Diffuse/blob/main/CITATION.cff)
