@@ -1,17 +1,46 @@
 * text=auto eol=lf
 
-*.swift text
-*.yml text
-*.md text
-*.sh text eol=lf
-*.py text
-*.json text
+*.swift  text diff=swift
+*.kt     text
+*.kts    text
+*.gradle text
+*.yml    text
+*.yaml   text
+*.md     text
+*.sh     text eol=lf
+*.py     text diff=python
+*.json   text
+*.xml    text
+*.html   text diff=html
+*.css    text diff=css
+*.js     text
+*.txt    text
+*.pro    text
+*.cff    text
 
-*.png binary
-*.icns binary
-*.ico binary
-*.pdf binary
+gradlew      text eol=lf
+gradlew.bat  text eol=crlf
+
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.icns   binary
+*.ico    binary
+*.pdf    binary
+*.jar    binary
+*.zip    binary
 
 # Generated Xcode project is not in git; if it appears, treat as generated.
-*.pbxproj linguist-generated=true
-*.xcuserstate linguist-generated=true
+*.pbxproj      linguist-generated=true
+*.xcuserstate  linguist-generated=true
+
+# Keep GitHub's language bar honest: fixtures, screenshots, and the marketing
+# site are data and presentation, not the product's source languages.
+Fixtures/**            linguist-generated=true
+docs/screenshots/**    linguist-documentation=true
+Documentation/**       linguist-documentation=true
+web/**                 linguist-vendored=true
+index.html             linguist-vendored=true
+404.html               linguist-vendored=true
+Android/gradlew        linguist-generated=true
+Android/gradlew.bat    linguist-generated=true

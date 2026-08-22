@@ -1,65 +1,139 @@
-# macOS
+# ---------------------------------------------------------------- macOS ----
 .DS_Store
 .AppleDouble
 .LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
 *.swp
 *~
 
-# Xcode
+# ----------------------------------------------------------------- Xcode ----
 DerivedData/
+build/
 *.xcuserstate
+*.xcuserdatad
 *.xccheckout
 *.xcscmblueprint
 xcuserdata/
 *.moved-aside
 *.hmap
 *.ipa
+*.xcarchive
 *.dSYM.zip
 *.dSYM
+*.playground/timeline.xctimeline
 
 # Generated Xcode project — source of truth is project.yml
 Diffuse.xcodeproj/
+Diffuse.xcworkspace/
 
-# Swift Package Manager
+# ------------------------------------------------- Swift Package Manager ----
 .build/
 .swiftpm/
 Package.resolved
+*.profraw
+*.profdata
 
-# Scripts / local
+# ---------------------------------------------- Signing material (never) ----
+# ADR 0005: identities, profiles, and keystores are configured outside this
+# repository. These patterns are a safety net, not a place to stage secrets.
+*.mobileprovision
+*.provisionprofile
+*.p12
+*.p8
+*.cer
+*.certSigningRequest
+*.keystore
+*.jks
+keystore.properties
+ExportOptions.plist
+fastlane/report.xml
+fastlane/Preview.html
+
+# --------------------------------------------------------- Local secrets ----
 .env
 .env.*
 !.env.example
+*.local
+!*.local.example
 
-# Coverage and test output
+# ----------------------------------------------- Coverage and test output ----
 *.xcresult
-# Coverage reports (repo root only — do not ignore skills named coverage/)
+# Repo-root coverage output only — do not ignore skills/dirs named coverage/
 /coverage/
 TestResults/
 _site/
+lcov.info
+*.gcda
+*.gcno
 
-# Release artifacts
+# ------------------------------------------------------ Release artifacts ----
 dist/
 artifacts/
+out/
 
-# Editors
+# ------------------------------------------------------- Android / Gradle ----
+Android/.gradle/
+Android/.kotlin/
+Android/.idea/
+Android/local.properties
+Android/**/build/
+Android/captures/
+Android/**/.cxx/
+Android/app/release/
+Android/app/debug/
+# Raw emulator QA captures. The curated, documented set lives in
+# docs/screenshots/ as android-*.png.
+Android/screenshots/
+.gradle/
+.kotlin/
+local.properties
+*.apk
+*.aab
+*.hprof
+*.iml
+
+# ---------------------------------------------------------------- Editors ----
 .idea/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 *.code-workspace
+.fleet/
+.zed/
+nbproject/
 
-# Node (Husky only)
+# ------------------------------------------------------ Node (Husky only) ----
 node_modules/
 .husky/_
+npm-debug.log*
+yarn-error.log*
+.npm/
 
-# Python (dashboard / helpers, if any)
+# ----------------------------------------- Python (icon generator helpers) ----
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
 
-# Logs
+# ------------------------------------------------------------------- Logs ----
 *.log
 
-# Local landing QA (Playwright)
+# ---------------------------------------------------- Local agent scratch ----
+.claude/settings.local.json
+.claude/.cache/
+.aider*
+!.aider.conf.yml
+.codex/local/
+.serena/
+
+# ------------------------------------------- Local landing QA (Playwright) ----
 .playwright-mcp/
 /landing-*.png
+playwright-report/
+test-results/
