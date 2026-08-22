@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+title: "Diffuse: local-first device history for Apple platforms and Android"
+message: >-
+  If you use Diffuse, its snapshot schema, or its capability-driven diff
+  model in academic or technical work, please cite this repository.
+type: software
+authors:
+  - family-names: Nguyen
+    given-names: Son
+    alias: hoangsonww
+    orcid: "https://orcid.org/0009-0002-7806-068X"
+  - name: "The Diffuse contributors"
+repository-code: "https://github.com/hoangsonww/Diffuse"
+url: "https://hoangsonww.github.io/Diffuse/"
+abstract: >-
+  Diffuse is a local-first device-history product built as five genuinely
+  native applications: macOS, iOS, iPadOS, and watchOS in Swift 6 and
+  SwiftUI, and Android in Kotlin and Jetpack Compose. It captures
+  structured, schema-carrying snapshots of a device, compares any two of
+  them with a generic diff engine, and keeps every snapshot on the device
+  that observed it. There is no account, no cloud backend, no sync
+  protocol, and no telemetry. The two runtime families share no code; they
+  interoperate only through schema-v1 JSON snapshots and golden diff
+  fixtures. Every observed property carries a privacy classification, and
+  export redaction is driven by that classification rather than by an
+  allow list maintained by hand.
+keywords:
+  - local-first
+  - privacy
+  - device history
+  - system snapshot
+  - structural diff
+  - schema-driven
+  - swift
+  - swiftui
+  - kotlin
+  - jetpack-compose
+  - macos
+  - ios
+  - ipados
+  - watchos
+  - android
+  - offline-first
+license: MIT
+version: 1.0.0
+date-released: "2026-08-21"
