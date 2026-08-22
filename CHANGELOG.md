@@ -4,13 +4,42 @@ All notable changes to Diffuse are documented here.
 
 ## Unreleased
 
+### Apps
+
+- Native Kotlin / Jetpack Compose Android app with an independent domain engine,
+  WorkManager scheduling, and schema-v1 fixture compatibility ([ADR 0009](Documentation/adr/0009-native-android.md)).
+- Full live-app screenshot gallery for Android, iPhone, iPad, Watch, and Mac in
+  `docs/screenshots/`, wired into the README, architecture docs, and landing page.
+
 ### Engine
 
 - Export redaction always walks properties, so a `restricted` field on a
   `local` section is stripped even under `RedactionPolicy.none`.
 
+### Documentation
+
+- `Documentation/TechStack.md` — every technology in the repository, the version
+  it is pinned to, where it appears, and why it is there.
+- `Documentation/Troubleshooting.md` — build, test, simulator, emulator, hook,
+  and repository-hygiene failures with their fixes.
+- `Documentation/Releasing.md` — versioning, the tag-triggered workflows, the
+  pre-tag checklist, and what is deliberately not automated.
+- README: a full technology badge row, an annotated schema-v1 snapshot showing
+  how comparison rules travel with the data, `diffuse-dev` usage, a tech-stack
+  summary, and citation metadata.
+- `Android/README.md` expanded to cover the source layout, capture and storage
+  design, the full dependency list, CI behaviour, and local SDK setup.
+
 ### Repository
 
+- `CITATION.cff` so GitHub can render "Cite this repository".
+- `.gitignore` hardened: signing material (`*.p12`, `*.jks`, `*.mobileprovision`,
+  `keystore.properties`), coverage profiles, Gradle and Kotlin caches, editor
+  state, and the raw `Android/screenshots/` QA gallery. Only the curated
+  `docs/screenshots/` set is versioned.
+- `.gitattributes`: per-language diff drivers, CRLF for `gradlew.bat`, binary
+  markers for `.jar`/`.jpg`, and linguist hints so the language bar reflects
+  Swift and Kotlin rather than fixtures and the marketing site.
 - GitHub issue and pull-request templates, CODEOWNERS, Dependabot for Actions
   and git-hook npm packages.
 - CI: concurrency, least-privilege permissions, Swift PM cache, timeouts, a
