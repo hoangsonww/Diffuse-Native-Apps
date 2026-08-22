@@ -34,6 +34,9 @@ step "Building the toolbox image"
 docker build --platform=linux/amd64 -f "$ROOT/Dockerfile" -t "$IMAGE_TAG" "$ROOT"
 
 step "Verifying the toolchain inside the container"
+# Deliberately a login shell (-l): /etc/profile resets PATH and discards the
+# Dockerfile's ENV PATH, so a non-login shell would pass while
+# `docker compose exec dev bash` — what contributors actually get — fails.
 docker run --rm --platform=linux/amd64 "$IMAGE_TAG" bash -lc '
 set -e
 fail=0

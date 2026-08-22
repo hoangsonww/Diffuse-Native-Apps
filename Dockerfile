@@ -58,7 +58,14 @@ RUN mkdir -p "${ANDROID_HOME}/cmdline-tools" \
     && mv /tmp/android-tools/cmdline-tools "${ANDROID_HOME}/cmdline-tools/latest" \
     && rm -rf /tmp/android-tools /tmp/android-tools.zip \
     && yes | sdkmanager --licenses >/dev/null \
-    && sdkmanager "platform-tools" "platforms;${ANDROID_PLATFORM}" "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+    && sdkmanager "platform-tools" "platforms;${ANDROID_PLATFORM}" "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null \
+    # A login shell sources /etc/profile, which resets PATH and drops the ENV
+    # above. Symlink into /usr/local/bin so these resolve in any shell, which
+    # is what `docker compose exec dev bash` gives you.
+    && ln -s "${ANDROID_HOME}/platform-tools/adb" /usr/local/bin/adb \
+    && ln -s "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" /usr/local/bin/sdkmanager \
+    && ln -s "${ANDROID_HOME}/cmdline-tools/latest/bin/avdmanager" /usr/local/bin/avdmanager \
+    && adb --version >/dev/null
 
 WORKDIR /workspace
 
