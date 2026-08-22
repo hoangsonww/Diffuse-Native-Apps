@@ -27,9 +27,11 @@ Requirements:
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen)
 - [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
 - Node 20+ if you want Husky git hooks (`npm install`)
-- JDK 17+ and Android SDK 36 to build `Android/`
+- Android SDK 36 to build `Android/` — **no JDK needed**, Gradle provisions its own
 
-Docker and the Dev Container (`.devcontainer/`) are optional. They give Linux and Codespaces a shell for docs and scripts. They **cannot** run `swift test` or build the apps — that needs macOS and Xcode.
+Run `make doctor` first: it reports which of the Apple, Android, and shared toolchains this machine has, so you learn what you can build before a suite fails halfway through. `make help` lists every command.
+
+Docker and the Dev Container (`.devcontainer/`) are optional. They cover docs, scripts, hooks, and the **full Android build**. They **cannot** run `swift test` or build the Apple apps — Xcode is macOS-only and its licence forbids redistribution. Verify the image with `make verify-devcontainer`.
 
 ```bash
 docker compose up -d          # toolbox container

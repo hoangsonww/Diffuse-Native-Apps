@@ -50,10 +50,10 @@ COMMAND="$1"
 PLATFORM="${2:-ios}"
 
 case "$PLATFORM" in
-    ios)    SCHEME=DiffuseiOS;    FAMILY=iphone; PRODUCT_DIR="$CONFIG-iphonesimulator" ;;
-    ipados) SCHEME=DiffuseiPadOS; FAMILY=ipad;   PRODUCT_DIR="$CONFIG-iphonesimulator" ;;
-    watch)  SCHEME=DiffuseWatch;  FAMILY=watch;  PRODUCT_DIR="$CONFIG-watchsimulator" ;;
-    mac)    SCHEME=DiffuseMac;    FAMILY=mac;    PRODUCT_DIR="$CONFIG" ;;
+    ios)    SCHEME=DiffuseiOS;    FAMILY=iphone ;;
+    ipados) SCHEME=DiffuseiPadOS; FAMILY=ipad ;;
+    watch)  SCHEME=DiffuseWatch;  FAMILY=watch ;;
+    mac)    SCHEME=DiffuseMac;    FAMILY=mac ;;
     *)      usage ;;
 esac
 
@@ -113,9 +113,26 @@ xcodebuild \
 ok "$SCHEME built"
 [ "$COMMAND" = "run" ] || exit 0
 
-APP_PATH="$DERIVED/Build/Products/$PRODUCT_DIR/$SCHEME.app"
+# Ask xcodebuild where it put the bundle rather than guessing. The product name
+# is not the scheme name — DiffuseMac builds Diffuse.app and DiffuseiPadOS
+# builds "Diffuse for iPad.app" — and the products directory depends on whether
+# the destination was a simulator or a device.
+BUILD_SETTINGS="$(xcodebuild \
+    -project "$ROOT/Diffuse.xcodeproj" \
+    -scheme "$SCHEME" \
+    -configuration "$CONFIG" \
+    -destination "$DESTINATION" \
+    -derivedDataPath "$DERIVED" \
+    -showBuildSettings 2>/dev/null)"
+
+products_dir="$(printf '%s\n' "$BUILD_SETTINGS" | awk -F' = ' '/ TARGET_BUILD_DIR = /{print $2; exit}')"
+wrapper_name="$(printf '%s\n' "$BUILD_SETTINGS" | awk -F' = ' '/ WRAPPER_NAME = /{print $2; exit}')"
+APP_PATH="${products_dir}/${wrapper_name}"
+
 if [ ! -d "$APP_PATH" ]; then
-    fail "Built app not found at $APP_PATH"
+    fail "Built app not found at ${APP_PATH:-<unresolved>}"
+    printf '  Products present under %s:\n' "$DERIVED/Build/Products" >&2
+    find "$DERIVED/Build/Products" -maxdepth 2 -name '*.app' 2>/dev/null | sed 's/^/    /' >&2
     exit 1
 fi
 

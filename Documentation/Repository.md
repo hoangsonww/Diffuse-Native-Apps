@@ -122,7 +122,16 @@ docker compose up -d
 docker compose exec dev bash
 ```
 
-Or open the folder with the Dev Container (`.devcontainer/`). Useful for editing docs and running ShellCheck/hooks on Linux. It cannot compile Swift tests or Apple apps; Android builds additionally need the Android SDK and JDK 17+.
+Or open the folder with the Dev Container (`.devcontainer/`). It covers docs, ShellCheck, hooks, and the full Android build — the image carries a Temurin JDK 17 and Android SDK 36. It cannot compile Swift tests or the Apple apps, because Xcode is macOS-only and its licence forbids redistribution.
+
+The image is pinned to `linux/amd64`: Google ships the Android command-line tools and build-tools for Linux as x86_64 binaries only, so an arm64 image cannot run `aapt2` or `d8`. On Apple silicon it runs under emulation and is noticeably slower.
+
+```bash
+make verify-devcontainer                    # build the image and assert its toolchain works
+./Scripts/verify-devcontainer.sh --build    # also build the Android app inside it
+```
+
+The `--build` form works on an isolated `git archive` copy rather than the working tree, because a container build and a host build sharing `Android/app/build/` produce confusing failures that look like real defects.
 
 ## Agents
 

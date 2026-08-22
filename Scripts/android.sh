@@ -73,6 +73,24 @@ if [ "$1" = "run" ]; then
         exit 1
     fi
 
+    # A device can report "device" while Android is still starting, and
+    # installDebug then fails for a reason that looks like a build problem. Wait
+    # for the boot to finish first — a cold build can easily outrun an emulator
+    # that was started alongside it.
+    if [ "$("$adb" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; then
+        step "Waiting for the device to finish booting"
+        waited=0
+        while [ "$("$adb" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; do
+            if [ "$waited" -ge 180 ]; then
+                fail "Device did not finish booting within 180s."
+                exit 1
+            fi
+            sleep 3
+            waited=$((waited + 3))
+        done
+        ok "device ready"
+    fi
+
     step "Installing the debug build"
     gradle installDebug
 
