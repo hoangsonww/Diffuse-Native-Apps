@@ -1,22 +1,25 @@
 # Support
 
-Diffuse is a local-first Apple-platform product. There is no hosted service to page, and snapshots never leave the device they were captured on.
+Diffuse is a local-first device-history product. There is no hosted service to page, and snapshots never leave the device they were captured on.
 
 ## Questions about using Diffuse
 
 - [README.md](README.md) — what the apps do
 - [Documentation/README.md](Documentation/README.md) — full index
 - [Documentation/Privacy.md](Documentation/Privacy.md) — what is collected and what export redacts
-- [Documentation/Apps.md](Documentation/Apps.md) — Mac / iPhone / iPad / Watch behaviour
+- [Documentation/Apps.md](Documentation/Apps.md) — Mac / iPhone / iPad / Watch / Android behaviour
 - [Documentation/Glossary.md](Documentation/Glossary.md) — product vocabulary
+- [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md) — a build, test, emulator, or hook that is failing
+- [Documentation/TechStack.md](Documentation/TechStack.md) — every technology in the repository
 - Open a GitHub issue using the Bug, Feature, or Capability template
 
 ### Common points
 
 | Question | Answer |
 | --- | --- |
-| Where are snapshots stored? | Application Support / `Diffuse/` on that device. One JSON file per snapshot plus rebuildable `index.json`. See [Storage](Documentation/Storage.md). |
-| Can I see my Mac history on my iPhone? | No. Each device is a closed history ([ADR 0008](Documentation/adr/0008-no-cloud-sync.md)). Export (Files, AirDrop, `diffuse-dev`, redacted Markdown) if you need a copy. |
+| Where are snapshots stored? | Application Support / `Diffuse/` on Apple devices; the app-private files directory on Android. One JSON file per snapshot plus rebuildable `index.json`. See [Storage](Documentation/Storage.md). |
+| Can I see my Mac history on my iPhone or Android? | No. Each device is a closed history ([ADR 0008](Documentation/adr/0008-no-cloud-sync.md)). Export if you need a copy. |
+| Does Android need Internet? | No `INTERNET` permission. Connectivity is observed via `ACCESS_NETWORK_STATE`. Snapshots are excluded from backup. |
 | Why is the Mac app not sandboxed? | Developer-tool collectors spawn `git` / `node --version`. Documented in [Privacy.md](Documentation/Privacy.md). |
 | Why are widgets empty in a CI / unsigned build? | No app-group container without a signed identity. Expected. The extension still compiles. |
 | How do I dump a snapshot from the terminal? | `swift run diffuse-dev snapshot` — [CLI](Documentation/CLI.md). That writes a file you name; it does not touch the app library. |

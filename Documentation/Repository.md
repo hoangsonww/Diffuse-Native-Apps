@@ -8,7 +8,8 @@ If you are new, start at [README.md](README.md) (public face) and [Architecture.
 
 ```
 Packages/          Domain engine (Swift PM). No AppKit/UIKit in core.
-Apps/              Four native apps + widgets / complications
+Apps/              Four native Apple apps + widgets / complications
+Android/           Native Kotlin app, domain engine, collectors, tests, screenshots
 Tools/             diffuse-dev CLI
 Tests/             Domain, Invariants, Integration, Support
 Fixtures/          Golden snapshots and expected diffs
@@ -32,7 +33,7 @@ Run from the repository root. All need macOS + Xcode except where noted.
 | --- | --- |
 | `./Scripts/bootstrap.sh` | Install/check tools, `xcodegen generate`, resolve packages. Optional `npm install` for hooks. |
 | `./Scripts/format.sh` | SwiftFormat in place (`Packages Apps Tools Tests`). |
-| `./Scripts/verify.sh` | Format lint, `swift test`, iOS/watchOS cross-check, unsigned builds of all four apps. Prints `Diffuse is healthy.` |
+| `./Scripts/verify.sh` | Format lint, `swift test`, iOS/watchOS cross-check, unsigned builds of all four Apple apps. Prints `Diffuse is healthy.` |
 | `./Scripts/coverage.sh` | `swift test --enable-code-coverage` then `llvm-cov` → gitignored `coverage/` (HTML, lcov, summaries). `SKIP_TEST=1` rebuilds from an existing profile. |
 | `./Scripts/crosscheck.sh ios` / `watchos` | Type-check shared packages against that SDK. |
 | `./Scripts/generate-fixtures.sh` | Writes `Fixtures/` from `FixtureGenerator`. Review the git diff. |
@@ -77,7 +78,11 @@ npm install    # Husky + lint-staged; also offered by bootstrap
 | Scripts | ubuntu-latest | ShellCheck on `Scripts/*.sh`, hook scripts |
 | **All green** | ubuntu-latest | Required check: every job above succeeded |
 
+Android runs in [`.github/workflows/android.yml`](../.github/workflows/android.yml): JVM tests, JaCoCo domain coverage verification, Android Lint, Compose/device instrumentation, and unsigned debug/release builds. It is intentionally separate from the Xcode matrix.
+
 **Do not add** CodeQL, Super-Linter, Scorecard, Semgrep, Trivy, Sonar, Codecov, or other noisy scanners. Coverage is first-party `llvm-cov`. Dependabot watches GitHub Actions and the Husky npm tree — not Swift packages.
+
+Full release procedure, version bumping, and what is deliberately not automated: [Releasing.md](Releasing.md).
 
 Release workflows (tag `v*`):
 
@@ -95,7 +100,7 @@ docker compose up -d
 docker compose exec dev bash
 ```
 
-Or open the folder with the Dev Container (`.devcontainer/`). Useful for editing docs and running ShellCheck/hooks on Linux. **Cannot** compile Swift tests or the four apps.
+Or open the folder with the Dev Container (`.devcontainer/`). Useful for editing docs and running ShellCheck/hooks on Linux. It cannot compile Swift tests or Apple apps; Android builds additionally need the Android SDK and JDK 17+.
 
 ## Agents
 

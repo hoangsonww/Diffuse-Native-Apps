@@ -1,4 +1,4 @@
-Diffuse is a **local-first Apple-platform product**. Four native apps (macOS, iOS, iPadOS, watchOS) share a capability-driven domain engine. Snapshots never leave the device. There is no account, no cloud, and no telemetry. GitHub is the only backend.
+Diffuse is a **local-first device-history product**. Five native apps (macOS, iOS, iPadOS, watchOS, Android) answer one question on the device that observed it. The four Apple apps share a capability-driven Swift engine. Android is a fully native Kotlin implementation. Snapshots never leave the device. There is no account, no cloud, and no telemetry. GitHub is the only backend.
 
 ## Read this first
 
@@ -8,16 +8,19 @@ Diffuse is a **local-first Apple-platform product**. Four native apps (macOS, iO
 
 Adding a capability: `Documentation/CapabilityGuide.md` and `.agents/skills/add-capability/SKILL.md`.
 Writing tests: `Documentation/Testing.md`. CLI: `Documentation/CLI.md`. Scripts/CI: `Documentation/Repository.md`.
+Stack inventory: `Documentation/TechStack.md`. Build failures: `Documentation/Troubleshooting.md`. Tagging: `Documentation/Releasing.md`.
 
 ## Layout
 
 ```
-Packages/     domain engine
-Apps/         four native apps + widgets/complications
+Packages/     domain engine (Swift)
+Apps/         four native Apple apps + widgets/complications
+Android/      native Kotlin app + domain engine
 Tools/        diffuse-dev CLI
 Tests/        Domain, Invariants, Integration, Support
 Fixtures/     golden snapshots and expected diffs
 .agents/      canonical skills (copied to .claude/skills/)
+ARCHITECTURE.md  repository-wide Swift + Kotlin map
 ```
 
 ```
@@ -75,7 +78,7 @@ Canonical tree: `.agents/skills/<name>/SKILL.md`. Claude Code also loads `.claud
 | `export` | Reports, redacted export, CLI output |
 | `capture-cli` | `diffuse-dev` capture/inspect/diff |
 | `native-apps` | Mac / iOS / iPad / Watch UI |
-| `screenshots` | Regenerating `docs/screenshots/` |
+| `screenshots` | Regenerating `docs/screenshots/` (Apple + Android) |
 | `crosscheck` | iOS/watchOS SDK type-check |
 | `debug-collector` | A collector hangs, throws, or flakes |
 | `commit` | Splitting and describing a change |

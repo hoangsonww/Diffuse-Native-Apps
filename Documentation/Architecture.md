@@ -1,6 +1,8 @@
-# Architecture
+# Swift Architecture
 
-Diffuse is a **capability-driven, local-first** snapshot product. The domain engine does not know about Mac, iPhone, iPad, or Watch. Apps and collectors do.
+Diffuse is a **capability-driven, local-first** snapshot product. This document describes the first-party Swift engine used by Mac, iPhone, iPad, Watch, and `diffuse-dev`. The native Kotlin Android architecture and fixture boundary are documented in the repository-wide [ARCHITECTURE.md](../ARCHITECTURE.md).
+
+The Swift domain engine does not know about Mac, iPhone, iPad, Watch, or Android. Apple apps and Apple collectors do. Android neither links this engine nor changes its target graph; both engines agree through schema-v1 JSON and golden fixtures ([ADR 0009](adr/0009-native-android.md)).
 
 This document is the map. Decisions that led here are in [adr/](adr/). Words used below are in [Glossary.md](Glossary.md). How to add an observation is in [CapabilityGuide.md](CapabilityGuide.md). How tests prove the map still holds is in [Testing.md](Testing.md). Scripts and CI are in [Repository.md](Repository.md).
 
@@ -185,6 +187,7 @@ Rules that must not fork per platform:
 - **macOS** is not sandboxed. Developer-tool collection shells out. Documented in [Privacy.md](Privacy.md), not papered over with temporary-exception entitlements.
 - **iOS / iPadOS** snapshot on open, on demand, and on background refresh. They do not pretend to be a daemon.
 - **watchOS** is standalone (`WKRunsIndependentlyOfCompanionApp`). No paired iPhone required.
+- **Android** is a separate Kotlin/Compose runtime. It follows the same local-first, schema, diff, privacy, and retention semantics without importing Swift artifacts. See [Android/README.md](../Android/README.md).
 - Core modules type-check against non-host SDKs via `Scripts/crosscheck.sh`.
 - iPad regular-width layout stays three columns (`IPadRootView.threeColumnWorkspace`) instead of collapsing `NavigationSplitView` in portrait.
 

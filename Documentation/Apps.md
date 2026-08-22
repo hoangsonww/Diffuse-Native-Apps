@@ -1,6 +1,6 @@
-# Apps
+# Native apps
 
-Four genuinely native applications share `DiffuseUI` and the domain engine. They are **not** one multiplatform target with size-class branches. The question is the same everywhere; the way you ask it is not.
+Diffuse ships five genuinely native applications. Four Apple applications share `DiffuseUI` and the Swift domain engine; Android uses Kotlin, Jetpack Compose, and an independent Kotlin engine. They are **not** one cross-platform UI target. The question is the same everywhere; the way you ask it is not.
 
 See [adr/0006-four-native-apps.md](adr/0006-four-native-apps.md) and skill `native-apps`. Navigation, scheduling drivers, and capability registries live under `Apps/`; generic rows, search, privacy, and preference *surfaces* live in `DiffuseUI`.
 
@@ -15,6 +15,30 @@ See [adr/0006-four-native-apps.md](adr/0006-four-native-apps.md) and skill `nati
 
 Do not add a SwiftUI view for one capability. If Git needs a special row, the schema and `Change` already carry enough to render it. A `switch` on `CapabilityID` in an app screen is an architecture bug.
 
+Android shares product semantics and schema-v1 fixtures, not Swift runtime code or `DiffuseUI`.
+
+```mermaid
+flowchart TB
+    Fixtures[(schema-v1 snapshots + golden diffs)]
+    Swift[Swift packages] <--> Fixtures
+    Kotlin[Kotlin engine] <--> Fixtures
+    Swift --> Apple[macOS · iOS · iPadOS · watchOS]
+    Kotlin --> Android[Android Compose app]
+```
+
+## Android — Diffuse
+
+Source: `Android/`. Adaptive Compose navigation uses a bottom bar on compact widths and a navigation rail at 720dp and wider. Primary destinations are Overview, Snapshots, Compare, and Settings; snapshot detail, search results, privacy ledger, import, export/share, and destructive confirmations are native Android surfaces.
+
+- Device observations come only from `Android/app/src/main/java/com/diffuse/android/collectors/`.
+- `DiffuseViewModel` exposes immutable `StateFlow` UI state and delegates domain work to `DiffuseService`.
+- WorkManager supplies periodic capture; app-open logic checks whether a capture is due.
+- The app declares network-state access but no Internet permission.
+- Snapshot and preference paths are excluded from Android backup/device transfer.
+- JVM tests consume the root `Fixtures/` directly; instrumentation suites exercise real collectors, service/storage, preferences, navigation, dialogs, and adaptive layout.
+
+Full build and test details: [Android/README.md](../Android/README.md).
+
 ## macOS — DiffuseMac
 
 Source: `Apps/DiffuseMac/`. Destinations in `RootView` (`MacDestination`): Overview, Snapshots, Compare, Capabilities, Privacy (⌘1–⌘5).
@@ -28,7 +52,7 @@ Source: `Apps/DiffuseMac/`. Destinations in `RootView` (`MacDestination`): Overv
 
   system, hardware, displays, power, network interfaces, network path, Wi-Fi, storage (all volumes), applications, processes (opt-in), developer tools, git (watched repos).
 
-Screenshot seed: `DIFFUSE_SCREENSHOT=overview|snapshots|compare|capabilities|privacy`. Compare auto-selects the latest pair.
+Screenshot seed: `DIFFUSE_SCREENSHOT=overview|snapshots|compare|capabilities|privacy|search|snapshot-detail|entity-detail|named-snapshot`. Compare auto-selects the latest pair. Pass the value as a real environment variable (`SIMCTL_CHILD_…` on Simulator).
 
 ## iOS — DiffuseiOS
 
@@ -37,6 +61,7 @@ Source: `Apps/DiffuseiOS/`. Tabs in `IOSRootView` (`IOSTab`): Overview, Snapshot
 - Capture on open, on demand, and via `BGAppRefreshTask`. The same `SnapshotScheduler.decide` function; a different driver.
 - Home Screen and Lock Screen widgets (`Δ N` + peak severity) via `group.com.diffuse.ios`.
 - Collectors (`IOSCapabilityRegistry`): device, system, battery, screen, storage (app-container volume), network interfaces, network path. No process list, no `git` spawn, no developer-tool probes.
+- Screenshot seed: `overview|timeline|compare|settings|capabilities|privacy|search|snapshot-detail|entity-detail`.
 
 ## iPadOS — DiffuseiPadOS
 
@@ -47,6 +72,7 @@ Source: `Apps/DiffuseiPadOS/`. Separate target even though it shares an SDK with
 - Same collectors as iPhone (`IOSCapabilityRegistry(platform: .iPadOS)`).
 - Privacy, capabilities, and settings are sheets, not sidebar destinations.
 - Widgets via `group.com.diffuse.ipados`.
+- Screenshot seed: default workspace, plus `privacy|capabilities|settings|search|snapshot-detail|entity-detail|change-detail`.
 
 ## watchOS — DiffuseWatch
 
@@ -57,6 +83,7 @@ Source: `Apps/DiffuseWatch/` plus `Apps/DiffuseWatchComplication/`.
 - `Δ N` complications via `group.com.diffuse.watch`.
 - Capability set (`WatchCapabilityRegistry`): watch device, battery, shared system info, storage (container volume), network path.
 - Refresh via `WKApplicationRefreshBackgroundTask`. Same `decide` function; a different driver.
+- Screenshot seed: glance (default), plus `settings|snapshot-detail|change-detail`.
 
 ## Widgets and complications
 
@@ -74,7 +101,7 @@ Shared widget code: `Apps/Shared/ChangeCountWidget.swift`, `ChangeCountSummary.s
 
 ## Preferences and scheduling
 
-Retention, redaction, schedule (cadence, system events, skip-if-unchanged), and capability toggles are already wired through `DiffusePreferences` / `SnapshotService` on all four apps. Do not add a fifth copy of “delete snapshots older than…” logic in a view.
+Retention, redaction, schedule (cadence, system events, skip-if-unchanged), and capability toggles are wired through `DiffusePreferences` / `SnapshotService` on all four Apple apps. Android owns the equivalent behavior in `AndroidPreferences` / `DiffuseService`; neither family puts retention logic in a view.
 
 Product defaults (enforced by `SnapshotScheduler` / `RetentionPlanner`, not by each app):
 
@@ -92,4 +119,4 @@ macOS can offer a longer retention window in the UI; the planner itself is platf
 
 ## Screenshots
 
-Replace PNGs in `docs/screenshots/` from the live apps. See [docs/screenshots/README.md](../docs/screenshots/README.md) and skill `screenshots`. Seed from `Fixtures/snapshots/` (rewrite timestamps/device/platform if the UI would otherwise look empty). Disable auto-capture on open while shooting or the 15-minute floor plus system events will insert a live snapshot. Do not invent marketing images.
+Replace PNGs in `docs/screenshots/` from the live apps. See [docs/screenshots/README.md](../docs/screenshots/README.md) and skill `screenshots`. Seed from `Fixtures/snapshots/` (rewrite timestamps/device/platform if the UI would otherwise look empty). Disable auto-capture on open while shooting or scheduling may insert a live snapshot. Do not invent marketing images. Root `landing-*.png` files and `Android/screenshots/` are local QA captures and are gitignored; only the curated `docs/screenshots/` set is versioned.

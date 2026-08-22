@@ -8,7 +8,7 @@ If it does not help ask that question more clearly, more often, or more privatel
 
 1. Read [Documentation/README.md](Documentation/README.md), then [Architecture](Documentation/Architecture.md), the [Glossary](Documentation/Glossary.md), and [adr/](Documentation/adr/).
 2. If you are adding something Diffuse can observe, read the [capability](Documentation/CapabilityGuide.md) and [collector](Documentation/CollectorGuide.md) guides. Adding a capability should **not** require edits to the diff engine, storage, search, export, or app screens.
-3. Scripts, CI, Docker, and hooks: [Documentation/Repository.md](Documentation/Repository.md). Tests: [Documentation/Testing.md](Documentation/Testing.md).
+3. Scripts, CI, Docker, and hooks: [Documentation/Repository.md](Documentation/Repository.md). Tests: [Documentation/Testing.md](Documentation/Testing.md). Every tool the scripts assume: [Documentation/TechStack.md](Documentation/TechStack.md).
 4. If you are using an agent, start at [AGENTS.md](AGENTS.md) and the skills in `.agents/skills/`.
 
 ## Development setup
@@ -18,7 +18,7 @@ If it does not help ask that question more clearly, more often, or more privatel
 ./Scripts/verify.sh
 ```
 
-`bootstrap.sh` generates `Diffuse.xcodeproj` from `project.yml` and resolves Swift packages. The project file is not checked in.
+`bootstrap.sh` generates `Diffuse.xcodeproj` from `project.yml` and resolves Swift packages. The project file is not checked in. If anything in that pair fails, [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md) probably names it.
 
 Requirements:
 
@@ -27,6 +27,7 @@ Requirements:
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen)
 - [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
 - Node 20+ if you want Husky git hooks (`npm install`)
+- JDK 17+ and Android SDK 36 to build `Android/`
 
 Docker and the Dev Container (`.devcontainer/`) are optional. They give Linux and Codespaces a shell for docs and scripts. They **cannot** run `swift test` or build the apps — that needs macOS and Xcode.
 
@@ -40,11 +41,13 @@ docker compose exec dev bash
 
 ```
 Packages/     domain engine (no app, no Apple-platform coupling in core)
-Apps/         four native apps + widgets/complications
+Apps/         four native Apple apps + widgets/complications
+Android/      native Kotlin / Compose app (independent engine)
 Tools/        diffuse-dev CLI
 Tests/        Domain, Invariants, Integration, Support
 Fixtures/     golden snapshots and expected diffs
 Documentation/
+ARCHITECTURE.md
 Scripts/
 .agents/      canonical agent skills (mirrored to .claude/skills/)
 ```

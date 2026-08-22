@@ -1,6 +1,24 @@
 # Testing
 
-Diffuse uses [Swift Testing](https://developer.apple.com/xcode/swift-testing/) (`@Test`, `#expect`, `@Suite`). No new XCTest modules. Live hardware is not required for CI except a small, macOS-gated pair of integration tests that use cheap, stable collectors.
+The Apple engine uses [Swift Testing](https://developer.apple.com/xcode/swift-testing/) (`@Test`, `#expect`, `@Suite`). No new XCTest modules. Android uses JUnit for Kotlin domain tests and AndroidX/Compose instrumentation for device behavior. Physical hardware is not required; simulator/emulator coverage is supplemented by a small macOS-gated pair of stable live-collector tests.
+
+## Android suites
+
+| Layer | Path | Covers |
+| --- | --- | --- |
+| Kotlin/JVM | `Android/app/src/test/` | Models, JSON, diff, privacy, storage, retention, search, reports, scheduling, coordinator |
+| Fixture contract | `FixtureCompatibilityTest` | Decoding Swift snapshots and matching expected structural diffs |
+| Android instrumentation | `Android/app/src/androidTest/` | Collectors, preferences, service/storage, Compose navigation/dialogs/rotation/layout |
+
+```bash
+cd Android
+./gradlew testDebugUnitTest
+./gradlew jacocoDebugUnitTestReport jacocoDebugUnitTestCoverageVerification
+./gradlew connectedDebugAndroidTest
+./gradlew lintDebug assembleDebug bundleRelease
+```
+
+JaCoCo enforces at least 90% line coverage for the pure `com.diffuse.android.domain` package. Android framework and Compose behavior are measured by instrumentation rather than inflating the JVM number with mocks.
 
 See `Tests/AGENTS.md` and skill `write-tests`. Coverage: skill `coverage`. Layout of the tree: [Repository.md](Repository.md).
 
@@ -109,7 +127,7 @@ swift test --filter MacGitCollector
 ./Scripts/coverage.sh
 ```
 
-`./Scripts/verify.sh` is the full gate: format lint, tests, iOS/watchOS cross-check, unsigned builds of all four apps.
+`./Scripts/verify.sh` is the full Apple gate: format lint, tests, iOS/watchOS cross-check, unsigned builds of all four Apple apps. Run the Gradle commands above for the Android gate.
 
 ## Coverage
 
