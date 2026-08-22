@@ -234,7 +234,7 @@ flowchart TB
 
 ## Screenshots
 
-Captured from the live apps on **20 Aug 2026** — simulators, the macOS debug build, and a Pixel 6 Android 14 emulator. These are not mockups. Browse every PNG in [docs/screenshots](docs/screenshots/) — that directory is the complete, versioned gallery for all five apps.
+Captured from the live apps on **20 Aug 2026**, with the iPad set retaken on **22 Aug 2026** — simulators, the macOS debug build, and a Pixel 6 Android 14 emulator. These are not mockups. Browse every PNG in [docs/screenshots](docs/screenshots/) — that directory is the complete, versioned gallery for all five apps.
 
 ### Android
 
