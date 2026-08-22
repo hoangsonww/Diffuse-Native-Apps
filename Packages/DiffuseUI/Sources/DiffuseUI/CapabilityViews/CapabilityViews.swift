@@ -64,7 +64,7 @@ public struct CapabilityRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            HStack(spacing: DiffuseTheme.Spacing.small) {
+            ChipFlowLayout {
                 Pill(
                     status.metadata.privacy.displayName,
                     symbol: status.metadata.privacy.symbol,

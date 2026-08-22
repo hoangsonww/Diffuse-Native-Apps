@@ -49,6 +49,10 @@ struct IPadRootView: View {
             if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "capabilities" {
                 showsCapabilities = true
             }
+            if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "settings" {
+                showsSettings = true
+            }
+            prepareScreenshotDestination()
         }
         .task {
             if sizeClass == .regular {
@@ -63,9 +67,26 @@ struct IPadRootView: View {
             if count >= 2, ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] != nil {
                 model.compareLatest()
             }
+            prepareScreenshotDestination()
+        }
+        .onChange(of: model.comparison?.id) { _, _ in
+            prepareScreenshotDestination()
         }
         .onChange(of: model.latestSummary?.id) { _, _ in
             ChangeCountStore.iPadOS.publish(from: model)
+        }
+    }
+
+    private func prepareScreenshotDestination() {
+        switch ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] {
+        case "snapshot-detail", "entity-detail":
+            inspectedID = model.summaries.first?.id
+        case "change-detail":
+            selectedChange = model.comparison?.changes.first
+        case "search":
+            Task { await model.searchLibrary("storage") }
+        default:
+            break
         }
     }
 
@@ -441,7 +462,7 @@ struct ChangeDetailView: View {
             VStack(alignment: .leading, spacing: DiffuseTheme.Spacing.large) {
                 Card {
                     VStack(alignment: .leading, spacing: DiffuseTheme.Spacing.medium) {
-                        HStack(spacing: DiffuseTheme.Spacing.small) {
+                        ChipFlowLayout {
                             SeverityBadge(change.severity)
                             Pill(change.kind.displayName, symbol: change.kind.symbol, tint: change.kind.color)
                             Pill(change.privacy.displayName, symbol: change.privacy.symbol, tint: change.privacy.color)
@@ -556,6 +577,13 @@ struct IPadSnapshotDetailView: View {
             .navigationTitle(item.entity.displayName)
         }
         .task { snapshot = await model.snapshot(id: id) }
+        .onChange(of: snapshot?.id) { _, _ in
+            if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "entity-detail",
+               let section = snapshot?.orderedSections.first(where: { !$0.entities.isEmpty }),
+               let entity = section.entities.first {
+                inspected = IPadInspectedEntity(entity: entity, schema: section.schema)
+            }
+        }
     }
 }
 

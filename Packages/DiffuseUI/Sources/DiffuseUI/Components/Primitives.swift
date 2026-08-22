@@ -48,6 +48,7 @@ public struct SeverityBadge: View {
         .padding(.vertical, DiffuseTheme.Spacing.tight)
         .background(severity.color.opacity(0.14), in: Capsule())
         .foregroundStyle(severity.color)
+        .fixedSize(horizontal: true, vertical: false)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(count.map { "\($0) \(severity.displayName)" } ?? severity.displayName)
     }
@@ -80,6 +81,7 @@ public struct Pill: View {
         .padding(.vertical, 3)
         .background(tint.opacity(0.14), in: Capsule())
         .foregroundStyle(tint)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 

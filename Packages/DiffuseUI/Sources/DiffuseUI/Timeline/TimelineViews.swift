@@ -65,7 +65,7 @@ public struct TimelineRow: View {
                         .foregroundStyle(DiffuseTheme.Palette.subtleText)
                 }
 
-                HStack(spacing: DiffuseTheme.Spacing.small) {
+                ChipFlowLayout {
                     if let changeCount {
                         Pill(
                             changeCount == 1 ? "1 change" : "\(changeCount) changes",

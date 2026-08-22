@@ -51,9 +51,17 @@ struct IOSRootView: View {
         .diffuseCanvas()
         .diffuseFailureBanner(model)
         .onAppear {
-            if let raw = ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"],
-               let screen = IOSTab(rawValue: raw) {
-                tab = screen
+            if let raw = ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] {
+                switch raw {
+                case "timeline", "search", "snapshot-detail", "entity-detail":
+                    tab = .timeline
+                case "capabilities", "privacy":
+                    tab = .settings
+                default:
+                    if let screen = IOSTab(rawValue: raw) {
+                        tab = screen
+                    }
+                }
             }
         }
         .onChange(of: model.summaries.count) { _, count in
@@ -375,6 +383,19 @@ struct IOSTimelineView: View {
             }
         }
         .refreshable { await model.refresh() }
+        .onAppear { prepareScreenshot() }
+        .onChange(of: model.summaries.count) { _, _ in prepareScreenshot() }
+    }
+
+    private func prepareScreenshot() {
+        switch ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] {
+        case "snapshot-detail", "entity-detail":
+            openedID = model.summaries.first?.id
+        case "search":
+            Task { await model.searchLibrary("storage") }
+        default:
+            break
+        }
     }
 }
 
@@ -443,6 +464,11 @@ struct IOSSnapshotDetailView: View {
         .task {
             snapshot = await model.snapshot(id: id)
             labelDraft = snapshot?.label ?? ""
+            if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "entity-detail",
+               let section = snapshot?.orderedSections.first(where: { !$0.entities.isEmpty }),
+               let entity = section.entities.first {
+                inspected = InspectedEntity(entity: entity, schema: section.schema)
+            }
         }
         .onDisappear { saveLabel() }
         .navigationDestination(item: $inspected) { item in
@@ -585,6 +611,7 @@ struct IOSSettingsView: View {
     @Environment(DiffusePreferences.self) private var preferences
     @State private var ledger: PrivacyLedger?
     @State private var isConfirmingDelete = false
+    @State private var screenshotDestination: IOSSettingsDestination?
 
     var body: some View {
         List {
@@ -603,24 +630,10 @@ struct IOSSettingsView: View {
             }
 
             Section {
-                NavigationLink {
-                    IOSCapabilitiesView()
-                } label: {
+                NavigationLink(value: IOSSettingsDestination.capabilities) {
                     Label("Capabilities", systemImage: "slider.horizontal.3")
                 }
-                NavigationLink {
-                    ScrollView {
-                        if let ledger {
-                            PrivacyLedgerView(ledger: ledger)
-                                .padding(DiffuseTheme.Spacing.regular)
-                        } else {
-                            ProgressView().padding(.top, 60)
-                        }
-                    }
-                    .diffuseCanvas()
-                    .navigationTitle("Privacy")
-                    .task { ledger = await model.privacyLedger() }
-                } label: {
+                NavigationLink(value: IOSSettingsDestination.privacy) {
                     Label("Privacy", systemImage: "lock.shield")
                 }
             }
@@ -643,6 +656,17 @@ struct IOSSettingsView: View {
         .scrollContentBackground(.hidden)
         .diffuseCanvas()
         .navigationTitle("Settings")
+        .navigationDestination(item: $screenshotDestination) { destination in
+            settingsDestination(destination)
+        }
+        .navigationDestination(for: IOSSettingsDestination.self) { destination in
+            settingsDestination(destination)
+        }
+        .onAppear {
+            screenshotDestination = IOSSettingsDestination(
+                rawValue: ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] ?? ""
+            )
+        }
         .confirmationDialog(
             "Delete every snapshot?",
             isPresented: $isConfirmingDelete,
@@ -657,6 +681,30 @@ struct IOSSettingsView: View {
             )
         }
     }
+
+    @ViewBuilder
+    private func settingsDestination(_ destination: IOSSettingsDestination) -> some View {
+        switch destination {
+        case .capabilities:
+            IOSCapabilitiesView()
+        case .privacy:
+            ScrollView {
+                if let ledger {
+                    PrivacyLedgerView(ledger: ledger)
+                        .padding(DiffuseTheme.Spacing.regular)
+                } else {
+                    ProgressView().padding(.top, 60)
+                }
+            }
+            .diffuseCanvas()
+            .navigationTitle("Privacy")
+            .task { ledger = await model.privacyLedger() }
+        }
+    }
+}
+
+private enum IOSSettingsDestination: String, Hashable {
+    case capabilities, privacy
 }
 
 struct IOSCapabilitiesView: View {

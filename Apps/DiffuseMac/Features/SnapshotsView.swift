@@ -64,6 +64,9 @@ struct SnapshotsView: View {
             if selected == nil {
                 selected = model.summaries.first?.id
             }
+            if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "search" {
+                Task { await model.searchLibrary("storage") }
+            }
         }
         .onChange(of: model.summaries.count) { _, _ in
             if selected == nil {
@@ -233,6 +236,12 @@ struct SnapshotsView: View {
             return
         }
         loadedSnapshot = await model.snapshot(id: selected)
+        if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "entity-detail" {
+            focusEntity = loadedSnapshot?.orderedSections
+                .lazy
+                .compactMap { $0.allEntities.first?.identity }
+                .first
+        }
     }
 
     private func exportSelected() async {
@@ -373,7 +382,7 @@ struct SnapshotDetailView: View {
                     .help("Pinned snapshots are never removed by automatic cleanup")
                 }
 
-                HStack(spacing: DiffuseTheme.Spacing.small) {
+                ChipFlowLayout {
                     Pill(snapshot.origin.displayName, symbol: snapshot.origin.symbol)
                     Pill(snapshot.platform.rawValue, symbol: snapshot.platform.symbol)
                     Pill("\(snapshot.sections.count) sections", symbol: "square.stack.3d.up")

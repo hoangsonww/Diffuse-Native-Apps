@@ -2,6 +2,7 @@ import DiffuseCore
 import DiffuseModels
 import DiffuseStorage
 import DiffuseUI
+import Foundation
 import SwiftUI
 
 /// The Watch app answers one question at a glance: what changed?
@@ -14,44 +15,65 @@ struct WatchRootView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                if !model.hasSnapshots {
-                    emptyState
+            switch ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] {
+            case "settings":
+                WatchSettingsView()
+            case "snapshot-detail":
+                if let id = model.summaries.first?.id {
+                    WatchSnapshotDetailView(id: id)
                 } else {
-                    summarySection
-                    changesSection
-                    historySection
+                    ProgressView()
                 }
-
-                Section {
-                    Button {
-                        Task {
-                            await model.capture()
-                            await WatchComplicationBridge.publish(model: model)
-                        }
-                    } label: {
-                        Label(
-                            model.phase == .capturing ? "Capturing…" : "Take Snapshot",
-                            systemImage: "camera.aperture"
-                        )
-                    }
-                    .disabled(model.phase.isBusy)
-                    .tint(DiffuseTheme.Palette.accent)
-                    .listRowBackground(DiffuseTheme.Palette.accent.opacity(0.18))
+            case "change-detail":
+                if let change = model.overview?.topChanges.first {
+                    WatchChangeDetailView(change: change)
+                } else {
+                    ProgressView()
                 }
+            default:
+                glance
             }
-            .navigationTitle("Diffuse")
-            .toolbar {
-                NavigationLink {
-                    WatchSettingsView()
-                } label: {
-                    Image(systemName: "gearshape")
-                }
-                .accessibilityLabel("Settings")
-            }
-            .containerBackground(DiffuseTheme.Palette.ink.gradient, for: .navigation)
-            .diffuseFailureBanner(model)
         }
+    }
+
+    private var glance: some View {
+        List {
+            if !model.hasSnapshots {
+                emptyState
+            } else {
+                summarySection
+                changesSection
+                historySection
+            }
+
+            Section {
+                Button {
+                    Task {
+                        await model.capture()
+                        await WatchComplicationBridge.publish(model: model)
+                    }
+                } label: {
+                    Label(
+                        model.phase == .capturing ? "Capturing…" : "Take Snapshot",
+                        systemImage: "camera.aperture"
+                    )
+                }
+                .disabled(model.phase.isBusy)
+                .tint(DiffuseTheme.Palette.accent)
+                .listRowBackground(DiffuseTheme.Palette.accent.opacity(0.18))
+            }
+        }
+        .navigationTitle("Diffuse")
+        .toolbar {
+            NavigationLink {
+                WatchSettingsView()
+            } label: {
+                Image(systemName: "gearshape")
+            }
+            .accessibilityLabel("Settings")
+        }
+        .containerBackground(DiffuseTheme.Palette.ink.gradient, for: .navigation)
+        .diffuseFailureBanner(model)
     }
 
     // MARK: - Sections

@@ -65,9 +65,18 @@ struct RootView: View {
         .toolbar { toolbar }
         .diffuseFailureBanner(model)
         .onAppear {
-            if let raw = ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"],
-               let screen = MacDestination(rawValue: raw) {
-                environment.selectedDestination = screen
+            if let raw = ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] {
+                switch raw {
+                case "search", "snapshot-detail", "entity-detail":
+                    environment.selectedDestination = .snapshots
+                case "named-snapshot":
+                    environment.selectedDestination = .overview
+                    environment.isNamingSnapshot = true
+                default:
+                    if let screen = MacDestination(rawValue: raw) {
+                        environment.selectedDestination = screen
+                    }
+                }
             }
             if ProcessInfo.processInfo.environment["DIFFUSE_SCREENSHOT"] == "compare" {
                 model.compareLatest()

@@ -102,7 +102,7 @@ public struct EntityRow: View {
                 }
 
                 if !primaryValues.isEmpty {
-                    HStack(spacing: DiffuseTheme.Spacing.small) {
+                    ChipFlowLayout {
                         ForEach(primaryValues, id: \.0) { label, value in
                             Pill(value, tint: DiffuseTheme.Palette.informational)
                                 .accessibilityLabel("\(label) \(value)")
@@ -162,7 +162,7 @@ public struct EntityDetailView: View {
             )
 
             if !entity.tags.isEmpty {
-                HStack(spacing: DiffuseTheme.Spacing.small) {
+                ChipFlowLayout {
                     ForEach(entity.tags.sorted(), id: \.self) { tag in
                         Pill(tag, tint: DiffuseTheme.Palette.accent)
                     }

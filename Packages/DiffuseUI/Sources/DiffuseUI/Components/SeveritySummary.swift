@@ -41,7 +41,7 @@ public struct SeveritySummaryBar: View {
             .animation(DiffuseTheme.Motion.responsive, value: summary)
 
             if showsLegend, !segments.isEmpty {
-                HStack(spacing: DiffuseTheme.Spacing.small) {
+                ChipFlowLayout {
                     ForEach(segments, id: \.severity) { segment in
                         SeverityBadge(segment.severity, count: segment.count)
                     }
