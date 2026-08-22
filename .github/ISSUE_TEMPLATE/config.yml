@@ -9,3 +9,6 @@ contact_links:
   - name: Support / FAQ
     url: https://github.com/hoangsonww/Diffuse/blob/main/SUPPORT.md
     about: Where snapshots live, widgets, retention, redaction, CLI.
+  - name: Troubleshooting
+    url: https://github.com/hoangsonww/Diffuse/blob/main/Documentation/Troubleshooting.md
+    about: A build, test, simulator, emulator, or git-hook failure and its fix.
