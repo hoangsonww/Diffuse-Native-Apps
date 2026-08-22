@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Snapshots are intentionally local to this device and are not cloud-backed up. -->
+    <exclude domain="file" path="diffuse/" />
+    <exclude domain="sharedpref" path="diffuse.preferences.xml" />
+</full-backup-content>

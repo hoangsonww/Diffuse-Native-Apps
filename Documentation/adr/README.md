@@ -14,3 +14,4 @@ Copy [template.md](template.md) for a new record (Status, Date, Context, Decisio
 | [0006](0006-four-native-apps.md) | Four genuine native apps | Accepted |
 | [0007](0007-privacy-classification.md) | Privacy classification on every field | Accepted |
 | [0008](0008-no-cloud-sync.md) | No cloud sync | Accepted |
+| [0009](0009-native-android.md) | Native Kotlin Android app with fixture compatibility | Accepted |
