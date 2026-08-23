@@ -103,6 +103,6 @@ Canonical tree: `.agents/skills/<name>/SKILL.md`. Claude Code also loads `.claud
 ## Done when
 
 - `./Scripts/format.sh` is clean
-- `swift test --parallel` is green (or `./Scripts/coverage.sh` if you touched Packages or Tests)
+- `swift test --parallel` is green (or `./Scripts/coverage.sh` if you touched Packages or Tests — it fails below 90%)
 - Golden fixtures are unchanged, or the diff is explained
 - No new third-party Swift package, signing material, or static scanner

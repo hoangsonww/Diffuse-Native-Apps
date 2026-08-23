@@ -464,14 +464,14 @@ cd Android
 ./gradlew lintDebug assembleDebug bundleRelease
 ```
 
-The Android JVM suite exercises the pure Kotlin engine and reads the repository’s shared `Fixtures/` directly. CI enforces at least 90% line coverage for `com.diffuse.android.domain`; emulator tests cover Android collectors, preferences, storage/service integration, navigation, dialogs, rotation, and adaptive layout.
+The Android JVM suite (96 tests) exercises the pure Kotlin engine and reads the repository’s shared `Fixtures/` directly. CI enforces at least 90% line coverage for `com.diffuse.android.domain`, currently **97.7%**; the 15 emulator tests cover Android collectors, preferences, storage/service integration, navigation, dialogs, rotation, and adaptive layout. Compose UI and the Android framework collectors are measured there rather than inflating the JVM number with mocks.
 
 ### Verification matrix
 
 | Concern | Apple | Android |
 | --- | --- | --- |
 | Domain tests | Swift Testing | JUnit + coroutine test |
-| Coverage | First-party `llvm-cov` | JaCoCo, 90% domain floor |
+| Coverage | First-party `llvm-cov`, 90% floor — **92.4%** | JaCoCo, 90% domain floor — **97.7%** |
 | UI/device tests | Unsigned simulator builds + live capture | Compose instrumentation on emulator |
 | Cross-platform contract | Golden schema-v1 snapshots/diffs | The same fixtures decoded and diffed in Kotlin |
 | Static checks | SwiftFormat + SDK cross-check | Android Lint + release shrinking |

@@ -20,7 +20,7 @@ Android is the one place with an external dependency graph, and it is limited to
 | Concurrency | Swift structured concurrency, actors, `TaskGroup` | Kotlin coroutines, `Flow`, `StateFlow` |
 | Scheduling | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` periodic work |
 | Tests | Swift Testing (`@Test`, `#expect`, `@Suite`) | JUnit 4 + coroutines-test; Compose/Espresso instrumentation |
-| Coverage | `llvm-cov` via `Scripts/coverage.sh` | JaCoCo 0.8.12, 90% domain floor |
+| Coverage | `llvm-cov` via `Scripts/coverage.sh`, 90% package floor (92.4%) | JaCoCo 0.8.12, 90% domain floor (97.7%) |
 | Shrinking | `DEAD_CODE_STRIPPING`, whole-module release builds | R8 + ProGuard rules |
 
 ## Languages
@@ -66,7 +66,7 @@ Core packages import **no** UIKit or AppKit. `Scripts/crosscheck.sh` type-checks
 | **XcodeGen** | latest via Homebrew | `project.yml` → `Diffuse.xcodeproj`. The project file is generated and gitignored ([ADR 0005](adr/0005-generated-unsigned.md)). |
 | **Swift Testing** | bundled | `@Test`, `#expect`, `@Suite`, parameterized cases. No new XCTest modules. |
 | **SwiftFormat** | via Homebrew, `.swiftformat` | `./Scripts/format.sh` in place; `--lint` in CI and in the pre-commit hook. |
-| **llvm-cov** | bundled with the toolchain | `./Scripts/coverage.sh` emits HTML, lcov, and a Markdown summary into the gitignored `coverage/`. First-party coverage; no Codecov. |
+| **llvm-cov** | bundled with the toolchain | `./Scripts/coverage.sh` emits HTML, lcov, and a Markdown summary into the gitignored `coverage/`, and fails below a 90% package line floor (currently 92.4%, `DIFFUSE_MINIMUM_COVERAGE` to raise). First-party coverage; no Codecov. |
 | **Homebrew** | — | Installs `xcodegen` and `swiftformat` in `Scripts/bootstrap.sh` and in CI. |
 
 Deployment targets: macOS 14, iOS 17, iPadOS 17, watchOS 10. `Package.swift` additionally declares tvOS 17 and visionOS 1 so the shared packages keep compiling for them, but no app target ships on those platforms.
