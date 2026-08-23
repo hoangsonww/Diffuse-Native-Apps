@@ -98,3 +98,21 @@ echo
 echo "Wrote $OUT/summary.txt"
 echo "Wrote $OUT/coverage.lcov"
 echo "Wrote $OUT/html/index.html"
+
+# Hold the package to a floor so a regression fails the run instead of being
+# noticed weeks later in a report nobody opened.
+MINIMUM="${DIFFUSE_MINIMUM_COVERAGE:-90}"
+PERCENT="$(awk '$1 == "TOTAL" { gsub(/%/, "", $(NF-3)); print $(NF-3); exit }' "$OUT/summary.txt")"
+
+if [[ -z "$PERCENT" ]]; then
+    echo "Could not read a total line-coverage percentage from $OUT/summary.txt" >&2
+    exit 1
+fi
+
+echo
+if awk -v value="$PERCENT" -v floor="$MINIMUM" 'BEGIN { exit !(value < floor) }'; then
+    echo "Line coverage ${PERCENT}% is below the required ${MINIMUM}%." >&2
+    exit 1
+fi
+
+echo "Line coverage ${PERCENT}% meets the ${MINIMUM}% floor."

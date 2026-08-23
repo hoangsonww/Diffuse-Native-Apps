@@ -415,8 +415,8 @@ make android-run    # the Android app on a device or emulator
 Each resolves and boots a simulator or checks for a connected device, builds, installs, and launches. `make apple-devices` and `make android-devices` list what is available; set `DIFFUSE_SIMULATOR_ID` to pin a specific one.
 
 ```bash
-swift test --parallel               # Swift Testing (~445 tests)
-./Scripts/coverage.sh               # llvm-cov HTML + lcov in coverage/ (gitignored)
+swift test --parallel               # Swift Testing (~588 tests)
+./Scripts/coverage.sh               # llvm-cov HTML + lcov, gated at 90% (currently 92.4%)
 swift run diffuse-dev --help        # capture, inspect, diff, validate, fixtures, privacy
 open Diffuse.xcodeproj              # generated; do not check it in
 ```

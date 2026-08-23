@@ -106,7 +106,7 @@ let package = Package(
             name: "DiffuseDomainTests",
             dependencies: [
                 "DiffuseTestSupport", "DiffuseModels", "DiffuseDiff", "DiffuseStorage",
-                "DiffuseCore", "DiffuseCapabilities",
+                "DiffuseCore", "DiffuseCapabilities", "DiffuseUI",
             ],
             path: "Tests/Domain",
             swiftSettings: strictConcurrency

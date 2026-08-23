@@ -143,7 +143,11 @@ Writes gitignored `coverage/`:
 - `coverage.lcov`
 - `html/index.html`
 
-CI uploads `coverage/` as an artifact (`coverage-report`, 14 days). The package total includes `DiffuseUI` view bodies that SPM tests barely execute; engine packages (models, diff, storage, core) sit much higher. Read the per-file report, not only the total.
+CI uploads `coverage/` as an artifact (`coverage-report`, 14 days).
+
+**The total is a hard gate.** `coverage.sh` fails below 90% package line coverage; it currently sits at 92.4%. Raise the floor with `DIFFUSE_MINIMUM_COVERAGE`, never lower it to make a run pass. Still read the per-file report as well — a healthy total can hide one file that fell off a cliff.
+
+`DiffuseUI` view bodies are covered by `Tests/Domain/ViewRenderingTests.swift`, which renders every public view through `ImageRenderer` on macOS. That evaluates the whole body, so a view that traps on a nil optional, an empty collection, or an unexpected enum case fails the suite rather than shipping to four clients at once. Its fixtures are the real `SampleData` snapshots run through the real `DiffEngine`, so views are exercised on production-shaped data. When you add a public view, add it there and render its empty and degenerate cases too — those are the ones that crash.
 
 `SKIP_TEST=1 ./Scripts/coverage.sh` rebuilds the report from an existing `--enable-code-coverage` profile. Use `swift build --show-bin-path` to locate the test binary; `swift test --show-bin-path` is not a flag on this toolchain.
 

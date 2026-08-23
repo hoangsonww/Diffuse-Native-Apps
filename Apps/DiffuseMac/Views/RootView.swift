@@ -152,8 +152,11 @@ struct RootView: View {
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .navigation) {
             if model.phase.isBusy {
+                // A toolbar item draws its own bounds, and a bare spinner sits
+                // flush against them with no breathing room on either side.
                 ProgressView()
                     .controlSize(.small)
+                    .padding(.horizontal, DiffuseTheme.Spacing.small)
                     .transition(.opacity)
             }
         }
