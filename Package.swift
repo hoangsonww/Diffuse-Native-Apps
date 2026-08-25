@@ -44,6 +44,7 @@ let package = Package(
         .library(name: "DiffuseCore", targets: ["DiffuseCore"]),
         .library(name: "DiffuseDeveloperTools", targets: ["DiffuseDeveloperTools"]),
         .library(name: "DiffuseCollectors", targets: ["DiffuseCollectors"]),
+        .library(name: "DiffuseSurface", targets: ["DiffuseSurface"]),
         .library(name: "DiffuseUI", targets: ["DiffuseUI"]),
         .executable(name: "diffuse-dev", targets: ["diffuse-dev"]),
     ],
@@ -51,6 +52,7 @@ let package = Package(
         // MARK: - Domain
 
         core("DiffuseModels"),
+        core("DiffuseSurface"),
         core("DiffuseDiff", dependencies: ["DiffuseModels"]),
         core("DiffuseStorage", dependencies: ["DiffuseModels"]),
         core("DiffuseCapabilities", dependencies: ["DiffuseModels"]),
@@ -64,7 +66,10 @@ let package = Package(
         ]),
         core(
             "DiffuseUI",
-            dependencies: ["DiffuseModels", "DiffuseDiff", "DiffuseCore", "DiffuseStorage", "DiffuseCapabilities"]
+            dependencies: [
+                "DiffuseModels", "DiffuseDiff", "DiffuseCore", "DiffuseStorage", "DiffuseCapabilities",
+                "DiffuseSurface",
+            ]
         ),
 
         // MARK: - Tools
@@ -106,7 +111,7 @@ let package = Package(
             name: "DiffuseDomainTests",
             dependencies: [
                 "DiffuseTestSupport", "DiffuseModels", "DiffuseDiff", "DiffuseStorage",
-                "DiffuseCore", "DiffuseCapabilities", "DiffuseUI",
+                "DiffuseCore", "DiffuseCapabilities", "DiffuseUI", "DiffuseSurface",
             ],
             path: "Tests/Domain",
             swiftSettings: strictConcurrency

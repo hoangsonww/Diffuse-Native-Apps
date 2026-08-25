@@ -14,7 +14,7 @@ New to the codebase? Read [System context](#system-context), [Two native impleme
 | **Runtime** | [Concurrency and isolation](#concurrency-and-isolation-model) · [Deadlines and cancellation](#deadlines-and-cancellation) · [Capture pipeline](#capture-pipeline) · [Application state machine](#application-state-machine) · [Failure isolation](#failure-isolation) |
 | **Data** | [Snapshot contract](#snapshot-as-the-compatibility-contract) · [On-disk layout](#on-disk-layout) · [Schema evolution](#schema-evolution) · [Storage lifecycle](#storage-lifecycle) · [Identity and change IDs](#identity-matching-and-change-ids) |
 | **Comparison** | [Diff pipeline](#diff-pipeline) · [Comparison rule reference](#comparison-rule-reference) · [Severity and filtering](#severity-and-filtering) · [Temporal correlation](#temporal-correlation) · [Search](#search) |
-| **Product** | [Capability matrix](#capability-matrix) · [Scheduling](#scheduling) · [Presentation](#native-presentation-architecture) · [Design system](#design-system) · [Widgets](#widgets-and-complications) · [Export and import](#export-and-import) |
+| **Product** | [Server-driven surfaces](#server-driven-surfaces) · [Capability matrix](#capability-matrix) · [Scheduling](#scheduling) · [Presentation](#native-presentation-architecture) · [Design system](#design-system) · [Widgets](#widgets-and-complications) · [Export and import](#export-and-import) |
 | **Guarantees** | [Privacy boundary](#privacy-boundary) · [Performance](#performance-characteristics) · [Test pyramid](#test-pyramid) · [CI topology](#ci-topology) · [Invariants](#architectural-invariants) · [Glossary](#glossary) |
 
 ## System context
@@ -862,6 +862,84 @@ stateDiagram-v2
 
 Diagnostics travel with the section. The UI renders status; it does not crash the library.
 
+## Server-driven surfaces
+
+Diffuse may ship on the App Store and Play Store, where a release takes days. A
+confusing help section or a typo in onboarding should not wait that long. Every
+mature store app solves this with server-driven UI.
+
+Diffuse cannot fetch anything: [ADR 0001](Documentation/adr/0001-local-first.md)
+and [ADR 0008](Documentation/adr/0008-no-cloud-sync.md) make local-first a
+product guarantee and the Android app declares no `INTERNET` permission.
+
+So the runtime is built and **the transport is not**. See
+[ADR 0010](Documentation/adr/0010-server-driven-surfaces.md).
+
+```mermaid
+flowchart TB
+    Source["SurfaceSource<br/>bundled today"] --> Resolve[SurfaceResolver]
+    Resolve --> Compat{Compatible?}
+    Compat -->|"schema too new"| FB[Native fallback]
+    Compat -->|"app too old"| FB
+    Compat -->|empty| FB
+    Compat -->|yes| Prune[Prune unrenderable nodes]
+    Prune --> Any{Any left?}
+    Any -->|no| FB
+    Any -->|yes| Render["Render with DiffuseTheme"]
+    Prune --> Problems[Problems reported as diagnostics]
+```
+
+This is the idea behind [ADR 0003](Documentation/adr/0003-schema-driven-diff.md)
+applied one level up. A snapshot already carries the schema needed to render a
+capability the build has never heard of; a surface carries the description of a
+*screen region* the build has never seen. Both refuse to trap on the unknown,
+and both degrade rather than fail.
+
+| Layer | Where |
+| --- | --- |
+| Model, validation, sources, resolver | `DiffuseSurface` — Foundation only, no dependencies |
+| SwiftUI renderer | `DiffuseUI/Surface/SurfaceRendering.swift` |
+| Kotlin model + resolver | `com.diffuse.android.domain.sdui` |
+
+`DiffuseSurface` deliberately depends on nothing, so the same rules run in tests,
+in `diffuse-dev`, and in a future publishing pipeline that wants to reject a bad
+payload *before* it reaches a device.
+
+### What a payload may and may not do
+
+| May | May not |
+| --- | --- |
+| Supply text, ordering, and structure | Supply colours, fonts, or spacing |
+| Name an action the host already implements | Describe behaviour, expressions, or scripts |
+| Introduce a node type this build skips | Reach snapshots, the diff engine, or privacy handling |
+| Gate itself to a minimum app version | Force a screen to render nothing |
+
+Actions are **names**. A surface can ask for `capture`; it cannot say what
+capturing means. That indirection is what keeps a data channel from becoming an
+execution channel.
+
+### Why a surface cannot break a screen
+
+| Failure | Result |
+| --- | --- |
+| No payload, or it will not decode | Native fallback |
+| `schemaVersion` or `minimumAppVersion` too new | Native fallback, surface refused whole |
+| Every node unknown | Native fallback |
+| *Some* nodes unknown or missing a required property | Pruned individually; siblings render |
+| Action with no handler | Renders, control disabled, problem reported |
+
+Deleting every published payload returns the apps to exactly what they ship
+with. That is what makes the feature additive rather than load-bearing.
+
+### Adding a publisher later
+
+One new `SurfaceSource` and one line of wiring. The renderer, validator,
+resolver, and every test stay untouched. The code cost is small; the cost that
+matters is the rest — an `INTERNET` permission visible on the store listing, a
+privacy-disclosure change, a cache and staleness policy, and an amendment to
+ADR 0001, 0008, and 0010. That is a product decision, not a refactor, which is
+exactly why the seam exists and the transport does not.
+
 ## Architectural invariants
 
 - Snapshots never leave a device without a user-initiated export.
@@ -876,6 +954,9 @@ Diagnostics travel with the section. The UI renders status; it does not crash th
 - Apple core packages remain free of platform UI imports.
 - Signing identities, provisioning profiles, and keystores stay outside the repository.
 - Android ships without the `INTERNET` permission.
+- A server-driven surface describes **content only**, never rules, styling, or behaviour.
+- Every surface has a native fallback, so no payload can blank or crash a screen.
+- Surface actions are names resolved by the host, never code carried in data.
 
 ## Glossary
 

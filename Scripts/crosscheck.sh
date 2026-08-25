@@ -37,6 +37,7 @@ mkdir -p "$OUT"
 # Dependency order matters: each module needs its dependencies' .swiftmodule.
 MODULES=(
     DiffuseModels
+    DiffuseSurface
     DiffuseDiff
     DiffuseStorage
     DiffuseCapabilities
