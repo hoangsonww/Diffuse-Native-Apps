@@ -19,6 +19,7 @@ Android is the one place with an external dependency graph, and it is limited to
 | Serialization | `Codable` / `JSONEncoder` (first-party `SnapshotCoding`) | `kotlinx.serialization` JSON |
 | Concurrency | Swift structured concurrency, actors, `TaskGroup` | Kotlin coroutines, `Flow`, `StateFlow` |
 | Scheduling | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` periodic work |
+| Server-driven UI | `DiffuseSurface` — JSON surfaces, validated, natively rendered, bundled source only | `domain.sdui` — the same contract via `kotlinx.serialization` |
 | Tests | Swift Testing (`@Test`, `#expect`, `@Suite`) | JUnit 4 + coroutines-test; Compose/Espresso instrumentation |
 | Coverage | `llvm-cov` via `Scripts/coverage.sh`, 90% package floor (92.4%) | JaCoCo 0.8.12, 90% domain floor (97.7%) |
 | Shrinking | `DEAD_CODE_STRIPPING`, whole-module release builds | R8 + ProGuard rules |
@@ -62,7 +63,7 @@ Core packages import **no** UIKit or AppKit. `Scripts/crosscheck.sh` type-checks
 | Tool | Version | Role |
 | --- | --- | --- |
 | **Xcode** | 16+ | Builds the app targets. `xcodeVersion: "1600"` in `project.yml`. |
-| **Swift Package Manager** | Swift tools 6.0 | Declares 8 libraries, 1 executable, 12 test targets, and **zero** external dependencies. |
+| **Swift Package Manager** | Swift tools 6.0 | Declares 9 libraries, 1 executable, 13 test targets, and **zero** external dependencies. |
 | **XcodeGen** | latest via Homebrew | `project.yml` → `Diffuse.xcodeproj`. The project file is generated and gitignored ([ADR 0005](adr/0005-generated-unsigned.md)). |
 | **Swift Testing** | bundled | `@Test`, `#expect`, `@Suite`, parameterized cases. No new XCTest modules. |
 | **SwiftFormat** | via Homebrew, `.swiftformat` | `./Scripts/format.sh` in place; `--lint` in CI and in the pre-commit hook. |

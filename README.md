@@ -4,6 +4,7 @@
 
 **See what changed.**
 
+[![Server-Driven UI](https://img.shields.io/badge/Server--Driven_UI-5A0FC8?style=flat-square&logo=json&logoColor=white)](Documentation/adr/0010-server-driven-surfaces.md)
 [![Swift 6](https://img.shields.io/badge/Swift_6-F05138?style=flat-square&logo=swift&logoColor=white)](https://www.swift.org)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-0071E3?style=flat-square&logo=swift&logoColor=white)](https://developer.apple.com/xcode/swiftui/)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-F05138?style=flat-square&logo=swift&logoColor=white)](https://www.swift.org/package-manager/)
@@ -198,6 +199,44 @@ Three things follow from that shape, and each is enforced by a test:
 
 Because the rules travel with the data, an app can open a snapshot produced by an older build — or by a capability it no longer collects — and still render, diff, search, export, and classify it honestly. Real examples: [`Fixtures/snapshots/`](Fixtures/snapshots/). Full reference: [Documentation/SnapshotSchema.md](Documentation/SnapshotSchema.md).
 
+## Server-driven surfaces
+
+Store review takes days. A confusing help section or a typo in onboarding
+should not have to wait that long, and every mature store app solves this with
+server-driven UI: the screen is described by data the app fetches rather than by
+code it ships.
+
+Diffuse cannot fetch anything — local-first is a product guarantee and the
+Android app declares no `INTERNET` permission. So **the runtime is built and the
+transport is not.** Surfaces are described by JSON, validated, and rendered
+natively; the only source is the app bundle. Adding a publisher later is one new
+`SurfaceSource` and one line of wiring, with the renderer, validator, and every
+test untouched.
+
+| A payload may | A payload may not |
+| --- | --- |
+| Supply text, ordering, and structure | Supply colours, fonts, or spacing |
+| Name an action the host already implements | Describe behaviour, expressions, or scripts |
+| Introduce a node type this build skips | Reach snapshots, the diff engine, or privacy handling |
+| Gate itself to a minimum app version | Force a screen to render nothing |
+
+Actions are **names**. A surface can ask for `capture`; it cannot say what
+capturing means. That indirection is what keeps a data channel from becoming an
+execution channel.
+
+Every surface has a hand-written native fallback. A payload that is missing,
+unreadable, built for a newer schema, aimed at a newer app version, or composed
+entirely of unknown nodes renders nothing and the native UI shows instead —
+individual bad nodes are pruned while their siblings still render. Delete every
+payload and the apps are exactly what they ship with, which is what makes the
+feature additive rather than load-bearing.
+
+This is [ADR 0003](Documentation/adr/0003-schema-driven-diff.md) applied one
+level up: a snapshot already carries the schema needed to render a capability
+the build has never heard of. Details in
+[ADR 0010](Documentation/adr/0010-server-driven-surfaces.md) and
+[ARCHITECTURE.md](ARCHITECTURE.md#server-driven-surfaces).
+
 ## What it will not do
 
 These are product decisions, recorded as ADRs, not missing features:
@@ -207,6 +246,7 @@ These are product decisions, recorded as ADRs, not missing features:
 - Put signing identities in this repository ([ADR 0005](Documentation/adr/0005-generated-unsigned.md))
 - Depend on third-party Swift packages ([ADR 0004](Documentation/adr/0004-no-third-party-deps.md))
 - Infer “why” something changed — clustering is interval grouping, search is term matching
+- Fetch a server-driven surface over the network ([ADR 0010](Documentation/adr/0010-server-driven-surfaces.md)) — the runtime ships, the transport does not
 
 ## Five native apps
 

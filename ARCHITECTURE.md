@@ -122,11 +122,13 @@ flowchart TD
     Storage --> Models
     Capabilities --> Models
     DevTools --> Models
+    UI --> Surface[DiffuseSurface]
 ```
 
 | Swift package | Owns |
 | --- | --- |
 | `DiffuseModels` | Snapshot vocabulary, schemas, values, privacy, versions, change types |
+| `DiffuseSurface` | Server-driven surface contract, validation, sources, resolution. Foundation only |
 | `DiffuseDiff` | Pure schema-driven comparison, identity matching, severity, correlation |
 | `DiffuseStorage` | JSON coding, file store, queries, validation, migration, retention planning |
 | `DiffuseCapabilities` | Capability metadata, catalog, collector protocol, environment abstractions |
@@ -156,6 +158,7 @@ The graph above is not a description of how imports happen to have settled — i
 | `DiffuseDiff`, `DiffuseStorage`, `DiffuseCapabilities` depend on `DiffuseModels` and nothing else first-party | Keeps each one independently testable, and lets `diffuse-dev` link the engine without dragging in SwiftUI | Package graph; `swift build` |
 | No core package imports UIKit, AppKit, WatchKit, or WidgetKit | A Mac-only API leaking into shared code breaks the Watch build weeks later, in CI, far from the change that caused it | `Scripts/crosscheck.sh` type-checks the shared packages against the iOS and watchOS SDKs on every run of `make verify` |
 | `DiffuseUI` may import SwiftUI but not `DiffuseCollectors` | Presentation renders schemas, never a specific capability | Package graph |
+| `DiffuseSurface` imports only `Foundation`, like `DiffuseModels` | The same validation must run in tests, in `diffuse-dev`, and in a future publishing pipeline that rejects a bad payload before it ships | Compile failure; `Scripts/crosscheck.sh` |
 | Apps depend on packages; packages never depend on apps | `Apps/Shared` holds the widget bridge precisely because `DiffuseUI` cannot import WidgetKit | Package graph |
 | Android imports nothing from the Swift tree, and vice versa | The two families share data and behaviour, not binaries | Separate build systems |
 

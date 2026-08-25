@@ -28,6 +28,7 @@ The root [README](../README.md) is the public face. [AGENTS.md](../AGENTS.md) is
 | [Storage](Storage.md) | Save/load, query, retention, or on-disk layout |
 | [Privacy](Privacy.md) | Classification, redaction, export, threat model |
 | [Apps](Apps.md) | Mac / iOS / iPad / Watch / Android UI and scheduling |
+| [Server-driven surfaces](../ARCHITECTURE.md#server-driven-surfaces) | You are adding a described screen region or a new node type |
 | [CLI](CLI.md) | `diffuse-dev` commands and how they reuse the domain engine |
 | [Testing](Testing.md) | Where a test belongs, fixtures, coverage, common pitfalls |
 | [Repository](Repository.md) | Scripts, Makefile, CI, Docker, hooks, tree layout |
