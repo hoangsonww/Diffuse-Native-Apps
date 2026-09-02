@@ -233,14 +233,53 @@ jobs:
       #
       # android.yml already builds Android on a bare runner. That covers the
       # code; this covers the container, and the two fail for different reasons.
+      # Reused across runs so the container build stops re-resolving the whole
+      # dependency graph from Maven Central, which answers anonymous traffic
+      # with 429 under load. android.yml already resolves these once per push;
+      # without this, adding the container build doubled that traffic.
+      - name: Cache the Gradle dependencies the container build resolves
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle-container
+          key: gradle-container-${{ hashFiles('Android/build.gradle.kts', 'Android/settings.gradle.kts', 'Android/app/build.gradle.kts', 'Android/gradle.properties', 'Android/gradle/wrapper/gradle-wrapper.properties', 'Android/gradle/gradle-daemon-jvm.properties') }}
+          restore-keys: |
+            gradle-container-
+
       - name: Build the Android app inside the image
         run: |
           set -Eeuo pipefail
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace/Android \
-            "diffuse-dev:ci-${{ github.sha }}" \
-            bash -lc './gradlew --no-daemon assembleDebug testDebugUnitTest lintDebug'
+          mkdir -p "$HOME/.gradle-container"
+          log="$(mktemp)"
+          for attempt in 1 2 3; do
+            if docker run --rm \
+              -v "$PWD:/workspace" \
+              -v "$HOME/.gradle-container:/root/.gradle" \
+              -w /workspace/Android \
+              "diffuse-dev:ci-${{ github.sha }}" \
+              bash -lc './gradlew --no-daemon assembleDebug testDebugUnitTest lintDebug' 2>&1 | tee "$log"; then
+              break
+            fi
+            # Only an upstream rate limit earns a retry. A real build failure has
+            # to fail on the first attempt, or this stops being resilience and
+            # starts being a way to hide a flaky build.
+            if ! grep -qE "Too Many Requests|status code 429" "$log"; then
+              echo "Failed for a reason that is not upstream rate limiting. Not retrying."
+              exit 1
+            fi
+            if [ "$attempt" = 3 ]; then
+              echo "Maven Central still rate limiting after 3 attempts."
+              exit 1
+            fi
+            echo "Maven Central returned 429. Backing off before attempt $((attempt + 1))."
+            sleep $((attempt * 45))
+          done
+
+          # The container runs as root, so everything it wrote into the mounted
+          # workspace — Android/app/build in particular — is root-owned. Any
+          # later step that walks the tree then fails on it, which is how the
+          # cache post-step died with "Fail to hash files under directory".
+          # Hand it back before anything else looks at it.
+          sudo chown -R "$(id -u):$(id -g)" Android "$HOME/.gradle-container"
           echo "--- the build must have produced a real APK ---"
           apk="$(find Android -name '*-debug.apk' -print -quit)"
           test -n "$apk" && test -s "$apk"
