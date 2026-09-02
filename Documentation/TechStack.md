@@ -134,7 +134,7 @@ Machine-readable siblings: `robots.txt`, `sitemap.xml`, `llms.txt`, `humans.txt`
 | --- | --- |
 | **Git** | `.gitattributes` normalizes line endings, marks binaries, and keeps GitHub's language bar honest. |
 | **GitHub** | Source, issues, PRs, releases, and private security advisories. Also the only "backend" this product touches. |
-| **GitHub Actions** | Five workflows: `ci.yml` (format, tests + coverage, iOS/watchOS cross-check, four unsigned app builds, ShellCheck, one required "All green" gate), `android.yml`, `pages.yml`, `release-apple.yml`, `release-macos.yml`. |
+| **GitHub Actions** | Five workflows: `ci.yml` (format, tests + coverage, iOS/watchOS cross-check, four unsigned app builds, ShellCheck, a Docker toolbox image published to GHCR, one required "All green" gate), `android.yml`, `pages.yml`, `release-apple.yml`, `release-macos.yml`. |
 | **GitHub Pages** | Deploys `index.html`, `web/`, and the machine-readable files. The Swift tree is not published. |
 | **GNU Make** | `Makefile` wraps the scripts: `bootstrap`, `format`, `test`, `coverage`, `verify`, `hooks`, `docker-*`. |
 | **Docker + Compose** | `node:22-bookworm-slim` toolbox for docs, scripts, and hooks on Linux. It **cannot** build Apple targets. |

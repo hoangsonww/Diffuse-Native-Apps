@@ -476,7 +476,15 @@ make verify-devcontainer                    # build the image, assert its toolch
 ./Scripts/verify-devcontainer.sh --build    # also build the Android app inside it
 ```
 
-The image is pinned to `linux/amd64` because Google ships the Android command-line tools and build-tools for Linux as x86_64 binaries only. On Apple silicon it runs under emulation and is noticeably slower.
+The image is pinned to `linux/amd64` because Google ships the Android command-line tools and build-tools for Linux as x86_64 binaries only. On Apple silicon it runs under emulation and is noticeably slower. CI builds the same single architecture for the same reason — an arm64 image would build cleanly and then fail at `aapt2` and `d8`, which is worse than not offering the architecture at all.
+
+CI publishes this toolbox to the GitHub Container Registry on every push to a default branch, so you can pull it instead of building it:
+
+```bash
+docker run --rm -it ghcr.io/hoangsonww/diffuse-dev:latest bash
+```
+
+**A pull request builds the image but never publishes it.** A fork's token cannot write packages, and pushing an image built from unreviewed code to a tag other people pull is not something a green check should do. Every pull request still proves the image builds and that the toolchain inside it works — JDK 17, `adb`, `sdkmanager`, Node with dependencies installed, and the shell tools the hooks depend on are each asserted in a running container, because an image that builds while missing a toolchain fails later and further from the cause.
 
 Signing is not part of this repository. CI produces unsigned artifacts. Whoever ships Diffuse configures identities outside source control.
 
