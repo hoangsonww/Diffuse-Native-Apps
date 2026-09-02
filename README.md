@@ -486,6 +486,10 @@ docker run --rm -it ghcr.io/hoangsonww/diffuse-dev:latest bash
 
 **A pull request builds the image but never publishes it.** A fork's token cannot write packages, and pushing an image built from unreviewed code to a tag other people pull is not something a green check should do. Every pull request still proves the image builds and that the toolchain inside it works — JDK 17, `adb`, `sdkmanager`, Node with dependencies installed, and the shell tools the hooks depend on are each asserted in a running container, because an image that builds while missing a toolchain fails later and further from the cause.
 
+CI then builds the **actual Android app inside that image** — `assembleDebug`, unit tests, and lint — and uploads the resulting APK. Checking that `adb` exists proves a binary is present; it does not prove the image can still build the app. An SDK bump, a Gradle bump, or a missing platform breaks the build while leaving every binary check green. `android.yml` covers the same build on a bare runner: that one guards the code, this one guards the container, and they fail for different reasons.
+
+The Apple apps are absent from this image and always will be. Docker containers are Linux, Xcode is macOS-only with no Linux build, and Apple's licence forbids redistributing Xcode — any one of the three is fatal on its own.
+
 Signing is not part of this repository. CI produces unsigned artifacts. Whoever ships Diffuse configures identities outside source control.
 
 ### Android
