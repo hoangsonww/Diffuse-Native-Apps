@@ -113,7 +113,7 @@ Release workflows (tag `v*`):
 
 These are build artifacts, not App Store packages. Signing and notarization happen **outside** this repository.
 
-The marketing site (`index.html`, `web/`, `robots.txt`, `sitemap.xml`, `llms.txt`) deploys via `.github/workflows/pages.yml` to GitHub Pages. In the repository settings, set Pages source to **GitHub Actions**. Public URL: `https://hoangsonww.github.io/Diffuse/`.
+The marketing site (`index.html`, `web/`, `robots.txt`, `sitemap.xml`, `llms.txt`) deploys via `.github/workflows/pages.yml` to GitHub Pages. In the repository settings, set Pages source to **GitHub Actions**. Public URL: `https://hoangsonww.github.io/Diffuse-Native-Apps/`.
 
 ## Docker and Dev Container
 

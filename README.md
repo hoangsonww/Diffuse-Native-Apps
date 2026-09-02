@@ -67,7 +67,7 @@
 [![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps)
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/actions)
-[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse-Native-Apps/)
 [![Dependabot](https://img.shields.io/badge/Dependabot-025E8C?style=flat-square&logo=dependabot&logoColor=white)](https://docs.github.com/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
@@ -85,7 +85,7 @@
 [![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com)
 [![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)](https://gemini.google.com)
 [![Model Context Protocol](https://img.shields.io/badge/Model_Context_Protocol-000000?style=flat-square&logo=modelcontextprotocol&logoColor=white)](https://modelcontextprotocol.io)
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/tree/main/.agents/skills)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/tree/master/.agents/skills)
 
 Diffuse answers one question: *what changed on this device between these two points in time?*
 
@@ -93,7 +93,7 @@ It is a **local-first, five-platform native product**: macOS, iOS, iPadOS, watch
 
 Snapshots never leave the device unless you explicitly export one. There is no account, no cloud, no sync protocol, and no telemetry. GitHub is the only backend this repository talks to—and only for source, CI, and unsigned artifacts.
 
-**Site:** [hoangsonww.github.io/Diffuse](https://hoangsonww.github.io/Diffuse/)
+**Site:** [hoangsonww.github.io/Diffuse-Native-Apps](https://hoangsonww.github.io/Diffuse-Native-Apps/)
 
 ## What it does
 

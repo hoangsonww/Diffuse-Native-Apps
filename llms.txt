@@ -4,35 +4,35 @@
 
 Diffuse is not a cloud product. Five genuinely native apps — Android, macOS, iOS, iPadOS, watchOS — capture and compare snapshots on the device that observed them. The four Apple apps share a Swift domain engine. Android is native Kotlin. Snapshots never leave the device. There is no account, no telemetry, and no third-party Swift packages.
 
-- Site: https://hoangsonww.github.io/Diffuse/
+- Site: https://hoangsonww.github.io/Diffuse-Native-Apps/
 - Source: https://github.com/hoangsonww/Diffuse-Native-Apps
 - License: MIT
 
 ## Product
 
-- [Landing page](https://hoangsonww.github.io/Diffuse/): marketing site with screenshots and FAQ
-- [README](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/README.md): public summary, setup, architecture sketch
-- [Root architecture](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/ARCHITECTURE.md): Swift + Kotlin system map
+- [Landing page](https://hoangsonww.github.io/Diffuse-Native-Apps/): marketing site with screenshots and FAQ
+- [README](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/README.md): public summary, setup, architecture sketch
+- [Root architecture](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/ARCHITECTURE.md): Swift + Kotlin system map
 
 ## Docs
 
-- [Documentation index](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/README.md)
-- [Swift architecture](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Architecture.md)
-- [Android](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Android/README.md)
-- [Privacy](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Privacy.md)
-- [Apps](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Apps.md)
-- [CLI](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/CLI.md)
-- [Testing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Testing.md)
-- [Glossary](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Glossary.md)
-- [Tech stack](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/TechStack.md): every technology used and why
-- [Troubleshooting](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Troubleshooting.md): build, test, and emulator failures
-- [Releasing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/Releasing.md): tags, unsigned artifacts, versioning
-- [ADRs](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/Documentation/adr/README.md)
+- [Documentation index](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/README.md)
+- [Swift architecture](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Architecture.md)
+- [Android](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Android/README.md)
+- [Privacy](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Privacy.md)
+- [Apps](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Apps.md)
+- [CLI](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/CLI.md)
+- [Testing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Testing.md)
+- [Glossary](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Glossary.md)
+- [Tech stack](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/TechStack.md): every technology used and why
+- [Troubleshooting](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Troubleshooting.md): build, test, and emulator failures
+- [Releasing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/Releasing.md): tags, unsigned artifacts, versioning
+- [ADRs](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/adr/README.md)
 
 ## Optional
 
-- [Security policy](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/SECURITY.md)
-- [Support / FAQ](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/SUPPORT.md)
-- [Contributing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/CONTRIBUTING.md)
-- [Changelog](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/CHANGELOG.md)
-- [Citation](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/CITATION.cff)
+- [Security policy](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/SECURITY.md)
+- [Support / FAQ](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/SUPPORT.md)
+- [Contributing](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/CONTRIBUTING.md)
+- [Changelog](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/CHANGELOG.md)
+- [Citation](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/CITATION.cff)

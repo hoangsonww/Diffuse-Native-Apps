@@ -22,4 +22,4 @@ Allow: /
 User-agent: Applebot
 Allow: /
 
-Sitemap: https://hoangsonww.github.io/Diffuse/sitemap.xml
+Sitemap: https://hoangsonww.github.io/Diffuse-Native-Apps/sitemap.xml
