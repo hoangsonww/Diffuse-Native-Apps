@@ -65,8 +65,8 @@
 [![PWA Manifest](https://img.shields.io/badge/PWA_Manifest-5A0FC8?style=flat-square&logo=pwa&logoColor=white)](https://developer.mozilla.org/docs/Web/Manifest)
 [![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=flat-square&logo=googlefonts&logoColor=white)](https://fonts.google.com)
 [![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse/actions)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/actions)
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse/)
 [![Dependabot](https://img.shields.io/badge/Dependabot-025E8C?style=flat-square&logo=dependabot&logoColor=white)](https://docs.github.com/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
@@ -85,7 +85,7 @@
 [![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com)
 [![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)](https://gemini.google.com)
 [![Model Context Protocol](https://img.shields.io/badge/Model_Context_Protocol-000000?style=flat-square&logo=modelcontextprotocol&logoColor=white)](https://modelcontextprotocol.io)
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse/tree/main/.agents/skills)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/tree/main/.agents/skills)
 
 Diffuse answers one question: *what changed on this device between these two points in time?*
 
@@ -673,7 +673,7 @@ Machine-readable metadata is in [CITATION.cff](CITATION.cff); GitHub renders it 
   year    = {2026},
   version = {1.0.0},
   license = {MIT},
-  url     = {https://github.com/hoangsonww/Diffuse}
+  url     = {https://github.com/hoangsonww/Diffuse-Native-Apps}
 }
 ```
 

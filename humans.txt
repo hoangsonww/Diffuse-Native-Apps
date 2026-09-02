@@ -2,7 +2,7 @@
 
   Diffuse contributors
   Site: https://hoangsonww.github.io/Diffuse/
-  GitHub: https://github.com/hoangsonww/Diffuse
+  GitHub: https://github.com/hoangsonww/Diffuse-Native-Apps
 
 /* SITE */
 

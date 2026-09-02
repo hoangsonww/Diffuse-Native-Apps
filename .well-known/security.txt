@@ -1,5 +1,5 @@
-Contact: https://github.com/hoangsonww/Diffuse/security/advisories/new
+Contact: https://github.com/hoangsonww/Diffuse-Native-Apps/security/advisories/new
 Expires: 2027-08-19T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://hoangsonww.github.io/Diffuse/.well-known/security.txt
-Policy: https://github.com/hoangsonww/Diffuse/blob/main/SECURITY.md
+Policy: https://github.com/hoangsonww/Diffuse-Native-Apps/blob/main/SECURITY.md

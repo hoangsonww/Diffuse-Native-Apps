@@ -15,7 +15,7 @@ Please report vulnerabilities that would let an attacker:
 
 Do **not** open a public issue for these. Open a private GitHub security advisory:
 
-https://github.com/hoangsonww/Diffuse/security/advisories/new
+https://github.com/hoangsonww/Diffuse-Native-Apps/security/advisories/new
 
 Include: Diffuse version or commit, platform and OS version, steps to reproduce, impact (read / write / execute / exfiltrate), and whether any real user data was involved. Redact host names, SSIDs, and process lists from attachments.
 

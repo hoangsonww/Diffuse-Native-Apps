@@ -247,7 +247,7 @@ struct DiffuseCommands: Commands {
         }
 
         CommandGroup(replacing: .help) {
-            Link("Diffuse on GitHub", destination: URL(string: "https://github.com/hoangsonww/Diffuse")!)
+            Link("Diffuse on GitHub", destination: URL(string: "https://github.com/hoangsonww/Diffuse-Native-Apps")!)
         }
     }
 }
