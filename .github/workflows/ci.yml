@@ -241,7 +241,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle-container
-          key: gradle-container-${{ hashFiles('Android/gradle/libs.versions.toml', 'Android/**/*.gradle.kts', 'Android/gradle/wrapper/gradle-wrapper.properties') }}
+          key: gradle-container-${{ hashFiles('Android/**/*.gradle.kts', 'Android/gradle.properties', 'Android/gradle/wrapper/gradle-wrapper.properties', 'Android/gradle/gradle-daemon-jvm.properties') }}
           restore-keys: |
             gradle-container-
 
