@@ -13,11 +13,19 @@ public extension View {
     @ViewBuilder
     func diffuseTabBarBehavior() -> some View {
         #if os(iOS)
+        // `tabBarMinimizeBehavior` only exists in the iOS 26 SDK. `#available`
+        // is a *runtime* check, so the symbol still has to resolve at compile
+        // time and an older Xcode fails the build. Gate on the compiler, which
+        // tracks the SDK: Swift 6.2 is what ships with Xcode 26.
+        #if compiler(>=6.2)
         if #available(iOS 26.0, *) {
             tabBarMinimizeBehavior(.never)
         } else {
             self
         }
+        #else
+        self
+        #endif
         #else
         self
         #endif

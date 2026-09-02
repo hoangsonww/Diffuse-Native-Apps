@@ -15,12 +15,13 @@ Android is the one place with an external dependency graph, and it is limited to
 | --- | --- | --- |
 | Language | Swift 6, language mode `.v6`, complete concurrency | Kotlin 2.0.21, JVM target 17 |
 | UI | SwiftUI (+ AppKit / UIKit / WatchKit hosts) | Jetpack Compose, Material 3 |
-| Build | Swift Package Manager + XcodeGen + `xcodebuild` | Gradle 8.11.1, Android Gradle Plugin 8.10.1 |
+| Build | Swift Package Manager + XcodeGen + `xcodebuild` | Gradle 8.13, Android Gradle Plugin 8.10.1 |
 | Serialization | `Codable` / `JSONEncoder` (first-party `SnapshotCoding`) | `kotlinx.serialization` JSON |
 | Concurrency | Swift structured concurrency, actors, `TaskGroup` | Kotlin coroutines, `Flow`, `StateFlow` |
 | Scheduling | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` periodic work |
+| Server-driven UI | `DiffuseSurface` — JSON surfaces, validated, natively rendered, bundled source only | `domain.sdui` — the same contract via `kotlinx.serialization` |
 | Tests | Swift Testing (`@Test`, `#expect`, `@Suite`) | JUnit 4 + coroutines-test; Compose/Espresso instrumentation |
-| Coverage | `llvm-cov` via `Scripts/coverage.sh` | JaCoCo 0.8.12, 90% domain floor |
+| Coverage | `llvm-cov` via `Scripts/coverage.sh`, 90% package floor (92.4%) | JaCoCo 0.8.12, 90% domain floor (97.7%) |
 | Shrinking | `DEAD_CODE_STRIPPING`, whole-module release builds | R8 + ProGuard rules |
 
 ## Languages
@@ -62,11 +63,11 @@ Core packages import **no** UIKit or AppKit. `Scripts/crosscheck.sh` type-checks
 | Tool | Version | Role |
 | --- | --- | --- |
 | **Xcode** | 16+ | Builds the app targets. `xcodeVersion: "1600"` in `project.yml`. |
-| **Swift Package Manager** | Swift tools 6.0 | Declares 8 libraries, 1 executable, 12 test targets, and **zero** external dependencies. |
+| **Swift Package Manager** | Swift tools 6.0 | Declares 9 libraries, 1 executable, 13 test targets, and **zero** external dependencies. |
 | **XcodeGen** | latest via Homebrew | `project.yml` → `Diffuse.xcodeproj`. The project file is generated and gitignored ([ADR 0005](adr/0005-generated-unsigned.md)). |
 | **Swift Testing** | bundled | `@Test`, `#expect`, `@Suite`, parameterized cases. No new XCTest modules. |
 | **SwiftFormat** | via Homebrew, `.swiftformat` | `./Scripts/format.sh` in place; `--lint` in CI and in the pre-commit hook. |
-| **llvm-cov** | bundled with the toolchain | `./Scripts/coverage.sh` emits HTML, lcov, and a Markdown summary into the gitignored `coverage/`. First-party coverage; no Codecov. |
+| **llvm-cov** | bundled with the toolchain | `./Scripts/coverage.sh` emits HTML, lcov, and a Markdown summary into the gitignored `coverage/`, and fails below a 90% package line floor (currently 92.4%, `DIFFUSE_MINIMUM_COVERAGE` to raise). First-party coverage; no Codecov. |
 | **Homebrew** | — | Installs `xcodegen` and `swiftformat` in `Scripts/bootstrap.sh` and in CI. |
 
 Deployment targets: macOS 14, iOS 17, iPadOS 17, watchOS 10. `Package.swift` additionally declares tvOS 17 and visionOS 1 so the shared packages keep compiling for them, but no app target ships on those platforms.
@@ -76,7 +77,7 @@ Deployment targets: macOS 14, iOS 17, iPadOS 17, watchOS 10. `Package.swift` add
 | Technology | Version | Role |
 | --- | --- | --- |
 | **Android Gradle Plugin** | 8.10.1 | `compileSdk` / `targetSdk` 36, `minSdk` 26. |
-| **Gradle** | 8.11.1 wrapper, Kotlin DSL | `Android/build.gradle.kts`, `Android/app/build.gradle.kts`. `FAIL_ON_PROJECT_REPOS` keeps repository declarations centralized. |
+| **Gradle** | 8.13 wrapper, Kotlin DSL | `Android/build.gradle.kts`, `Android/app/build.gradle.kts`. `FAIL_ON_PROJECT_REPOS` keeps repository declarations centralized. |
 | **Jetpack Compose** | BOM `2024.12.01` | The whole UI. Adaptive: bottom bar under 720dp, navigation rail at and above it. |
 | **Material 3** | via the Compose BOM | `material3` plus `material-icons-extended`. Dynamic-capable theme in `ui/Theme.kt`. |
 | **AndroidX Activity Compose** | 1.13.0 | `ComponentActivity`, `setContent`, edge-to-edge, and the file-picker activity results. |
@@ -107,7 +108,7 @@ The JVM suite points `diffuse.fixtures` at the repository's root `Fixtures/` dir
 | --- | --- |
 | **JSON** | Snapshot schema v1, `index.json`, golden fixtures, `--json` CLI output, JSON-LD on the landing page. |
 | **XML** | Android manifest, resources, vector drawables, backup and data-extraction rules, JaCoCo reports, `sitemap.xml`. |
-| **YAML** | `project.yml` (XcodeGen), GitHub Actions workflows, issue-form templates, Dependabot, pre-commit, `CITATION.cff`. |
+| **YAML** | `project.yml` (XcodeGen), GitHub Actions workflows, issue-form templates, pre-commit, `CITATION.cff`. |
 | **Markdown** | All documentation, ADRs, agent skills, and the `ReportRenderer` export format. |
 | **Mermaid** | Every diagram in this repository is Mermaid inside Markdown. There are no binary diagram assets to drift. |
 | **SVG** | `Design/Icons/AppIcon.svg` is the icon master; Android vector drawables are SVG-derived. |
@@ -135,7 +136,6 @@ Machine-readable siblings: `robots.txt`, `sitemap.xml`, `llms.txt`, `humans.txt`
 | **GitHub** | Source, issues, PRs, releases, and private security advisories. Also the only "backend" this product touches. |
 | **GitHub Actions** | Five workflows: `ci.yml` (format, tests + coverage, iOS/watchOS cross-check, four unsigned app builds, ShellCheck, one required "All green" gate), `android.yml`, `pages.yml`, `release-apple.yml`, `release-macos.yml`. |
 | **GitHub Pages** | Deploys `index.html`, `web/`, and the machine-readable files. The Swift tree is not published. |
-| **Dependabot** | Watches GitHub Actions and the Husky npm tree only. There are no Swift packages to watch. |
 | **GNU Make** | `Makefile` wraps the scripts: `bootstrap`, `format`, `test`, `coverage`, `verify`, `hooks`, `docker-*`. |
 | **Docker + Compose** | `node:22-bookworm-slim` toolbox for docs, scripts, and hooks on Linux. It **cannot** build Apple targets. |
 | **Dev Containers** | `.devcontainer/devcontainer.json` points at the same Compose service for Codespaces. |

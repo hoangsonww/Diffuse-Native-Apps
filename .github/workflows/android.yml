@@ -57,7 +57,12 @@ jobs:
 
   instrumented-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # The emulator suite used to run cold: it re-downloaded the system image,
+    # created the AVD, and cold-booted on every run, then had 30 minutes to
+    # also build and run the tests. It did not fit, and a job killed by
+    # timeout-minutes is reported as "cancelled", so the failure looked like
+    # an infrastructure blip instead of a budget that was simply too small.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -65,24 +70,68 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: gradle
-      - uses: android-actions/setup-android@v3
-      - name: Install emulator image
-        run: sdkmanager "platform-tools" "emulator" "platforms;android-36" "build-tools;35.0.0" "system-images;android-34;google_apis;x86_64"
-      - name: Enable emulator acceleration
+
+      # `chmod` inside an `if [[ -e /dev/kvm ]]` silently does nothing when the
+      # node has not appeared yet, and the emulator then falls back to software
+      # CPU emulation, which is roughly an order of magnitude slower. The udev
+      # rule is the reliable way to get hardware acceleration on a runner.
+      - name: Enable KVM
         run: |
-          if [[ -e /dev/kvm ]]; then
-            sudo chmod 666 /dev/kvm
-          fi
-      - name: Create Android 14 emulator
-        run: avdmanager create avd --force --name diffuse-ci --package "system-images;android-34;google_apis;x86_64" --device pixel_6 <<< "no"
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Cache the AVD and its snapshot. The first run pays for creation and a
+      # cold boot; every later run restores a booted snapshot instead.
+      - name: Cache AVD
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-android-34-pixel6
+
+      - name: Create AVD and cache a booted snapshot
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          avd-name: diffuse-ci
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "AVD created and snapshotted."
+
       - name: Run instrumented tests
-        working-directory: Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          avd-name: diffuse-ci
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          # Window, transition and animator scales off: Compose and Espresso
+          # both wait on animations, so this is a correctness win as well as a
+          # speed one.
+          disable-animations: true
+          working-directory: Android
+          script: ./gradlew connectedDebugAndroidTest
+
+      # `if: failure()` never fires when a job is killed by timeout-minutes,
+      # because that outcome is "cancelled". This is the step that was supposed
+      # to explain the last three timeouts and stayed silent through all of them.
+      - name: Emulator and test diagnostics
+        if: ${{ failure() || cancelled() }}
         run: |
-          "$ANDROID_HOME/emulator/emulator" -avd diffuse-ci -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect >/tmp/diffuse-emulator.log 2>&1 &
-          adb wait-for-device
-          timeout 300 bash -c 'until [[ "$(adb shell getprop sys.boot_completed | tr -d "\r")" == "1" ]]; do sleep 2; done'
-          adb shell input keyevent 82
-          ./gradlew --no-daemon connectedDebugAndroidTest
-      - name: Show emulator log after failure
-        if: failure()
-        run: tail -n 300 /tmp/diffuse-emulator.log || true
+          echo "::group::Gradle test reports"
+          find Android/app/build/reports -name '*.html' -o -name '*.xml' 2>/dev/null | head -20 || true
+          echo "::endgroup::"
+          adb devices || true
+          adb logcat -d -t 300 || true

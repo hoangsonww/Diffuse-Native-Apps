@@ -40,4 +40,4 @@ Diffuse is a local-first device-history product. There is no hosted service to p
 ## Security
 
 Do not open a public issue. See [SECURITY.md](SECURITY.md) and
-https://github.com/hoangsonww/Diffuse/security/advisories/new
+https://github.com/hoangsonww/Diffuse-Native-Apps/security/advisories/new

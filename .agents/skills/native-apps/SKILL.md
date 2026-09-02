@@ -13,4 +13,16 @@ Four apps, one `DiffuseUI`. Platform code only for platform mechanisms (menu bar
 - Preferences (`DiffusePreferences`) already cover retention, redaction, schedule, search.
 - Unsigned CI builds: never add a development team to `project.yml`.
 
+Build and run without opening Xcode or looking up a simulator UDID:
+
+```bash
+make ios-run      # DiffuseiOS on an iPhone simulator
+make ipados-run   # DiffuseiPadOS on an iPad simulator
+make watch-run    # DiffuseWatch on a watch simulator
+make mac-run      # DiffuseMac on this machine
+make apple-devices
+```
+
+Each resolves and boots the right device family. Pin one with `DIFFUSE_SIMULATOR_ID`. Use these rather than calling `xcrun` or `xcodebuild` bare; `Scripts/apple.sh` handles project generation, device resolution, install, and launch.
+
 Read `Documentation/adr/0006-four-native-apps.md` and `Apps/AGENTS.md`.

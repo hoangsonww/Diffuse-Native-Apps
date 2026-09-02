@@ -16,7 +16,7 @@ A local-first systems tool that shells out to `git` already has a supply chain. 
 
 The Swift package graph is first-party only. The CLI uses a hand-rolled argument parser. Tests use Swift Testing (Apple). Formatting is a dev-time Homebrew tool (`SwiftFormat`), not a package dependency. Coverage is first-party `llvm-cov`.
 
-Dependabot, if used, watches GitHub Actions and the tiny npm tree for Husky — not Swift packages.
+There is no dependency bot. With no Swift packages to watch, the remaining surface is a handful of pinned Actions and the tiny npm tree for Husky, which a person bumps deliberately.
 
 ## Alternatives considered
 

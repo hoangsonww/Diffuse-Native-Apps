@@ -4,6 +4,7 @@
 
 **See what changed.**
 
+[![Server-Driven UI](https://img.shields.io/badge/Server--Driven_UI-5A0FC8?style=flat-square&logo=json&logoColor=white)](Documentation/adr/0010-server-driven-surfaces.md)
 [![Swift 6](https://img.shields.io/badge/Swift_6-F05138?style=flat-square&logo=swift&logoColor=white)](https://www.swift.org)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-0071E3?style=flat-square&logo=swift&logoColor=white)](https://developer.apple.com/xcode/swiftui/)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-F05138?style=flat-square&logo=swift&logoColor=white)](https://www.swift.org/package-manager/)
@@ -64,10 +65,9 @@
 [![PWA Manifest](https://img.shields.io/badge/PWA_Manifest-5A0FC8?style=flat-square&logo=pwa&logoColor=white)](https://developer.mozilla.org/docs/Web/Manifest)
 [![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=flat-square&logo=googlefonts&logoColor=white)](https://fonts.google.com)
 [![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse/actions)
-[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse/)
-[![Dependabot](https://img.shields.io/badge/Dependabot-025E8C?style=flat-square&logo=dependabot&logoColor=white)](https://docs.github.com/code-security/dependabot)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/actions)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse-Native-Apps/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Dev Containers](https://img.shields.io/badge/Dev_Containers-2496ED?style=flat-square&logo=docker&logoColor=white)](https://containers.dev)
@@ -84,7 +84,7 @@
 [![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com)
 [![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)](https://gemini.google.com)
 [![Model Context Protocol](https://img.shields.io/badge/Model_Context_Protocol-000000?style=flat-square&logo=modelcontextprotocol&logoColor=white)](https://modelcontextprotocol.io)
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse/tree/main/.agents/skills)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-000000?style=flat-square&logo=agentskills&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/tree/master/.agents/skills)
 
 Diffuse answers one question: *what changed on this device between these two points in time?*
 
@@ -92,7 +92,7 @@ It is a **local-first, five-platform native product**: macOS, iOS, iPadOS, watch
 
 Snapshots never leave the device unless you explicitly export one. There is no account, no cloud, no sync protocol, and no telemetry. GitHub is the only backend this repository talks to—and only for source, CI, and unsigned artifacts.
 
-**Site:** [hoangsonww.github.io/Diffuse](https://hoangsonww.github.io/Diffuse/)
+**Site:** [hoangsonww.github.io/Diffuse-Native-Apps](https://hoangsonww.github.io/Diffuse-Native-Apps/)
 
 ## What it does
 
@@ -198,6 +198,44 @@ Three things follow from that shape, and each is enforced by a test:
 
 Because the rules travel with the data, an app can open a snapshot produced by an older build — or by a capability it no longer collects — and still render, diff, search, export, and classify it honestly. Real examples: [`Fixtures/snapshots/`](Fixtures/snapshots/). Full reference: [Documentation/SnapshotSchema.md](Documentation/SnapshotSchema.md).
 
+## Server-driven surfaces
+
+Store review takes days. A confusing help section or a typo in onboarding
+should not have to wait that long, and every mature store app solves this with
+server-driven UI: the screen is described by data the app fetches rather than by
+code it ships.
+
+Diffuse cannot fetch anything — local-first is a product guarantee and the
+Android app declares no `INTERNET` permission. So **the runtime is built and the
+transport is not.** Surfaces are described by JSON, validated, and rendered
+natively; the only source is the app bundle. Adding a publisher later is one new
+`SurfaceSource` and one line of wiring, with the renderer, validator, and every
+test untouched.
+
+| A payload may | A payload may not |
+| --- | --- |
+| Supply text, ordering, and structure | Supply colours, fonts, or spacing |
+| Name an action the host already implements | Describe behaviour, expressions, or scripts |
+| Introduce a node type this build skips | Reach snapshots, the diff engine, or privacy handling |
+| Gate itself to a minimum app version | Force a screen to render nothing |
+
+Actions are **names**. A surface can ask for `capture`; it cannot say what
+capturing means. That indirection is what keeps a data channel from becoming an
+execution channel.
+
+Every surface has a hand-written native fallback. A payload that is missing,
+unreadable, built for a newer schema, aimed at a newer app version, or composed
+entirely of unknown nodes renders nothing and the native UI shows instead —
+individual bad nodes are pruned while their siblings still render. Delete every
+payload and the apps are exactly what they ship with, which is what makes the
+feature additive rather than load-bearing.
+
+This is [ADR 0003](Documentation/adr/0003-schema-driven-diff.md) applied one
+level up: a snapshot already carries the schema needed to render a capability
+the build has never heard of. Details in
+[ADR 0010](Documentation/adr/0010-server-driven-surfaces.md) and
+[ARCHITECTURE.md](ARCHITECTURE.md#server-driven-surfaces).
+
 ## What it will not do
 
 These are product decisions, recorded as ADRs, not missing features:
@@ -207,6 +245,7 @@ These are product decisions, recorded as ADRs, not missing features:
 - Put signing identities in this repository ([ADR 0005](Documentation/adr/0005-generated-unsigned.md))
 - Depend on third-party Swift packages ([ADR 0004](Documentation/adr/0004-no-third-party-deps.md))
 - Infer “why” something changed — clustering is interval grouping, search is term matching
+- Fetch a server-driven surface over the network ([ADR 0010](Documentation/adr/0010-server-driven-surfaces.md)) — the runtime ships, the transport does not
 
 ## Five native apps
 
@@ -234,7 +273,7 @@ flowchart TB
 
 ## Screenshots
 
-Captured from the live apps on **20 Aug 2026** — simulators, the macOS debug build, and a Pixel 6 Android 14 emulator. These are not mockups. Browse every PNG in [docs/screenshots](docs/screenshots/) — that directory is the complete, versioned gallery for all five apps.
+Captured from the live apps on **20 Aug 2026**, with the iPad set retaken on **22 Aug 2026** — simulators, the macOS debug build, and a Pixel 6 Android 14 emulator. These are not mockups. Browse every PNG in [docs/screenshots](docs/screenshots/) — that directory is the complete, versioned gallery for all five apps.
 
 ### Android
 
@@ -384,7 +423,16 @@ Argument parsing is hand-rolled — there is no `swift-argument-parser` ([ADR 00
 
 ## Develop
 
-Requires macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/XcodeGen), [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
+Start here on any machine:
+
+```bash
+make doctor    # what can this machine build?
+make help      # every supported command
+```
+
+`make doctor` reports the Apple, Android, and shared toolchains separately, so you learn up front which suites are available instead of discovering it when one fails halfway through.
+
+The Apple apps require macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/XcodeGen), and [SwiftFormat](https://github.com/nicklockwood/SwiftFormat).
 
 ```bash
 ./Scripts/bootstrap.sh    # generates Diffuse.xcodeproj (gitignored)
@@ -393,9 +441,21 @@ Requires macOS, Xcode 16+ / Swift 6, [XcodeGen](https://github.com/yonaskolb/Xco
 
 A healthy checkout prints `Diffuse is healthy.`
 
+Running any of the five apps takes one command — no Xcode UI, no simulator UDID, no JDK setup:
+
 ```bash
-swift test --parallel               # Swift Testing (~445 tests)
-./Scripts/coverage.sh               # llvm-cov HTML + lcov in coverage/ (gitignored)
+make ios-run        # DiffuseiOS on an iPhone simulator
+make ipados-run     # DiffuseiPadOS on an iPad simulator
+make watch-run      # DiffuseWatch on a watch simulator
+make mac-run        # DiffuseMac on this machine
+make android-run    # the Android app on a device or emulator
+```
+
+Each resolves and boots a simulator or checks for a connected device, builds, installs, and launches. `make apple-devices` and `make android-devices` list what is available; set `DIFFUSE_SIMULATOR_ID` to pin a specific one.
+
+```bash
+swift test --parallel               # Swift Testing (~588 tests)
+./Scripts/coverage.sh               # llvm-cov HTML + lcov, gated at 90% (currently 92.4%)
 swift run diffuse-dev --help        # capture, inspect, diff, validate, fixtures, privacy
 open Diffuse.xcodeproj              # generated; do not check it in
 ```
@@ -406,18 +466,33 @@ Git hooks (optional, Node 20+):
 npm install    # Husky + lint-staged; also installed by ./Scripts/bootstrap.sh
 ```
 
-Docker / Dev Container cover docs, scripts, and hooks — **not** Xcode builds:
+Docker / Dev Container cover docs, scripts, hooks, and the full **Android** build — **not** Xcode builds, which need macOS:
 
 ```bash
 docker compose up -d
 docker compose exec dev bash
+
+make verify-devcontainer                    # build the image, assert its toolchain works
+./Scripts/verify-devcontainer.sh --build    # also build the Android app inside it
 ```
+
+The image is pinned to `linux/amd64` because Google ships the Android command-line tools and build-tools for Linux as x86_64 binaries only. On Apple silicon it runs under emulation and is noticeably slower.
 
 Signing is not part of this repository. CI produces unsigned artifacts. Whoever ships Diffuse configures identities outside source control.
 
 ### Android
 
-Requires JDK 17+, Android SDK 36, and an emulator or device for instrumentation tests.
+Requires Android SDK 36, and an emulator or device for instrumentation tests. **A JDK is not a prerequisite** — `Android/gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so Gradle 8.13 downloads and runs on its own Adoptium JDK 17 for the host OS and architecture. `./gradlew` works on a clean checkout whatever `java` is on `PATH`, including no JDK at all; the first build pays a one-time ~180 MB download.
+
+```bash
+make android-run        # build, install, and launch
+make android-test       # unit tests with coverage
+make android-lint
+make android-release    # unsigned release APK
+make gradle ARGS="bundleRelease"
+```
+
+Raw Gradle works too:
 
 ```bash
 cd Android
@@ -428,14 +503,14 @@ cd Android
 ./gradlew lintDebug assembleDebug bundleRelease
 ```
 
-The Android JVM suite exercises the pure Kotlin engine and reads the repository’s shared `Fixtures/` directly. CI enforces at least 90% line coverage for `com.diffuse.android.domain`; emulator tests cover Android collectors, preferences, storage/service integration, navigation, dialogs, rotation, and adaptive layout.
+The Android JVM suite (96 tests) exercises the pure Kotlin engine and reads the repository’s shared `Fixtures/` directly. CI enforces at least 90% line coverage for `com.diffuse.android.domain`, currently **97.7%**; the 15 emulator tests cover Android collectors, preferences, storage/service integration, navigation, dialogs, rotation, and adaptive layout. Compose UI and the Android framework collectors are measured there rather than inflating the JVM number with mocks.
 
 ### Verification matrix
 
 | Concern | Apple | Android |
 | --- | --- | --- |
 | Domain tests | Swift Testing | JUnit + coroutine test |
-| Coverage | First-party `llvm-cov` | JaCoCo, 90% domain floor |
+| Coverage | First-party `llvm-cov`, 90% floor — **92.4%** | JaCoCo, 90% domain floor — **97.7%** |
 | UI/device tests | Unsigned simulator builds + live capture | Compose instrumentation on emulator |
 | Cross-platform contract | Golden schema-v1 snapshots/diffs | The same fixtures decoded and diffed in Kotlin |
 | Static checks | SwiftFormat + SDK cross-check | Android Lint + release shrinking |
@@ -473,7 +548,7 @@ Two native families, one contract, and a deliberately short dependency list.
 | --- | --- | --- |
 | Language | Swift 6, language mode `.v6`, complete concurrency | Kotlin 2.0.21 on JVM 17 |
 | UI | SwiftUI, with AppKit / UIKit / WatchKit hosts | Jetpack Compose, Material 3 |
-| Build | Swift Package Manager, XcodeGen, `xcodebuild` | Gradle 8.11.1, AGP 8.10.1 |
+| Build | Swift Package Manager, XcodeGen, `xcodebuild` | Gradle 8.13, AGP 8.10.1 |
 | Concurrency | Structured concurrency, actors, `TaskGroup` | Coroutines, `Flow`, `StateFlow` |
 | Serialization | `Codable` via first-party `SnapshotCoding` | `kotlinx.serialization` |
 | Background work | `Timer`, `BGAppRefreshTask`, `WKApplicationRefreshBackgroundTask` | `WorkManager` |
@@ -597,7 +672,7 @@ Machine-readable metadata is in [CITATION.cff](CITATION.cff); GitHub renders it 
   year    = {2026},
   version = {1.0.0},
   license = {MIT},
-  url     = {https://github.com/hoangsonww/Diffuse}
+  url     = {https://github.com/hoangsonww/Diffuse-Native-Apps}
 }
 ```
 

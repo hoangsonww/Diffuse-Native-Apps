@@ -10,8 +10,8 @@ authors:
     alias: hoangsonww
     orcid: "https://orcid.org/0009-0002-7806-068X"
   - name: "The Diffuse contributors"
-repository-code: "https://github.com/hoangsonww/Diffuse"
-url: "https://hoangsonww.github.io/Diffuse/"
+repository-code: "https://github.com/hoangsonww/Diffuse-Native-Apps"
+url: "https://hoangsonww.github.io/Diffuse-Native-Apps/"
 abstract: >-
   Diffuse is a local-first device-history product built as five genuinely
   native applications: macOS, iOS, iPadOS, and watchOS in Swift 6 and

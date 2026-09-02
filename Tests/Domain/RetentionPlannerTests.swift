@@ -8,6 +8,14 @@ import Testing
 struct RetentionPlannerTests {
     private let now = SnapshotBuilder.referenceDate
 
+    /// Ages as an explicit `TimeInterval`. Written as a function rather than
+    /// an integer expression inside the tuple literals below: older Swift
+    /// cannot propagate the `Double` element type into a labelled-tuple array
+    /// literal, so `10 * 86400` there infers as `Int` and fails to convert.
+    private func days(_ count: Double) -> TimeInterval {
+        count * 86400
+    }
+
     private func summaries(_ specs: [(id: String, age: TimeInterval, pinned: Bool, label: String?)])
         -> [SnapshotSummary] {
         specs.map { spec in
@@ -24,8 +32,8 @@ struct RetentionPlannerTests {
     func unlimitedKeepsEverything() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("new", 0, false, nil),
-                ("old", 10 * 86400, false, nil),
+                ("new", days(0), false, nil),
+                ("old", days(10), false, nil),
             ]),
             policy: .unlimited,
             now: now,
@@ -39,7 +47,7 @@ struct RetentionPlannerTests {
     @Test("The newest snapshot is never deleted, even when it is older than the window")
     func newestAlwaysSurvives() {
         let plan = RetentionPlanner.plan(
-            summaries: summaries([("only", 400 * 86400, false, nil)]),
+            summaries: summaries([("only", days(400), false, nil)]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil, maximumCount: 1),
             now: now,
             averageBytesPerSnapshot: 1000
@@ -52,23 +60,23 @@ struct RetentionPlannerTests {
     func ageWindow() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 1 * 86400, false, nil),
-                ("stale", 40 * 86400, false, nil),
+                ("fresh", days(1), false, nil),
+                ("stale", days(40), false, nil),
             ]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil),
             now: now,
             averageBytesPerSnapshot: 100
         )
         #expect(plan.deletions == [SnapshotID("stale")])
-        #expect(plan.reasons[SnapshotID("stale")] == .tooOld)
+        #expect(plan.reasons[SnapshotID("stale")] == RetentionPlanner.Reason.tooOld)
     }
 
     @Test("Pinned snapshots survive the age window")
     func pinnedSurvivesAge() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 0, false, nil),
-                ("keep", 400 * 86400, true, nil),
+                ("fresh", days(0), false, nil),
+                ("keep", days(400), true, nil),
             ]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil),
             now: now,
@@ -81,8 +89,8 @@ struct RetentionPlannerTests {
     func labelledIsProtected() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 0, false, nil),
-                ("named", 400 * 86400, false, "before the upgrade"),
+                ("fresh", days(0), false, nil),
+                ("named", days(400), false, "before the upgrade"),
             ]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil),
             now: now,
@@ -95,8 +103,8 @@ struct RetentionPlannerTests {
     func emptyLabelIsNotProtection() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 0, false, nil),
-                ("blank", 400 * 86400, false, ""),
+                ("fresh", days(0), false, nil),
+                ("blank", days(400), false, ""),
             ]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil),
             now: now,
@@ -110,8 +118,8 @@ struct RetentionPlannerTests {
         let policy = RetentionPolicy(age: .days(30), maximumBytes: nil, protectsLabelled: false)
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 0, false, nil),
-                ("named", 400 * 86400, false, "keep me"),
+                ("fresh", days(0), false, nil),
+                ("named", days(400), false, "keep me"),
             ]),
             policy: policy,
             now: now,
@@ -124,7 +132,7 @@ struct RetentionPlannerTests {
     func countLimit() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("a", 0, false, nil),
+                ("a", days(0), false, nil),
                 ("b", 100, false, nil),
                 ("c", 200, false, nil),
                 ("d", 300, false, nil),
@@ -142,7 +150,7 @@ struct RetentionPlannerTests {
     func pinnedDoesNotConsumeQuota() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("newest", 0, false, nil),
+                ("newest", days(0), false, nil),
                 ("pinned", 50, true, nil),
                 ("extra", 100, false, nil),
             ]),
@@ -159,8 +167,8 @@ struct RetentionPlannerTests {
     func sizeLimit() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("a", 0, false, nil),
-                ("b", 10, false, nil),
+                ("a", days(0), false, nil),
+                ("b", days(10), false, nil),
                 ("c", 20, false, nil),
             ]),
             policy: RetentionPolicy(age: .forever, maximumBytes: 150),
@@ -176,7 +184,7 @@ struct RetentionPlannerTests {
     @Test("Zero average bytes skips the size pass rather than dividing by zero")
     func zeroAverageSkipsSize() {
         let plan = RetentionPlanner.plan(
-            summaries: summaries([("a", 0, false, nil), ("b", 10, false, nil)]),
+            summaries: summaries([("a", days(0), false, nil), ("b", days(10), false, nil)]),
             policy: RetentionPolicy(age: .forever, maximumBytes: 1),
             now: now,
             averageBytesPerSnapshot: 0
@@ -188,14 +196,14 @@ struct RetentionPlannerTests {
     func ageWinsOverCount() {
         let plan = RetentionPlanner.plan(
             summaries: summaries([
-                ("fresh", 0, false, nil),
-                ("stale", 40 * 86400, false, nil),
+                ("fresh", days(0), false, nil),
+                ("stale", days(40), false, nil),
             ]),
             policy: RetentionPolicy(age: .days(30), maximumBytes: nil, maximumCount: 1),
             now: now,
             averageBytesPerSnapshot: 100
         )
-        #expect(plan.reasons[SnapshotID("stale")] == .tooOld)
+        #expect(plan.reasons[SnapshotID("stale")] == RetentionPlanner.Reason.tooOld)
     }
 
     @Test("Ties on capturedAt are broken by identifier")
@@ -217,12 +225,12 @@ struct RetentionPlannerTests {
     @Test("Forever age never emits tooOld")
     func foreverNeverTooOld() {
         let plan = RetentionPlanner.plan(
-            summaries: summaries([("ancient", 10000 * 86400, false, nil), ("new", 0, false, nil)]),
+            summaries: summaries([("ancient", days(10000), false, nil), ("new", days(0), false, nil)]),
             policy: RetentionPolicy(age: .forever, maximumBytes: nil),
             now: now,
             averageBytesPerSnapshot: 100
         )
-        #expect(plan.reasons.values.allSatisfy { $0 != .tooOld })
+        #expect(plan.reasons.values.allSatisfy { $0 != RetentionPlanner.Reason.tooOld })
         #expect(plan.isEmpty)
     }
 

@@ -11,7 +11,7 @@ body:
         scope. There is no account, no cloud, and no telemetry — proposals that
         need those will be closed.
 
-        Read [Documentation/README.md](https://github.com/hoangsonww/Diffuse/blob/main/Documentation/README.md)
+        Read [Documentation/README.md](https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/Documentation/README.md)
         and the ADRs first. A new observation is usually a Capability issue, not a Feature.
   - type: textarea
     id: problem

@@ -124,12 +124,33 @@ echo "sdk.dir=$HOME/Library/Android/sdk" > Android/local.properties
 
 ### Wrong JDK
 
+Usually you do not have to do anything. `Android/gradle/gradle-daemon-jvm.properties` pins daemon JVM criteria, so Gradle downloads and runs on its own Adoptium JDK 17 rather than whatever is on `PATH`. Use the wrapper targets and this problem does not arise:
+
+```bash
+make android-build     # resolves a JDK 17 before invoking Gradle
+```
+
+If a raw `./gradlew` still reports `Android Gradle plugin requires Java 17`, the daemon criteria were not picked up. Confirm the file exists, then either use `make android-build` or set the JDK explicitly:
+
 ```bash
 java -version    # expect 17
 export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 ```
 
 The build sets `sourceCompatibility`, `targetCompatibility`, and `jvmTarget` to 17. A newer JDK on `PATH` will fail the Kotlin compile with a jvm-target mismatch.
+
+### The first Android build is slow
+
+Gradle is downloading its own JDK 17 (~180 MB into `~/.gradle/jdks/`) and the Gradle distribution. Both are cached; later builds take seconds.
+
+### `adb: command not found`
+
+`platform-tools` is not on `PATH`, which is the default after an Android Studio install. The wrapper targets resolve `adb` from `ANDROID_HOME` for you:
+
+```bash
+make android-devices   # lists connected devices
+make android-run       # installs and launches
+```
 
 ### `FixtureCompatibilityTest` cannot find fixtures
 
@@ -165,6 +186,32 @@ CI creates a Pixel 6 API 34 image with `google_apis;x86_64` and waits for `sys.b
 and add a keep rule rather than disabling minification.
 
 ## Running the apps
+
+Each app has a one-command entry point that resolves a simulator or device for you: `make ios-run`, `ipados-run`, `watch-run`, `mac-run`, and `android-run`. Start there before debugging Xcode schemes or destinations by hand.
+
+### No simulator was found
+
+```bash
+make apple-devices    # what this machine offers
+```
+
+`Scripts/apple.sh` picks the first available iPhone, iPad, or Apple Watch simulator for the requested platform. If the right one is not chosen, pin it:
+
+```bash
+DIFFUSE_SIMULATOR_ID=<udid> make ios-run
+```
+
+If the list is empty, install a simulator runtime through Xcode → Settings → Platforms.
+
+### `make android-run` says there is no connected device
+
+```bash
+make android-devices
+"$ANDROID_HOME"/emulator/emulator -list-avds
+"$ANDROID_HOME"/emulator/emulator -avd <name> &
+```
+
+Wait for the boot to finish before rerunning; the target checks for a device in `device` state, not merely a running emulator process.
 
 ### Widgets and complications are empty
 

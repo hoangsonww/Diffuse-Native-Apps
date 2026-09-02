@@ -26,12 +26,15 @@ struct IPadRootView: View {
     @State private var reportMarkdown = ""
 
     var body: some View {
-        Group {
-            if sizeClass == .compact {
-                compactSplit
-            } else {
-                threeColumnWorkspace
+        GeometryReader { proxy in
+            Group {
+                if sizeClass == .compact || proxy.size.width < Self.workspaceMinimumWidth {
+                    compactSplit
+                } else {
+                    threeColumnWorkspace
+                }
             }
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .tint(DiffuseTheme.Palette.accent)
         .diffuseCanvas()
@@ -106,21 +109,45 @@ struct IPadRootView: View {
         .navigationSplitViewStyle(.balanced)
     }
 
+    /// The narrowest width the three-column workspace can occupy without
+    /// clipping: the columns' own minimums plus both dividers and their gutters.
+    ///
+    /// A regular horizontal size class is not enough on its own. Every iPad
+    /// reports regular in full-screen portrait, including an iPad mini at 744pt,
+    /// which is narrower than the columns require — the workspace then overflowed
+    /// and clipped the first column's title and the last column's text. Below
+    /// this width the system split view is the correct layout.
+    private static let workspaceMinimumWidth: CGFloat = 890
+
     private var threeColumnWorkspace: some View {
         HStack(spacing: 0) {
             NavigationStack { snapshotColumn }
                 .frame(minWidth: 240, idealWidth: 280, maxWidth: 320)
-            Rectangle()
-                .fill(DiffuseTheme.Palette.hairline)
-                .frame(width: 1)
+            columnDivider
             NavigationStack { changeColumn }
                 .frame(minWidth: 320)
-            Rectangle()
-                .fill(DiffuseTheme.Palette.hairline)
-                .frame(width: 1)
+            columnDivider
             NavigationStack { detailColumn }
                 .frame(minWidth: 280)
         }
+    }
+
+    /// A hairline with a gutter either side. Butted straight against a column,
+    /// the next column's large title starts almost on the rule, which reads as a
+    /// crowded header rather than a boundary between columns.
+    private var columnDivider: some View {
+        Rectangle()
+            .fill(DiffuseTheme.Palette.hairline)
+            .frame(width: 1)
+            .padding(.horizontal, DiffuseTheme.Spacing.medium)
+    }
+
+    /// Horizontal inset for column content, chosen to match the leading inset
+    /// SwiftUI gives a large navigation title at the same size class. With plain
+    /// `Spacing.regular` the title sits about four points further in than the
+    /// rows beneath it, which is visible once columns sit side by side.
+    private var columnInset: CGFloat {
+        sizeClass == .compact ? DiffuseTheme.Spacing.regular : 20
     }
 
     // MARK: - Column one: snapshots
@@ -176,7 +203,8 @@ struct IPadRootView: View {
                     }
                 }
             }
-            .padding(DiffuseTheme.Spacing.regular)
+            .padding(.vertical, DiffuseTheme.Spacing.regular)
+            .padding(.horizontal, columnInset)
         }
         .diffuseCanvas()
         .navigationTitle("Snapshots")
@@ -248,7 +276,8 @@ struct IPadRootView: View {
                 }
                 .font(.subheadline)
             }
-            .padding(DiffuseTheme.Spacing.regular)
+            .padding(.vertical, DiffuseTheme.Spacing.regular)
+            .padding(.horizontal, columnInset)
             .background(.bar)
         }
         .sheet(item: $inspectedID) { id in
@@ -304,7 +333,8 @@ struct IPadRootView: View {
                             }
                         }
                     }
-                    .padding(DiffuseTheme.Spacing.regular)
+                    .padding(.vertical, DiffuseTheme.Spacing.regular)
+                    .padding(.horizontal, columnInset)
                 }
             } else {
                 EmptyStateView(
@@ -371,7 +401,8 @@ struct IPadRootView: View {
                         ChangeClusterCard(cluster: cluster, changes: comparison.changes(in: cluster))
                     }
                 }
-                .padding(DiffuseTheme.Spacing.regular)
+                .padding(.vertical, DiffuseTheme.Spacing.regular)
+                .padding(.horizontal, columnInset)
             }
             .diffuseCanvas()
             .navigationTitle("Clusters")

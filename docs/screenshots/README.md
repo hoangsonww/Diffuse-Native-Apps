@@ -1,6 +1,6 @@
 # Screenshots
 
-Taken from the running native apps on **20 Aug 2026**. Replace these PNGs from the live apps when UI changes. Do not invent marketing images. Skill: `screenshots`. App icons are a different pipeline: [Design/Icons/README.md](../../Design/Icons/README.md).
+Taken from the running native apps on **20 Aug 2026**; the iPad set was retaken on **22 Aug 2026** after the workspace column alignment fix, and the Watch set on **23 Aug 2026** after the glance rework, the wrapping severity chips, and the pushed-screen background fix. Replace these PNGs from the live apps when UI changes. Do not invent marketing images. Skill: `screenshots`. App icons are a different pipeline: [Design/Icons/README.md](../../Design/Icons/README.md).
 
 The iPhone shots are full-device framebuffers (1206×2622). A missing launch screen previously letterboxed the UI to a 320×480 compatibility size; that is fixed.
 
