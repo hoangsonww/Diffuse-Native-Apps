@@ -98,7 +98,7 @@ npm install    # Husky + lint-staged; also offered by bootstrap
 | SDK cross-check | macos-15 matrix | `ios`, `watchos` |
 | Build | macos-15 matrix | Unsigned Release of DiffuseMac / DiffuseiOS / DiffuseiPadOS / DiffuseWatch |
 | Scripts | ubuntu-latest | ShellCheck on `Scripts/*.sh`, hook scripts |
-| Docker toolbox image | ubuntu-latest | Builds `Dockerfile` for `linux/amd64`, asserts the toolchain inside a running container, publishes `ghcr.io/hoangsonww/diffuse-dev` on a branch push. Pull requests build but never publish. |
+| Docker toolbox image | ubuntu-latest | Builds `Dockerfile` for `linux/amd64`, asserts the toolchain inside a running container, builds the Android app *inside* that image (`assembleDebug testDebugUnitTest lintDebug`) and uploads the APK, then publishes `ghcr.io/hoangsonww/diffuse-dev` on a branch push. Pull requests build but never publish. |
 | **All green** | ubuntu-latest | Required check: every job above succeeded |
 
 Android runs in [`.github/workflows/android.yml`](../.github/workflows/android.yml): JVM tests, JaCoCo domain coverage verification, Android Lint, Compose/device instrumentation, and unsigned debug/release builds. It is intentionally separate from the Xcode matrix.

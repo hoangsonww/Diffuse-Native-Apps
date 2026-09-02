@@ -226,6 +226,35 @@ jobs:
           docker run --rm "$image" bash -lc 'command -v git make jq python3 shellcheck >/dev/null'
           echo "Toolchain verified."
 
+      # Asserting that adb and sdkmanager exist proves the binaries are present,
+      # not that this image can still build the app — an SDK bump, a Gradle
+      # bump, or a missing platform breaks the build while leaving every
+      # binary check green. So build the real thing inside the published image.
+      #
+      # android.yml already builds Android on a bare runner. That covers the
+      # code; this covers the container, and the two fail for different reasons.
+      - name: Build the Android app inside the image
+        run: |
+          set -Eeuo pipefail
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace/Android \
+            "diffuse-dev:ci-${{ github.sha }}" \
+            bash -lc './gradlew --no-daemon assembleDebug testDebugUnitTest lintDebug'
+          echo "--- the build must have produced a real APK ---"
+          apk="$(find Android -name '*-debug.apk' -print -quit)"
+          test -n "$apk" && test -s "$apk"
+          unzip -l "$apk" | grep -q AndroidManifest.xml
+          echo "Container-built APK verified: $apk ($(du -h "$apk" | cut -f1))"
+
+      - name: Upload the container-built debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk-container-built
+          path: Android/**/*-debug.apk
+          if-no-files-found: warn
+
       - name: Log in to GHCR
         if: steps.mode.outputs.push == 'true'
         uses: docker/login-action@v3
