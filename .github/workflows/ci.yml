@@ -26,7 +26,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install SwiftFormat
         run: brew install swiftformat
       - name: Lint
@@ -37,9 +37,9 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 35
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Cache Swift PM
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             .build
@@ -57,7 +57,7 @@ jobs:
           fi
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage/
@@ -73,7 +73,7 @@ jobs:
       matrix:
         platform: [ios, watchos]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Type-check shared packages
         run: ./Scripts/crosscheck.sh ${{ matrix.platform }}
 
@@ -94,7 +94,7 @@ jobs:
           - scheme: DiffuseWatch
             destination: generic/platform=watchOS
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
@@ -117,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: ShellCheck
         run: |
           sudo apt-get update -qq

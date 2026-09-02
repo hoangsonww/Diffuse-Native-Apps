@@ -26,15 +26,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Assemble site
         run: |
           mkdir -p _site/web _site/.well-known
           cp index.html 404.html robots.txt sitemap.xml llms.txt humans.txt site.webmanifest .nojekyll _site/
           cp -R web/. _site/web/
           cp .well-known/security.txt _site/.well-known/
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - id: deploy
