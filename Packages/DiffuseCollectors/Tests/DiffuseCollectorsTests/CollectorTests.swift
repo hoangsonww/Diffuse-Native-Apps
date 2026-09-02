@@ -351,7 +351,7 @@ struct MacCollectorTests {
         let safari = try #require(snapshot.entities.first { $0.identity.value == "safari" })
 
         #expect(snapshot.attributes[.processCount] == .integer(4))
-        #expect(safari[.memoryFootprint] == .bytes((102_400 + 51200) * 1024))
+        #expect(safari[.memoryFootprint] == .bytes(Int64(102_400 + 51200) * 1024))
         #expect(snapshot.entities.count == 3)
     }
 
