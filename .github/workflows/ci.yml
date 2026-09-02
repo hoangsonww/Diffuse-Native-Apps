@@ -241,7 +241,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle-container
-          key: gradle-container-${{ hashFiles('Android/**/*.gradle.kts', 'Android/gradle.properties', 'Android/gradle/wrapper/gradle-wrapper.properties', 'Android/gradle/gradle-daemon-jvm.properties') }}
+          key: gradle-container-${{ hashFiles('Android/build.gradle.kts', 'Android/settings.gradle.kts', 'Android/app/build.gradle.kts', 'Android/gradle.properties', 'Android/gradle/wrapper/gradle-wrapper.properties', 'Android/gradle/gradle-daemon-jvm.properties') }}
           restore-keys: |
             gradle-container-
 
@@ -273,6 +273,13 @@ jobs:
             echo "Maven Central returned 429. Backing off before attempt $((attempt + 1))."
             sleep $((attempt * 45))
           done
+
+          # The container runs as root, so everything it wrote into the mounted
+          # workspace — Android/app/build in particular — is root-owned. Any
+          # later step that walks the tree then fails on it, which is how the
+          # cache post-step died with "Fail to hash files under directory".
+          # Hand it back before anything else looks at it.
+          sudo chown -R "$(id -u):$(id -g)" Android "$HOME/.gradle-container"
           echo "--- the build must have produced a real APK ---"
           apk="$(find Android -name '*-debug.apk' -print -quit)"
           test -n "$apk" && test -s "$apk"
