@@ -158,14 +158,19 @@ public struct SnapshotTimelineView<Row: View>: View {
     /// Pure date formatting. Explicitly `nonisolated` so tests and other
     /// non-main-actor callers can use it: it is only inferred as
     /// `@MainActor` because it lives on a `View`.
-    public nonisolated static func title(for day: Date, calendar: Calendar) -> String {
-        if calendar.isDateInToday(day) {
+    /// `now` is injected so the heading is a pure function of its inputs.
+    /// `isDateInToday` and a bare `Date()` both read the wall clock at the
+    /// moment they run, which makes "Today" depend on when the caller is
+    /// evaluated rather than on the day it was asked about.
+    public nonisolated static func title(for day: Date, calendar: Calendar, now: Date = Date()) -> String {
+        if calendar.isDate(day, inSameDayAs: now) {
             return "Today"
         }
-        if calendar.isDateInYesterday(day) {
+        if let yesterday = calendar.date(byAdding: .day, value: -1, to: now),
+           calendar.isDate(day, inSameDayAs: yesterday) {
             return "Yesterday"
         }
-        if let week = calendar.date(byAdding: .day, value: -6, to: Date()), day >= calendar.startOfDay(for: week) {
+        if let week = calendar.date(byAdding: .day, value: -6, to: now), day >= calendar.startOfDay(for: week) {
             return day.formatted(.dateTime.weekday(.wide))
         }
         return day.formatted(date: .abbreviated, time: .omitted)

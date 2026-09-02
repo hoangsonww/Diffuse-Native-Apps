@@ -1,9 +1,33 @@
 name: CI
 
+# The Apple matrix is eight macOS jobs. Prose, screenshots, and the marketing
+# site cannot break a Swift build, so they do not get to spend it. Anything
+# that can affect compilation — sources, Package.swift, project.yml, scripts,
+# fixtures, or this workflow — is absent from the ignore list and still runs.
 on:
   pull_request:
+    paths-ignore: &docs
+      - "**/*.md"
+      - "Documentation/**"
+      - "docs/**"
+      - "web/**"
+      - "index.html"
+      - "404.html"
+      - "*.txt"
+      - "sitemap.xml"
+      - "robots.txt"
+      - "site.webmanifest"
+      - "LICENSE"
+      - "CITATION.cff"
+      - ".well-known/**"
+      - ".agents/**"
+      - ".claude/**"
+      - ".cursor/**"
+      - ".codex/**"
+      - ".github/ISSUE_TEMPLATE/**"
   push:
     branches: [main, master]
+    paths-ignore: *docs
   workflow_dispatch:
 
 # Unsigned, hermetic, first-party. No developer-account secrets, no code
