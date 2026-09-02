@@ -68,7 +68,6 @@
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps)
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/hoangsonww/Diffuse-Native-Apps/actions)
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white)](https://hoangsonww.github.io/Diffuse-Native-Apps/)
-[![Dependabot](https://img.shields.io/badge/Dependabot-025E8C?style=flat-square&logo=dependabot&logoColor=white)](https://docs.github.com/code-security/dependabot)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Dev Containers](https://img.shields.io/badge/Dev_Containers-2496ED?style=flat-square&logo=docker&logoColor=white)](https://containers.dev)

@@ -9,4 +9,4 @@ The contract for every agent is `AGENTS.md`. Product docs start at `Documentatio
 - Settings: `.claude/settings.json`
 - Subagents: `.claude/agents/`
 
-Do not add CodeQL, Super-Linter, or other noisy static scanners. Do not put signing identities in the tree.
+Do not add CodeQL, Super-Linter, or other noisy static scanners. Do not add Dependabot, Renovate, or any other dependency bot. Do not put signing identities in the tree.

@@ -37,6 +37,7 @@ Core packages have no UIKit/AppKit imports. They type-check against iOS and watc
 - No signing identities, team IDs, or provisioning profiles in this repo.
 - CI must stay able to produce **unsigned** artifacts.
 - Do not add CodeQL, Super-Linter, Scorecard, Semgrep, Trivy, Sonar, or other noisy static scanners.
+- Do not add Dependabot, Renovate, or any other dependency bot. Bumps are deliberate and human.
 - Do not weaken a golden fixture to make a test pass.
 - Swift 6, complete concurrency checking.
 - One concern per change.

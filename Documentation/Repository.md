@@ -18,7 +18,7 @@ Scripts/           Bootstrap, format, verify, coverage, fixtures, icons, cross-c
 Design/Icons/      1024px masters and Icon Composer source
 docs/screenshots/  README marketing shots from the live apps
 .agents/           Canonical agent skills (copied to .claude/skills/)
-.github/           CI, issue/PR templates, CODEOWNERS, Dependabot
+.github/           CI, issue/PR templates, CODEOWNERS
 ```
 
 `Diffuse.xcodeproj` is **generated** (`./Scripts/bootstrap.sh` / XcodeGen from `project.yml`) and gitignored. Do not check it in. [ADR 0005](adr/0005-generated-unsigned.md).
@@ -102,7 +102,9 @@ npm install    # Husky + lint-staged; also offered by bootstrap
 
 Android runs in [`.github/workflows/android.yml`](../.github/workflows/android.yml): JVM tests, JaCoCo domain coverage verification, Android Lint, Compose/device instrumentation, and unsigned debug/release builds. It is intentionally separate from the Xcode matrix.
 
-**Do not add** CodeQL, Super-Linter, Scorecard, Semgrep, Trivy, Sonar, Codecov, or other noisy scanners. Coverage is first-party `llvm-cov`. Dependabot watches GitHub Actions and the Husky npm tree — not Swift packages.
+**Do not add** CodeQL, Super-Linter, Scorecard, Semgrep, Trivy, Sonar, Codecov, or other noisy scanners. Coverage is first-party `llvm-cov`.
+
+Dependabot is **off**, and there is no `.github/dependabot.yml`. There are no Swift packages to watch ([ADR 0004](adr/0004-no-third-party-deps.md)); the remaining surface is a handful of pinned Actions and two Husky dev dependencies, which a person bumps deliberately rather than a bot bumping weekly. Bump them by editing the workflow or `package.json` and letting CI prove the result.
 
 Full release procedure, version bumping, and what is deliberately not automated: [Releasing.md](Releasing.md).
 

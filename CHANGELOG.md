@@ -69,8 +69,7 @@ All notable changes to Diffuse are documented here.
 - `.gitattributes`: per-language diff drivers, CRLF for `gradlew.bat`, binary
   markers for `.jar`/`.jpg`, and linguist hints so the language bar reflects
   Swift and Kotlin rather than fixtures and the marketing site.
-- GitHub issue and pull-request templates, CODEOWNERS, Dependabot for Actions
-  and git-hook npm packages.
+- GitHub issue and pull-request templates, and CODEOWNERS.
 - CI: concurrency, least-privilege permissions, Swift PM cache, timeouts, a
   ShellCheck job, and a single "All green" required check. No CodeQL or other
   static scanners.

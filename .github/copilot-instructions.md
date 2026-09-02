@@ -8,6 +8,7 @@ Rules:
 - No signing identities, team IDs, or provisioning profiles.
 - CI produces unsigned artifacts only.
 - Do not add CodeQL, Super-Linter, Scorecard, Semgrep, or similar scanners.
+- Do not add Dependabot, Renovate, or any other dependency bot.
 - Adding a capability must not require edits to the diff engine, storage, search, export, or app screens.
 - Run `./Scripts/format.sh` and `swift test` before finishing.
 - Do not weaken golden fixtures in `Fixtures/` to make a test pass.
