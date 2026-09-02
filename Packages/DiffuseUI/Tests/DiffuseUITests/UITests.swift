@@ -121,19 +121,42 @@ struct PresentationTests {
 struct TimelineGroupingTests {
     private let calendar = Calendar(identifier: .gregorian)
 
+    /// A fixed midday reference. Anchoring the suite removes the midnight
+    /// race: computing `today` from the wall clock and then asking whether it
+    /// is "today" are two reads of a value that can change between them.
+    private let reference = Date(timeIntervalSince1970: 1_755_000_000)
+
     @Test("Today and yesterday get friendly headings")
     func relativeHeadings() throws {
-        let today = calendar.startOfDay(for: Date())
+        let today = calendar.startOfDay(for: reference)
         let yesterday = try #require(calendar.date(byAdding: .day, value: -1, to: today))
 
-        #expect(SnapshotTimelineView<EmptyView>.title(for: today, calendar: calendar) == "Today")
-        #expect(SnapshotTimelineView<EmptyView>.title(for: yesterday, calendar: calendar) == "Yesterday")
+        #expect(SnapshotTimelineView<EmptyView>.title(for: today, calendar: calendar, now: reference) == "Today")
+        #expect(
+            SnapshotTimelineView<EmptyView>.title(for: yesterday, calendar: calendar, now: reference) == "Yesterday"
+        )
+    }
+
+    @Test("A day is still Today when asked just before midnight")
+    func headingDoesNotRaceMidnight() throws {
+        let almostMidnight = try #require(
+            calendar.date(bySettingHour: 23, minute: 59, second: 59, of: reference)
+        )
+        let today = calendar.startOfDay(for: almostMidnight)
+
+        #expect(
+            SnapshotTimelineView<EmptyView>.title(for: today, calendar: calendar, now: almostMidnight) == "Today"
+        )
     }
 
     @Test("Older days fall back to a date")
     func absoluteHeadings() throws {
-        let old = try #require(calendar.date(byAdding: .day, value: -60, to: Date()))
-        let title = SnapshotTimelineView<EmptyView>.title(for: calendar.startOfDay(for: old), calendar: calendar)
+        let old = try #require(calendar.date(byAdding: .day, value: -60, to: reference))
+        let title = SnapshotTimelineView<EmptyView>.title(
+            for: calendar.startOfDay(for: old),
+            calendar: calendar,
+            now: reference
+        )
 
         #expect(title != "Today")
         #expect(title != "Yesterday")
