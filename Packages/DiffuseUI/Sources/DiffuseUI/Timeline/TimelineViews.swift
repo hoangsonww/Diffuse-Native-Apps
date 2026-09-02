@@ -155,7 +155,10 @@ public struct SnapshotTimelineView<Row: View>: View {
         }
     }
 
-    public static func title(for day: Date, calendar: Calendar) -> String {
+    /// Pure date formatting. Explicitly `nonisolated` so tests and other
+    /// non-main-actor callers can use it: it is only inferred as
+    /// `@MainActor` because it lives on a `View`.
+    public nonisolated static func title(for day: Date, calendar: Calendar) -> String {
         if calendar.isDateInToday(day) {
             return "Today"
         }
