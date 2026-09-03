@@ -163,9 +163,8 @@ input {
 
 /* The mark turns continuously.
    Linear, not eased: an eased loop visibly stalls at the seam where it
-   restarts. Slow, because this runs for as long as the page is open — a brisk
-   turn is fine as a one-off but competes with the text for attention when it
-   never stops. */
+   restarts. Eight seconds a turn — quick enough to read as alive at a glance,
+   slow enough not to pull the eye off the text it sits beside. */
 @keyframes brand-spin {
   from {
     transform: rotate(0deg);
@@ -177,7 +176,7 @@ input {
 }
 
 .brand svg {
-  animation: brand-spin 18s linear infinite;
+  animation: brand-spin 8s linear infinite;
 }
 
 .nav-links {
