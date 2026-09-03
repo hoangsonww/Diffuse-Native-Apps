@@ -127,11 +127,50 @@ jobs:
       # `if: failure()` never fires when a job is killed by timeout-minutes,
       # because that outcome is "cancelled". This is the step that was supposed
       # to explain the last three timeouts and stayed silent through all of them.
+      # Bounded, and guarded on a device actually being present.
+      #
+      # `adb logcat` blocks waiting for a device when none is attached, and by
+      # the time this runs the emulator action has already torn its emulator
+      # down. So a failing test used to hang here until the job's own
+      # timeout-minutes killed it — three minutes of tests followed by fifty
+      # minutes of nothing, reported as "cancelled".
+      #
+      # The cancellation also meant GitHub never finalised the log blob, so the
+      # step that exists to explain a failure was the reason no explanation
+      # survived. Hence both the timeout and the report upload below.
       - name: Emulator and test diagnostics
         if: ${{ failure() || cancelled() }}
+        timeout-minutes: 3
         run: |
           echo "::group::Gradle test reports"
           find Android/app/build/reports -name '*.html' -o -name '*.xml' 2>/dev/null | head -20 || true
           echo "::endgroup::"
-          adb devices || true
-          adb logcat -d -t 300 || true
+
+          echo "::group::Device state"
+          timeout 30 adb devices || true
+          if timeout 30 adb get-state >/dev/null 2>&1; then
+            echo "::endgroup::"
+            echo "::group::logcat (last 300 lines)"
+            timeout 60 adb logcat -d -t 300 || true
+          else
+            echo "No device attached — the emulator is already gone, so there is"
+            echo "no logcat to read. Skipping rather than blocking on it."
+            echo "::endgroup::"
+            echo "::group::logcat"
+            echo "(unavailable)"
+          fi
+          echo "::endgroup::"
+
+      # Uploaded on failure specifically: when a job is cancelled GitHub never
+      # publishes its logs, so without this a failing instrumentation run leaves
+      # nothing behind to diagnose from.
+      - name: Upload instrumentation reports
+        if: ${{ failure() || cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: diffuse-android-instrumentation-reports
+          path: |
+            Android/app/build/reports/androidTests/
+            Android/app/build/outputs/androidTest-results/
+          if-no-files-found: warn
+          retention-days: 7
