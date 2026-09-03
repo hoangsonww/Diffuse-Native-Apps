@@ -161,11 +161,11 @@ input {
   transform-origin: 50% 50%;
 }
 
-/* One full turn on hover or keyboard focus.
-   An animation rather than a transition, deliberately: a transition to
-   rotate(360deg) unwinds backwards when the pointer leaves, which looks like a
-   mistake. This always turns the same way, and because it ends where it
-   started there is nothing to snap back from when it is removed. */
+/* The mark turns continuously.
+   Linear, not eased: an eased loop visibly stalls at the seam where it
+   restarts. Slow, because this runs for as long as the page is open — a brisk
+   turn is fine as a one-off but competes with the text for attention when it
+   never stops. */
 @keyframes brand-spin {
   from {
     transform: rotate(0deg);
@@ -176,9 +176,8 @@ input {
   }
 }
 
-.brand:hover svg,
-.brand:focus-visible svg {
-  animation: brand-spin 900ms var(--ease-out);
+.brand svg {
+  animation: brand-spin 18s linear infinite;
 }
 
 .nav-links {
