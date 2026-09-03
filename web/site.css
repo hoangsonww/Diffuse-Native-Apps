@@ -158,6 +158,27 @@ input {
 .brand svg {
   width: 1.7rem;
   height: 1.7rem;
+  transform-origin: 50% 50%;
+}
+
+/* One full turn on hover or keyboard focus.
+   An animation rather than a transition, deliberately: a transition to
+   rotate(360deg) unwinds backwards when the pointer leaves, which looks like a
+   mistake. This always turns the same way, and because it ends where it
+   started there is nothing to snap back from when it is removed. */
+@keyframes brand-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.brand:hover svg,
+.brand:focus-visible svg {
+  animation: brand-spin 900ms var(--ease-out);
 }
 
 .nav-links {
@@ -1594,6 +1615,74 @@ footer {
   }
 }
 
+/* Reading progress
+   ------------------------------------------------------------------------
+   A hairline across the top edge that fills as the page is read. It sits
+   above the nav and the grain but below the skip link, so keyboard users
+   still get the skip target first.
+
+   Two implementations of the same thing. Where scroll-driven animations are
+   supported the browser drives it off the scroll timeline, which runs on the
+   compositor and stays smooth under load. Everywhere else site.js writes a
+   custom property. Both end at the same transform, so the visual result does
+   not depend on which path ran. */
+.reading-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  z-index: 75;
+  pointer-events: none;
+  background: var(--hair-light);
+}
+
+.reading-progress__bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--reading-progress, 0));
+  background: linear-gradient(
+    90deg,
+    var(--indigo) 0%,
+    var(--indigo-mid) 35%,
+    var(--indigo-bright) 70%,
+    var(--added-soft) 100%
+  );
+  /* Short enough to feel attached to the scroll rather than lagging it. */
+  transition: transform 120ms var(--ease-out);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .reading-progress__bar {
+      /* The scroll timeline supersedes the JavaScript value entirely, so the
+         two never fight over the same transform. */
+      transform: scaleX(0);
+      transition: none;
+      animation-name: reading-progress-fill;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      /* Longhand, and `auto` specifically: the `animation` shorthand resolves
+         duration to 0s, which leaves a scroll-driven animation stuck at its
+         first keyframe. A scroll timeline needs the duration to come from the
+         timeline itself. */
+      animation-duration: auto;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes reading-progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1610,5 +1699,15 @@ footer {
     opacity: 1;
     transform: none;
     filter: none;
+  }
+
+  /* The blanket rules above disable the scroll-driven animation, which would
+     otherwise leave the bar frozen at zero. The JavaScript path still writes
+     the transform, so the bar keeps reporting position — it simply jumps
+     rather than easing, which is the point of the preference. */
+  .reading-progress__bar {
+    animation: none !important;
+    transition: none !important;
+    transform: scaleX(var(--reading-progress, 0));
   }
 }

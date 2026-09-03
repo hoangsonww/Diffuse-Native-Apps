@@ -7,11 +7,36 @@
   const lightboxImg = lightbox?.querySelector("img");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // The reading progress bar has a pure-CSS implementation driven by a scroll
+  // timeline. Where that runs, the browser owns the transform and JavaScript
+  // must keep its hands off it; this only takes over when it does not, or when
+  // reduced motion has disabled the animation that carries it.
+  const progress = document.querySelector(".reading-progress__bar");
+  const cssDrivesProgress =
+    !reduce &&
+    typeof CSS !== "undefined" &&
+    typeof CSS.supports === "function" &&
+    CSS.supports("animation-timeline", "scroll()");
+
+  const setProgress = () => {
+    if (!progress) return;
+    const doc = document.documentElement;
+    const scrollable = doc.scrollHeight - window.innerHeight;
+    // A page shorter than the viewport has nothing to report, and dividing by
+    // that zero would write NaN into the custom property.
+    const ratio = scrollable > 0 ? window.scrollY / scrollable : 0;
+    progress.style.setProperty("--reading-progress", Math.min(1, Math.max(0, ratio)).toFixed(4));
+  };
+
   const onScroll = () => {
     nav?.classList.toggle("is-scrolled", window.scrollY > 12);
+    if (!cssDrivesProgress) setProgress();
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+  // Rotating a phone or opening the keyboard changes the scrollable height, so
+  // the same fraction of the page is a different transform afterwards.
+  window.addEventListener("resize", onScroll, { passive: true });
 
   const setMenu = (open) => {
     toggle?.classList.toggle("is-open", open);

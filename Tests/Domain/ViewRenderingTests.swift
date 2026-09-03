@@ -264,6 +264,21 @@ struct ViewRenderingTests {
     func timeline() {
         expectRenders(SnapshotTimelineView(summaries: summaries) { TimelineRow(summary: $0) })
         expectRenders(SnapshotTimelineView(summaries: []) { TimelineRow(summary: $0) })
+
+        // Day headings are drawn through the timeline rather than directly:
+        // the heading view is internal, and this suite deliberately exercises
+        // public API only. `groupedAcrossDays` produces a one-snapshot day, a
+        // many-snapshot day, and a day old enough to fall back to a full date,
+        // so every heading branch is drawn — including the singular and plural
+        // accessibility labels.
+        expectRenders(SnapshotTimelineView(summaries: groupedAcrossDays) { TimelineRow(summary: $0) })
+
+        // The heading has no fill of its own, so it has to hold up on a raised
+        // surface as well as on the page canvas.
+        expectRenders(
+            SnapshotTimelineView(summaries: groupedAcrossDays) { TimelineRow(summary: $0) }
+                .background(DiffuseTheme.Palette.surfaceRaised)
+        )
     }
 
     @Test("The activity strip renders with data, with a flat run, and with none")
@@ -302,6 +317,79 @@ struct ViewRenderingTests {
         )
     }
 
+    // MARK: - Comparison pair picker
+
+    @Test("The pair picker renders empty, half-chosen, and complete")
+    func pairPickerAtEverySelectionCount() {
+        let ids = summaries.map(\.id)
+
+        // Nothing chosen: both slots read "Not chosen" and the hint asks for two.
+        expectRenders(picker(selection: []))
+
+        // One chosen: the base slot is filled, the target is not. This is the
+        // state that used to be unreachable, because selection happened on
+        // another screen entirely.
+        expectRenders(picker(selection: [ids[0]]))
+
+        // Two chosen: both slots filled and the hint explains the direction.
+        expectRenders(picker(selection: [ids[0], ids[1]]))
+
+        // Chosen newest-first, which is what reading a list top-down produces.
+        // The slots must still resolve base and target by date.
+        expectRenders(picker(selection: [ids[1], ids[0]]))
+    }
+
+    @Test("The pair picker renders with no snapshots and with a single one")
+    func pairPickerWithTooFewSnapshots() {
+        // No history at all — the list is replaced by an empty state rather
+        // than by a bare heading with nothing under it.
+        expectRenders(
+            SnapshotPairPicker(
+                summaries: [],
+                selection: [],
+                onToggle: { _ in },
+                onCompareLatest: {},
+                onClear: {}
+            )
+        )
+
+        // One snapshot cannot be compared, so the shortcut must not be offered.
+        let single = Array(summaries.prefix(1))
+        expectRenders(
+            SnapshotPairPicker(
+                summaries: single,
+                selection: [],
+                onToggle: { _ in },
+                onCompareLatest: {},
+                onClear: {}
+            )
+        )
+    }
+
+    @Test("The pair picker renders in its compact form")
+    func pairPickerCompact() {
+        expectRenders(picker(selection: [summaries[0].id], isCompact: true))
+        expectRenders(picker(selection: [], isCompact: true))
+    }
+
+    @Test("A labelled snapshot is named by its label, an unlabelled one by its date")
+    func pairPickerSlotNaming() {
+        // summaries[0] carries a label, summaries[1] does not — both slot
+        // branches are drawn in one pass.
+        expectRenders(picker(selection: [summaries[0].id, summaries[1].id]))
+    }
+
+    private func picker(selection: [SnapshotID], isCompact: Bool = false) -> some View {
+        SnapshotPairPicker(
+            summaries: summaries,
+            selection: selection,
+            isCompact: isCompact,
+            onToggle: { _ in },
+            onCompareLatest: {},
+            onClear: {}
+        )
+    }
+
     // MARK: - Fixtures
 
     private var diff: DiffResult {
@@ -329,6 +417,26 @@ struct ViewRenderingTests {
 
     /// One capability in each availability state, so every branch of the row
     /// and the ledger is drawn.
+    /// Snapshots spread over several days, so the timeline draws a heading for
+    /// a single-snapshot day, a busy day, and one far enough back that the
+    /// heading falls through to a formatted date rather than "Today".
+    private var groupedAcrossDays: [SnapshotSummary] {
+        let calendar = Calendar.current
+        let now = Date()
+        func day(_ offset: Int, _ hour: Int) -> Date {
+            let start = calendar.date(byAdding: .day, value: -offset, to: now) ?? now
+            return calendar.date(bySettingHour: hour, minute: 0, second: 0, of: start) ?? start
+        }
+
+        return [
+            .stub(id: "today-1", capturedAt: day(0, 9), label: "This morning"),
+            .stub(id: "yesterday-1", capturedAt: day(1, 8)),
+            .stub(id: "yesterday-2", capturedAt: day(1, 13), isPinned: true),
+            .stub(id: "yesterday-3", capturedAt: day(1, 18)),
+            .stub(id: "old-1", capturedAt: day(30, 11), problemCount: 2),
+        ]
+    }
+
     private var capabilityStatuses: [CapabilityStatus] {
         let metadata = FakeCapabilityFactory.mixedRegistry().capabilities.map(\.metadata)
         let states: [CapabilityAvailability] = [

@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assessment
@@ -57,6 +59,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -278,24 +281,16 @@ private fun SnapshotsScreen(state: DiffuseUiState, model: DiffuseViewModel) {
             }
         } else if (state.summaries.isEmpty() && !state.loading) item { EmptyCard(Icons.Default.Timeline, "No snapshots", "Snapshots you take will appear here.", Modifier.padding(16.dp)) }
         else {
-            item {
-                Text(
-                    if (state.selection.isEmpty()) "Select two snapshots to compare" else "${state.selection.size} of 2 selected",
-                    style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
-                )
-            }
-            items(state.summaries, key = { it.id }) { summary -> SnapshotRow(summary, summary.id in state.selection, model) }
+            items(state.summaries, key = { it.id }) { summary -> SnapshotRow(summary, model) }
         }
         item { Spacer(Modifier.height(100.dp)) }
     }
 }
 
 @Composable
-private fun SnapshotRow(summary: SnapshotSummary, selected: Boolean, model: DiffuseViewModel) {
+private fun SnapshotRow(summary: SnapshotSummary, model: DiffuseViewModel) {
     Card(onClick = { model.openSnapshot(summary.id) }, modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 3.dp)) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(selected, { model.toggleSelection(summary.id) })
             Column(Modifier.weight(1f)) {
                 Text(summary.label ?: formatDate(summary.capturedAt), fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text("${summary.entityCount} observations · ${summary.platform}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -305,21 +300,123 @@ private fun SnapshotRow(summary: SnapshotSummary, selected: Boolean, model: Diff
     }
 }
 
+/**
+ * Chooses the two snapshots a comparison runs over, on the Compare screen
+ * itself.
+ *
+ * Selection used to live on the timeline, which made Compare a screen you
+ * could only fill from somewhere else. Roles are labelled by capture time
+ * rather than tap order, because the diff always runs oldest to newest.
+ */
+@Composable
+private fun SnapshotPairPicker(state: DiffuseUiState, model: DiffuseViewModel) {
+    val chosen = state.summaries.filter { it.id in state.selection }.sortedBy { it.capturedAt }
+    val base = chosen.firstOrNull()
+    val target = chosen.getOrNull(1)
+
+    Card(Modifier.fillMaxWidth().testTag("pair_picker")) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                PairSlot("Base", base, Modifier.weight(1f))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.padding(horizontal = 8.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                PairSlot("Compared with", target, Modifier.weight(1f))
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    when (state.selection.size) {
+                        0 -> "Choose any two snapshots below."
+                        1 -> "Choose one more."
+                        else -> "Compared oldest to newest."
+                    },
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = { model.compareLatest() }) { Text("Latest two") }
+                if (state.selection.isNotEmpty()) TextButton(onClick = { model.clearSelection() }) { Text("Clear") }
+            }
+            HorizontalDivider()
+            state.summaries.forEach { summary ->
+                val order = chosen.indexOfFirst { it.id == summary.id }
+                Row(
+                    Modifier.fillMaxWidth().clickable { model.toggleSelection(summary.id) }.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(summary.id in state.selection, { model.toggleSelection(summary.id) })
+                    Column(Modifier.weight(1f)) {
+                        Text(summary.label ?: formatDate(summary.capturedAt), fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text("${summary.entityCount} observations · ${summary.platform}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    if (order >= 0) {
+                        Text(
+                            if (order == 0) "Base" else "New",
+                            style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PairSlot(title: String, summary: SnapshotSummary?, modifier: Modifier = Modifier) {
+    Column(modifier) {
+        Text(title, style = MaterialTheme.typography.labelSmall, color = if (summary == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary)
+        Text(
+            summary?.let { it.label ?: formatDate(it.capturedAt) } ?: "Not chosen",
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 2, overflow = TextOverflow.Ellipsis,
+            color = if (summary == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
 @Composable
 private fun CompareScreen(state: DiffuseUiState, model: DiffuseViewModel, onShare: (String) -> Unit) {
     val diff = state.comparison
-    if (diff == null) {
+    if (state.summaries.size < 2) {
         Box(Modifier.fillMaxSize().testTag("screen_compare").padding(20.dp), contentAlignment = Alignment.Center) {
             EmptyCard(
                 Icons.AutoMirrored.Filled.CompareArrows,
-                if (state.summaries.size >= 2) "Pick two snapshots" else "Take another snapshot",
-                if (state.summaries.size >= 2) "Select two snapshots in the timeline, or compare the latest pair." else "Diffuse needs two snapshots before it can compare anything.",
-                action = if (state.summaries.size >= 2) ({ model.compareLatest() }) else null,
+                "Take another snapshot",
+                "Diffuse needs two snapshots before it can compare anything.",
             )
         }
         return
     }
+    // Collapse the picker once there is a result, the way the Apple clients do.
+    // Left expanded it pushes the comparison off the bottom of the screen, so
+    // choosing a pair would appear to do nothing.
+    var pickerExpanded by rememberSaveable { mutableStateOf(diff == null) }
+    LaunchedEffect(diff?.base?.id, diff?.target?.id) { pickerExpanded = diff == null }
+
     LazyColumn(Modifier.fillMaxSize().testTag("screen_compare").padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        item {
+            if (pickerExpanded) {
+                SnapshotPairPicker(state, model)
+            } else {
+                OutlinedButton(
+                    onClick = { pickerExpanded = true },
+                    modifier = Modifier.fillMaxWidth().testTag("change_pair"),
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.CompareArrows, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Change the pair")
+                }
+            }
+        }
+        if (diff == null) {
+            item {
+                EmptyCard(
+                    Icons.AutoMirrored.Filled.CompareArrows,
+                    "Pick two snapshots",
+                    "Choose any two above and the differences appear here.",
+                    Modifier.padding(vertical = 12.dp),
+                )
+            }
+            item { Spacer(Modifier.height(80.dp)) }
+            return@LazyColumn
+        }
         item {
             Card(Modifier.fillMaxWidth().testTag("comparison_summary")) {
                 Column(Modifier.padding(18.dp)) {

@@ -118,43 +118,13 @@ struct SnapshotsView: View {
                         }
                     }
                 } else {
-                    if model.canCompare {
-                        comparisonHint
-                    }
-
                     SnapshotTimelineView(summaries: model.summaries) { summary in
-                        HStack(alignment: .center, spacing: DiffuseTheme.Spacing.small) {
-                            Button {
-                                if NSEvent.modifierFlags.contains(.command) {
-                                    model.toggleComparison(summary.id)
-                                } else {
-                                    selected = summary.id
-                                }
-                            } label: {
-                                TimelineRow(
-                                    summary: summary,
-                                    isSelected: selected == summary.id || model.comparisonSelection
-                                        .contains(summary.id),
-                                    selectionOrder: model.selectionOrder(of: summary.id)
-                                )
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                model.toggleComparison(summary.id)
-                            } label: {
-                                Image(systemName: model.comparisonSelection.contains(summary.id)
-                                    ? "minus.circle"
-                                    : "plus.circle")
-                            }
-                            .buttonStyle(.borderless)
-                            .help(model.comparisonSelection.contains(summary.id)
-                                ? "Remove from comparison"
-                                : "Add to comparison")
-                            .accessibilityLabel(model.comparisonSelection.contains(summary.id)
-                                ? "Remove from comparison"
-                                : "Add to comparison")
+                        Button {
+                            selected = summary.id
+                        } label: {
+                            TimelineRow(summary: summary, isSelected: selected == summary.id)
                         }
+                        .buttonStyle(.plain)
                         .contextMenu { contextMenu(for: summary) }
                     }
                 }
@@ -178,30 +148,8 @@ struct SnapshotsView: View {
         }
     }
 
-    private var comparisonHint: some View {
-        Card(padding: DiffuseTheme.Spacing.medium) {
-            HStack(spacing: DiffuseTheme.Spacing.small) {
-                Image(systemName: "arrow.left.arrow.right")
-                    .foregroundStyle(DiffuseTheme.Palette.accent)
-                Text(model.comparisonSelection.isEmpty
-                    ? "Click to inspect. Use + or ⌘-click to add to a comparison."
-                    : "\(model.comparisonSelection.count) of 2 selected.")
-                    .font(.caption)
-                Spacer()
-                if !model.comparisonSelection.isEmpty {
-                    Button("Clear") { model.clearComparison() }
-                        .buttonStyle(.link)
-                        .font(.caption)
-                }
-            }
-        }
-    }
-
     @ViewBuilder
     private func contextMenu(for summary: SnapshotSummary) -> some View {
-        Button(model.comparisonSelection.contains(summary.id) ? "Remove from Comparison" : "Add to Comparison") {
-            model.toggleComparison(summary.id)
-        }
         Button(summary.isPinned ? "Unpin" : "Pin") {
             Task { await model.setPinned(!summary.isPinned, for: summary.id) }
         }

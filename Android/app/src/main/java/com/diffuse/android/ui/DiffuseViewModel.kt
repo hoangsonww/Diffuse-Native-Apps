@@ -69,7 +69,8 @@ class DiffuseViewModel(application: Application) : AndroidViewModel(application)
                     summaries = summaries,
                     overview = service.overview(),
                     selection = selection,
-                    comparison = if (selection.size == 2) service.diff(selection[0], selection[1]) else null,
+                    comparison = SnapshotSummary.orderByCaptureTime(selection, summaries)
+                        ?.let { service.diff(it.first, it.second) },
                     capabilities = service.registry.collectors.map { collector ->
                         CapabilityItem(collector.metadata, preferences.isEnabled(collector.metadata.id, collector.metadata.enabledByDefault))
                     },
@@ -111,9 +112,12 @@ class DiffuseViewModel(application: Application) : AndroidViewModel(application)
         if (id in current) current.remove(id) else { current += id; if (current.size > 2) current.removeAt(0) }
         mutableState.update { it.copy(selection = current) }
         if (current.size == 2) viewModelScope.launch {
-            mutableState.update { it.copy(comparison = service.diff(current[0], current[1])) }
+            val ordered = SnapshotSummary.orderByCaptureTime(current, mutableState.value.summaries)
+            if (ordered != null) mutableState.update { it.copy(comparison = service.diff(ordered.first, ordered.second)) }
         } else mutableState.update { it.copy(comparison = null) }
     }
+
+    fun clearSelection() = mutableState.update { it.copy(selection = emptyList(), comparison = null) }
 
     fun compareLatest() {
         val summaries = mutableState.value.summaries
