@@ -16,6 +16,7 @@
 # Requires a booted emulator or device. Installs the debug build first.
 
 set -Eeuo pipefail
+# shellcheck source-path=SCRIPTDIR
 # shellcheck source=lib.sh
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 

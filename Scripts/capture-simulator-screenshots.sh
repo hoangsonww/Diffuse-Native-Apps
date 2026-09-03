@@ -17,6 +17,7 @@
 #   Scripts/capture-simulator-screenshots.sh ios compare  # one screen
 
 set -Eeuo pipefail
+# shellcheck source-path=SCRIPTDIR
 # shellcheck source=lib.sh
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
