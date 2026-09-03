@@ -41,6 +41,8 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="800" />
     <meta property="og:image:alt" content="Diffuse mark: seven cream rings on blueprint indigo, with the line See what changed." />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:secure_url" content="https://hoangsonww.github.io/Diffuse-Native-Apps/web/media/og.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Diffuse — See what changed" />
     <meta
@@ -49,6 +51,11 @@
     />
     <meta name="twitter:image" content="https://hoangsonww.github.io/Diffuse-Native-Apps/web/media/og.jpg" />
     <meta name="twitter:image:alt" content="Diffuse mark and the line See what changed." />
+    <meta name="twitter:creator" content="@hoangsonww" />
+    <meta name="twitter:site" content="@hoangsonww" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="alternate" hreflang="en" href="https://hoangsonww.github.io/Diffuse-Native-Apps/" />
+    <link rel="alternate" hreflang="x-default" href="https://hoangsonww.github.io/Diffuse-Native-Apps/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -73,7 +80,9 @@
             "name": "Diffuse",
             "description": "Local-first snapshots that show what changed on Android and Apple devices.",
             "inLanguage": "en",
-            "publisher": { "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#org" }
+            "publisher": {
+              "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#org"
+            }
           },
           {
             "@type": "Organization",
@@ -81,7 +90,9 @@
             "name": "Diffuse",
             "url": "https://hoangsonww.github.io/Diffuse-Native-Apps/",
             "logo": "https://hoangsonww.github.io/Diffuse-Native-Apps/web/media/app-icon.png",
-            "sameAs": ["https://github.com/hoangsonww/Diffuse-Native-Apps"]
+            "sameAs": [
+              "https://github.com/hoangsonww/Diffuse-Native-Apps"
+            ]
           },
           {
             "@type": "SoftwareApplication",
@@ -97,7 +108,9 @@
             "license": "https://github.com/hoangsonww/Diffuse-Native-Apps/blob/master/LICENSE",
             "downloadUrl": "https://github.com/hoangsonww/Diffuse-Native-Apps/releases",
             "installUrl": "https://github.com/hoangsonww/Diffuse-Native-Apps",
-            "author": { "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#org" },
+            "author": {
+              "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#org"
+            },
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -120,70 +133,75 @@
             ]
           },
           {
-            "@type": "WebPage",
-            "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#webpage",
-            "url": "https://hoangsonww.github.io/Diffuse-Native-Apps/",
-            "name": "Diffuse — See what changed on this device",
-            "isPartOf": { "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#website" },
-            "about": { "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#app" },
-            "primaryImageOfPage": {
-              "@type": "ImageObject",
-              "url": "https://hoangsonww.github.io/Diffuse-Native-Apps/web/media/og.jpg"
-            },
-            "inLanguage": "en",
-            "datePublished": "2026-08-17",
-            "dateModified": "2026-08-20"
-          },
-          {
             "@type": "FAQPage",
             "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#faq",
+            "isPartOf": {
+              "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#webpage"
+            },
+            "inLanguage": "en",
             "mainEntity": [
               {
                 "@type": "Question",
-                "name": "Does Diffuse sync my Mac history to my iPhone?",
+                "name": "Does Diffuse sync my Mac to my iPhone?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Each device is a closed history. If you need a copy off the device, you export it yourself — Files, AirDrop, or the diffuse-dev CLI — with a redaction policy."
+                  "text": "No. Each device is a closed history. Export if you need a copy — Files, AirDrop, or diffuse-dev — with a redaction policy."
                 }
               },
               {
                 "@type": "Question",
-                "name": "Where are snapshots stored?",
+                "name": "Where do snapshots live?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "On the device that captured them, as readable JSON. Apple uses Application Support / Diffuse. Android uses the app-private files directory and excludes it from backup. There is no Diffuse account and no Diffuse cloud."
+                  "text": "Application Support / Diffuse/ on that device. Pretty-printed JSON plus a rebuildable index. You can open one in a text editor."
                 }
               },
               {
                 "@type": "Question",
-                "name": "Is Diffuse free?",
+                "name": "Why isn’t the Mac app sandboxed?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes. Diffuse is open source under the MIT License. GitHub hosts the source and unsigned CI artifacts. You sign local shipping builds yourself."
+                  "text": "Developer-tool collectors spawn git and node --version. The App Sandbox forbids that without a temporary exception per binary. Documented, not papered over."
                 }
               },
               {
                 "@type": "Question",
-                "name": "What does Diffuse never collect?",
+                "name": "Is there telemetry?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Passwords, tokens, Keychain, SSH or GPG keys, environment variable values, file contents, messages, mail, photos, browsing history, location coordinates, and anything sent off the device."
+                  "text": "No account, no cloud, no crash reporter that uploads snapshots. GitHub is for source and CI artifacts only."
                 }
               },
               {
                 "@type": "Question",
-                "name": "How often does Diffuse capture?",
+                "name": "How much does it cost?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Default cadence is every four hours with a 15-minute floor, including wake. Automatic captures can skip persist when nothing changed. Manual capture always saves."
+                  "text": "Nothing. MIT licensed. Unsigned CI builds; you sign whatever you ship."
                 }
               },
               {
                 "@type": "Question",
-                "name": "Do tests require Node or Docker?",
+                "name": "How often does it capture?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Collectors use process-runner doubles. CI never requires a particular Wi-Fi network, Node, or a Docker daemon. Android JVM tests read the shared Fixtures/ directory."
+                  "text": "Default cadence is every four hours, with a 15-minute floor on every trigger including wake. Skip-if-unchanged applies to automatic captures only."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Why are widgets empty in a CI build?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Unsigned builds have no app-group container. The extension still compiles and shows empty rather than crashing."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do tests need Node or Docker installed?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Collectors take a fake process runner. Live capture tests stay on cheap, stable Mac collectors. Android JVM tests read Fixtures/ directly."
                 }
               },
               {
@@ -191,7 +209,7 @@
                 "name": "Is Android a wrapper around the Apple apps?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Diffuse for Android is native Kotlin and Jetpack Compose with its own domain engine. The two families interoperate through schema-v1 JSON snapshots and golden fixtures, not a shared UI runtime."
+                  "text": "No. It is native Kotlin and Jetpack Compose with its own domain engine. Compatibility is schema-v1 JSON and golden fixtures — not a shared runtime, JNI bridge, or Flutter shell."
                 }
               },
               {
@@ -199,16 +217,47 @@
                 "name": "Does the Android app need Internet?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. It observes ACCESS_NETWORK_STATE so connectivity can be recorded. There is no INTERNET permission, no account, and snapshots are excluded from Android backup."
+                  "text": "No. It reads ACCESS_NETWORK_STATE so connectivity can be observed. There is no INTERNET permission, no account, and no backup of snapshots."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Where do Android snapshots live?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The app-private files directory as pretty-printed JSON. They are excluded from Android backup and device transfer. Export is a user-picked share with the same classification rules as Apple."
                 }
               }
             ]
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#webpage",
+            "url": "https://hoangsonww.github.io/Diffuse-Native-Apps/",
+            "name": "Diffuse — See what changed on this device",
+            "dateModified": "2026-08-20",
+            "inLanguage": "en",
+            "isPartOf": {
+              "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#website"
+            },
+            "about": {
+              "@id": "https://hoangsonww.github.io/Diffuse-Native-Apps/#app"
+            },
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://hoangsonww.github.io/Diffuse-Native-Apps/web/media/og.jpg"
+            },
+            "datePublished": "2026-08-17"
           }
         ]
       }
     </script>
   </head>
   <body>
+    <!-- Reading progress. Rendered before the nav so it is the first painted
+         element, and marked aria-hidden: it restates scroll position, which
+         assistive technology already conveys. -->
+    <div class="reading-progress" aria-hidden="true"><span class="reading-progress__bar"></span></div>
     <a class="skip" href="#main">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
     <svg xmlns="http://www.w3.org/2000/svg" class="sprites" aria-hidden="true" focusable="false">
