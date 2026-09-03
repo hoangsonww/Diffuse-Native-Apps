@@ -33,9 +33,13 @@ class MainActivityInstrumentedTest {
             DiffuseService(context).capture()
         }
         compose.onNodeWithContentDescription("Refresh").performClick()
-        compose.onNodeWithTag("tab_snapshots").performClick()
+        // Wait on the pair picker rather than on timeline copy. It renders only
+        // once at least two snapshots exist, which is the precondition every
+        // test here depends on, and it is part of the screen under test rather
+        // than an incidental string that a UI change can silently delete.
+        compose.onNodeWithTag("tab_compare").performClick()
         compose.waitUntil(timeoutMillis = 15_000) {
-            compose.onAllNodesWithText("Select two snapshots to compare").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithTag("pair_picker").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithTag("tab_overview").performClick()
         compose.onNodeWithTag("screen_overview").assertIsDisplayed()
@@ -129,7 +133,14 @@ class MainActivityInstrumentedTest {
             compose.onAllNodesWithTag("comparison_summary").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Clearing returns to the picker rather than to an unusable empty screen.
+        // With a result on screen the picker folds away, so the comparison is not
+        // pushed below the fold by the list that produced it.
+        compose.onNodeWithTag("change_pair").assertIsDisplayed()
+
+        // Reopening it and clearing returns to the picker rather than to an
+        // unusable empty screen.
+        compose.onNodeWithTag("change_pair").performClick()
+        compose.onNodeWithTag("pair_picker").assertIsDisplayed()
         compose.onNodeWithText("Clear").performClick()
         compose.onNodeWithTag("pair_picker").assertIsDisplayed()
     }

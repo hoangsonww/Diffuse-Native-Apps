@@ -384,8 +384,27 @@ private fun CompareScreen(state: DiffuseUiState, model: DiffuseViewModel, onShar
         }
         return
     }
+    // Collapse the picker once there is a result, the way the Apple clients do.
+    // Left expanded it pushes the comparison off the bottom of the screen, so
+    // choosing a pair would appear to do nothing.
+    var pickerExpanded by rememberSaveable { mutableStateOf(diff == null) }
+    LaunchedEffect(diff?.base?.id, diff?.target?.id) { pickerExpanded = diff == null }
+
     LazyColumn(Modifier.fillMaxSize().testTag("screen_compare").padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item { SnapshotPairPicker(state, model) }
+        item {
+            if (pickerExpanded) {
+                SnapshotPairPicker(state, model)
+            } else {
+                OutlinedButton(
+                    onClick = { pickerExpanded = true },
+                    modifier = Modifier.fillMaxWidth().testTag("change_pair"),
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.CompareArrows, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Change the pair")
+                }
+            }
+        }
         if (diff == null) {
             item {
                 EmptyCard(

@@ -158,6 +158,27 @@ input {
 .brand svg {
   width: 1.7rem;
   height: 1.7rem;
+  transform-origin: 50% 50%;
+}
+
+/* One full turn on hover or keyboard focus.
+   An animation rather than a transition, deliberately: a transition to
+   rotate(360deg) unwinds backwards when the pointer leaves, which looks like a
+   mistake. This always turns the same way, and because it ends where it
+   started there is nothing to snap back from when it is removed. */
+@keyframes brand-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.brand:hover svg,
+.brand:focus-visible svg {
+  animation: brand-spin 900ms var(--ease-out);
 }
 
 .nav-links {
