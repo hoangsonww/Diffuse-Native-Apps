@@ -99,8 +99,8 @@ class MainActivityInstrumentedTest {
     @Test
     fun comparisonSummaryUsesAvailableWidthInPortraitAndLandscape() {
         compose.onNodeWithTag("tab_compare").performClick()
-        if (compose.onAllNodesWithText("Compare latest two").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithText("Compare latest two").performClick()
+        if (compose.onAllNodesWithText("Latest two").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("Latest two").performClick()
         }
         compose.waitUntil(timeoutMillis = 15_000) {
             compose.onAllNodesWithTag("comparison_summary").fetchSemanticsNodes().isNotEmpty()
@@ -115,6 +115,36 @@ class MainActivityInstrumentedTest {
         }
         assertComparisonSummaryFillsScreen()
         compose.onNodeWithTag("severity_chips").assertIsDisplayed()
+    }
+
+    @Test
+    fun comparePairIsChosenOnTheCompareScreenWithoutLeavingIt() {
+        compose.onNodeWithTag("tab_compare").performClick()
+
+        // The picker is part of this screen — no trip to the timeline first.
+        compose.onNodeWithTag("pair_picker").assertIsDisplayed()
+
+        compose.onNodeWithText("Latest two").performClick()
+        compose.waitUntil(timeoutMillis = 15_000) {
+            compose.onAllNodesWithTag("comparison_summary").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Clearing returns to the picker rather than to an unusable empty screen.
+        compose.onNodeWithText("Clear").performClick()
+        compose.onNodeWithTag("pair_picker").assertIsDisplayed()
+    }
+
+    @Test
+    fun snapshotsTabNoLongerCarriesComparisonSelection() {
+        compose.onNodeWithTag("tab_snapshots").performClick()
+        compose.onNodeWithTag("screen_snapshots").assertIsDisplayed()
+
+        // Selecting a comparison belongs to the Compare screen now, so the
+        // timeline must not offer it.
+        assertTrue(
+            "The snapshots timeline should not prompt for comparison selection",
+            compose.onAllNodesWithText("Select two snapshots to compare").fetchSemanticsNodes().isEmpty(),
+        )
     }
 
     private fun assertComparisonSummaryFillsScreen() {

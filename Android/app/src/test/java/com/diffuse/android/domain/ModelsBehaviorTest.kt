@@ -186,3 +186,73 @@ class ModelsBehaviorTest {
         assertFalse("already human".humanized().isBlank())
     }
 }
+
+class ComparisonPairOrderingTest {
+    private fun summary(id: String, capturedAt: String) = SnapshotSummary(
+        id = id,
+        capturedAt = capturedAt,
+        platform = "android",
+        deviceName = "Pixel",
+        origin = Snapshot.Origin.MANUAL,
+        sectionCount = 1,
+        entityCount = 1,
+        hasProblems = false,
+    )
+
+    private val older = summary("older", "2026-08-24T09:00:00Z")
+    private val newer = summary("newer", "2026-08-25T09:00:00Z")
+    private val all = listOf(newer, older)
+
+    @Test
+    fun aPairChosenNewestFirstIsStillDiffedOldestToNewest() {
+        // Tapping down a newest-first list picks the newer one first. Diffing in
+        // that order would report every addition as a removal.
+        val ordered = SnapshotSummary.orderByCaptureTime(listOf("newer", "older"), all)
+
+        assertEquals("older" to "newer", ordered)
+    }
+
+    @Test
+    fun aPairChosenOldestFirstKeepsItsOrder() {
+        assertEquals("older" to "newer", SnapshotSummary.orderByCaptureTime(listOf("older", "newer"), all))
+    }
+
+    @Test
+    fun anIncompletePairHasNoOrdering() {
+        assertNull(SnapshotSummary.orderByCaptureTime(emptyList(), all))
+        assertNull(SnapshotSummary.orderByCaptureTime(listOf("older"), all))
+        assertNull(SnapshotSummary.orderByCaptureTime(listOf("a", "b", "c"), all))
+    }
+
+    @Test
+    fun anUnknownSnapshotHasNoOrdering() {
+        // A selection can outlive the snapshot it names, if the other device
+        // deleted it between a refresh and a tap.
+        assertNull(SnapshotSummary.orderByCaptureTime(listOf("older", "ghost"), all))
+        assertNull(SnapshotSummary.orderByCaptureTime(listOf("ghost", "older"), all))
+    }
+
+    @Test
+    fun instantsAreComparedAsMomentsRatherThanAsStrings() {
+        // ISO_INSTANT omits the fractional part when it is zero, so
+        // "…:30Z" sorts *after* "…:30.123Z" as text while being earlier in time.
+        // Comparing the strings would put these the wrong way round.
+        val whole = summary("whole", "2026-08-24T09:00:30Z")
+        val fractional = summary("fractional", "2026-08-24T09:00:30.123Z")
+        val pair = listOf(fractional, whole)
+
+        assertTrue("the text comparison this guards against", "2026-08-24T09:00:30Z" > "2026-08-24T09:00:30.123Z")
+        assertEquals("whole" to "fractional", SnapshotSummary.orderByCaptureTime(listOf("fractional", "whole"), pair))
+    }
+
+    @Test
+    fun anUnparseableTimestampFallsBackToTheOrderGiven() {
+        // Imported or hand-edited data can carry something that is not an
+        // instant. That must not crash the comparison; it degrades to the
+        // order the pair arrived in.
+        val broken = summary("broken", "not-a-timestamp")
+        val pair = listOf(older, broken)
+
+        assertEquals("older" to "broken", SnapshotSummary.orderByCaptureTime(listOf("older", "broken"), pair))
+    }
+}

@@ -124,7 +124,7 @@ public struct SnapshotTimelineView<Row: View>: View {
     }
 
     public var body: some View {
-        LazyVStack(alignment: .leading, spacing: DiffuseTheme.Spacing.large, pinnedViews: [.sectionHeaders]) {
+        LazyVStack(alignment: .leading, spacing: DiffuseTheme.Spacing.large) {
             ForEach(groups, id: \.day) { group in
                 Section {
                     Card(padding: DiffuseTheme.Spacing.medium) {
@@ -138,18 +138,7 @@ public struct SnapshotTimelineView<Row: View>: View {
                         }
                     }
                 } header: {
-                    HStack {
-                        Text(group.title.uppercased())
-                            .font(.caption2.weight(.bold))
-                            .tracking(0.8)
-                            .foregroundStyle(DiffuseTheme.Palette.subtleText)
-                        Spacer()
-                        Text("\(group.summaries.count)")
-                            .font(.caption2.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(DiffuseTheme.Palette.subtleText)
-                    }
-                    .padding(.vertical, DiffuseTheme.Spacing.tight)
-                    .background(DiffuseTheme.Palette.canvas)
+                    DayHeader(title: group.title, count: group.summaries.count)
                 }
             }
         }
@@ -174,6 +163,42 @@ public struct SnapshotTimelineView<Row: View>: View {
             return day.formatted(.dateTime.weekday(.wide))
         }
         return day.formatted(date: .abbreviated, time: .omitted)
+    }
+}
+
+/// The day heading in a snapshot timeline.
+///
+/// Deliberately unfilled. Anything with its own background here reads as a
+/// band laid across the page rather than a label belonging to the rows below
+/// it — and it can only ever match one of the surfaces this timeline is
+/// embedded in. The heading is type and a rule, nothing more, so it sits on
+/// whatever is behind it.
+struct DayHeader: View {
+    let title: String
+    let count: Int
+
+    var body: some View {
+        HStack(spacing: DiffuseTheme.Spacing.small) {
+            Text(title.uppercased())
+                .font(.caption2.weight(.bold))
+                .tracking(0.9)
+                .foregroundStyle(DiffuseTheme.Palette.ink.opacity(0.55))
+                .fixedSize()
+
+            Rectangle()
+                .fill(DiffuseTheme.Palette.hairline)
+                .frame(height: 1)
+                .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
+
+            Text("\(count)")
+                .font(.caption2.weight(.semibold).monospacedDigit())
+                .foregroundStyle(DiffuseTheme.Palette.subtleText)
+                .fixedSize()
+        }
+        .padding(.vertical, DiffuseTheme.Spacing.tight)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(count) snapshot\(count == 1 ? "" : "s")")
     }
 }
 

@@ -22,6 +22,7 @@ struct IPadRootView: View {
     @State private var showsCapabilities = false
     @State private var showsSettings = false
     @State private var inspectedID: SnapshotID?
+    @State private var isPickerExpanded = false
     @State private var isConfirmingDeleteAll = false
     @State private var reportMarkdown = ""
 
@@ -72,7 +73,11 @@ struct IPadRootView: View {
             }
             prepareScreenshotDestination()
         }
-        .onChange(of: model.comparison?.id) { _, _ in
+        .onChange(of: model.comparison?.id) { _, id in
+            // Fold the pair picker away as soon as a comparison lands, and open
+            // it again when there is none — otherwise it sits expanded over the
+            // result it was used to produce, which is the thing it reveals.
+            withAnimation(DiffuseTheme.Motion.responsive) { isPickerExpanded = id == nil }
             prepareScreenshotDestination()
         }
         .onChange(of: model.latestSummary?.id) { _, _ in
@@ -164,26 +169,12 @@ struct IPadRootView: View {
                 } else {
                     SnapshotTimelineView(summaries: model.summaries) { summary in
                         Button {
-                            model.toggleComparison(summary.id)
+                            inspectedID = summary.id
                         } label: {
-                            TimelineRow(
-                                summary: summary,
-                                isSelected: model.comparisonSelection.contains(summary.id),
-                                selectionOrder: model.selectionOrder(of: summary.id)
-                            )
+                            TimelineRow(summary: summary, isSelected: inspectedID == summary.id)
                         }
                         .buttonStyle(.plain)
                         .contextMenu {
-                            Button {
-                                model.toggleComparison(summary.id)
-                            } label: {
-                                Label(
-                                    model.comparisonSelection.contains(summary.id)
-                                        ? "Remove from Comparison"
-                                        : "Add to Comparison",
-                                    systemImage: "arrow.left.arrow.right"
-                                )
-                            }
                             Button {
                                 Task { await model.setPinned(!summary.isPinned, for: summary.id) }
                             } label: {
@@ -314,6 +305,23 @@ struct IPadRootView: View {
             if let comparison = model.comparison {
                 ScrollView {
                     VStack(alignment: .leading, spacing: DiffuseTheme.Spacing.regular) {
+                        DisclosureGroup(isExpanded: $isPickerExpanded) {
+                            SnapshotPairPicker(
+                                summaries: model.summaries,
+                                selection: model.comparisonSelection,
+                                isCompact: true,
+                                onToggle: { model.toggleComparison($0) },
+                                onCompareLatest: { model.compareLatest() },
+                                onClear: { model.clearComparison() }
+                            )
+                            .padding(.top, DiffuseTheme.Spacing.small)
+                        } label: {
+                            Label("Change the pair", systemImage: "arrow.left.arrow.right")
+                                .font(.subheadline.weight(.medium))
+                        }
+                        .padding(DiffuseTheme.Spacing.regular)
+                        .background(DiffuseTheme.Palette.surfaceRaised, in: RoundedRectangle(cornerRadius: 12))
+
                         Card { DiffHeaderView(diff: comparison, isCompact: true) }
 
                         SeverityFilterBar(minimumSeverity: $model.minimumSeverity, summary: comparison.summary)
@@ -336,19 +344,26 @@ struct IPadRootView: View {
                     .padding(.vertical, DiffuseTheme.Spacing.regular)
                     .padding(.horizontal, columnInset)
                 }
+            } else if model.canCompare {
+                ScrollView {
+                    SnapshotPairPicker(
+                        summaries: model.summaries,
+                        selection: model.comparisonSelection,
+                        isCompact: true,
+                        onToggle: { model.toggleComparison($0) },
+                        onCompareLatest: { model.compareLatest() },
+                        onClear: { model.clearComparison() }
+                    )
+                    .padding(.vertical, DiffuseTheme.Spacing.regular)
+                    .padding(.horizontal, columnInset)
+                }
             } else {
                 EmptyStateView(
-                    symbol: "arrow.left.arrow.right",
-                    title: model.canCompare ? "Select two snapshots" : "Take another snapshot",
-                    message: model.canCompare
-                        ? "Tap two snapshots on the left to compare them."
-                        : "Diffuse needs two snapshots before it can compare anything."
+                    symbol: "camera.aperture",
+                    title: "Take another snapshot",
+                    message: "Diffuse needs two snapshots before it can compare anything."
                 ) {
-                    if model.canCompare {
-                        Button("Compare Latest Two") { model.compareLatest() }
-                            .buttonStyle(.borderedProminent)
-                            .tint(DiffuseTheme.Palette.accent)
-                    } else {
+                    if true {
                         Button {
                             Task { await model.capture() }
                         } label: {

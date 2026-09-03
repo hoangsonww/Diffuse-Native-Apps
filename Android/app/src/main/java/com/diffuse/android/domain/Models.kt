@@ -434,6 +434,30 @@ data class SnapshotSummary(
     val approximateBytes: Long = 0,
 ) {
     companion object {
+        /**
+         * Orders a chosen pair oldest to newest, or returns null when the pair
+         * is incomplete or its snapshots are unknown.
+         *
+         * A comparison arrives in the order the rows were tapped, and diffing
+         * the newer against the older reports every addition as a removal. The
+         * Apple clients sort by capture time before diffing; this is the same
+         * rule, kept here rather than in the view model so it is pure, covered,
+         * and impossible to forget at a second call site.
+         *
+         * Instants are parsed rather than compared as strings: ISO_INSTANT
+         * omits the fractional part when it is zero, so "…:30Z" sorts after
+         * "…:30.123Z" lexicographically while being the earlier moment.
+         */
+        fun orderByCaptureTime(pair: List<String>, summaries: List<SnapshotSummary>): Pair<String, String>? {
+            if (pair.size != 2) return null
+            val first = summaries.firstOrNull { it.id == pair[0] } ?: return null
+            val second = summaries.firstOrNull { it.id == pair[1] } ?: return null
+            val firstAt = runCatching { Instant.parse(first.capturedAt) }.getOrNull()
+            val secondAt = runCatching { Instant.parse(second.capturedAt) }.getOrNull()
+            if (firstAt == null || secondAt == null) return pair[0] to pair[1]
+            return if (firstAt <= secondAt) pair[0] to pair[1] else pair[1] to pair[0]
+        }
+
         fun from(snapshot: Snapshot, bytes: Long = 0) = SnapshotSummary(
             snapshot.id, snapshot.capturedAt, snapshot.platform, snapshot.device.name, snapshot.origin,
             snapshot.label, snapshot.isPinned, snapshot.tags, snapshot.sections.size,

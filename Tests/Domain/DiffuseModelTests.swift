@@ -198,6 +198,47 @@ struct DiffuseModelTests {
         #expect(model.comparisonSelection == [model.summaries[1].id, model.summaries[0].id])
     }
 
+    @Test("An arbitrary pair diffs oldest to newest, whichever order it was chosen in")
+    func arbitraryPairIsOrderedByCaptureTime() async {
+        let (model, clock) = makeModel()
+        await capture(3, into: model, clock: clock)
+
+        // summaries are newest first: [2] is the oldest, [0] the newest.
+        let oldest = model.summaries[2]
+        let newest = model.summaries[0]
+
+        // Choose the newer one first, which is what a person scanning a list
+        // from the top actually does. The result must still read forwards.
+        model.toggleComparison(newest.id)
+        model.toggleComparison(oldest.id)
+
+        while model.comparison == nil {
+            await Task.yield()
+        }
+
+        #expect(model.comparison?.base.id == oldest.id, "the older snapshot is the base")
+        #expect(model.comparison?.target.id == newest.id, "the newer snapshot is the target")
+
+        // Roles are reported by capture time, not by tap order — the picker
+        // labels its slots from this.
+        #expect(model.selectionOrder(of: newest.id) == 1, "tap order is preserved in the raw selection")
+        #expect(model.selectionOrder(of: oldest.id) == 2)
+    }
+
+    @Test("Choosing a third snapshot replaces the older half of the pair")
+    func choosingAThirdReplacesTheOldestChoice() async {
+        let (model, clock) = makeModel()
+        await capture(3, into: model, clock: clock)
+        let ids = model.summaries.map(\.id)
+
+        model.toggleComparison(ids[0])
+        model.toggleComparison(ids[1])
+        model.toggleComparison(ids[2])
+
+        #expect(model.comparisonSelection == [ids[1], ids[2]], "the first choice drops out")
+        #expect(model.comparisonSelection.count == 2, "a comparison is never more than a pair")
+    }
+
     @Test("Clearing the comparison empties both the selection and the result")
     func clearComparison() async {
         let (model, clock) = makeModel()
