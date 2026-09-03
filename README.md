@@ -252,7 +252,7 @@ These are product decisions, recorded as ADRs, not missing features:
 | Platform | What it is |
 | --- | --- |
 | **macOS** | The full workspace. Split view, menu bar extra, scheduled capture, repository watch list, developer-tool collectors. |
-| **iOS** | A phone app: overview, timeline, compare, settings. Background refresh. Home Screen and Lock Screen widgets. |
+| **iOS** | A phone app: overview, timeline, compare, settings. The pair to compare is chosen on the compare screen itself. Background refresh. Home Screen and Lock Screen widgets. |
 | **iPadOS** | A three-column analytical workspace (including portrait). Same collectors as iPhone, reported as iPadOS. |
 | **watchOS** | Standalone. Glance UI and `Δ N` complications. No paired iPhone required. |
 | **Android** | Native Kotlin and Jetpack Compose. Adaptive navigation, local capture and history, compare, search, privacy ledger, import/export, retention, and WorkManager scheduling. |

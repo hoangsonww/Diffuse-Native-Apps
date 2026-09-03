@@ -30,6 +30,8 @@ flowchart TB
 
 Source: `Android/`. Adaptive Compose navigation uses a bottom bar on compact widths and a navigation rail at 720dp and wider. Primary destinations are Overview, Snapshots, Compare, and Settings; snapshot detail, search results, privacy ledger, import, export/share, and destructive confirmations are native Android surfaces.
 
+Compare carries its own snapshot list: the pair is chosen there, in two slots labelled by capture time, and the picker folds away once a result is on screen. Snapshots is for opening one snapshot and nothing else — it holds no comparison selection.
+
 - Device observations come only from `Android/app/src/main/java/com/diffuse/android/collectors/`.
 - `DiffuseViewModel` exposes immutable `StateFlow` UI state and delegates domain work to `DiffuseService`.
 - WorkManager supplies periodic capture; app-open logic checks whether a capture is due.
