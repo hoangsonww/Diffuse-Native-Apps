@@ -54,17 +54,21 @@ struct CompareView: View {
 
         return Card(padding: DiffuseTheme.Spacing.medium) {
             HStack(spacing: DiffuseTheme.Spacing.regular) {
+                // Intrinsic width, not a cap: the picker carries a "Minimum
+                // severity" label, and squeezing it renders that label one
+                // character per line rather than truncating it. The split view
+                // narrowed this pane, which is what exposed it.
                 SeverityFilterBar(
                     minimumSeverity: $model.minimumSeverity,
                     summary: model.comparison?.summary ?? .empty
                 )
-                .frame(maxWidth: 360)
+                .fixedSize(horizontal: true, vertical: false)
 
                 TextField("Filter changes", text: $model.searchText)
                     .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 260)
+                    .frame(minWidth: 120, maxWidth: 240)
 
-                Spacer()
+                Spacer(minLength: 0)
 
                 Text("\(model.visibleChanges.count) shown")
                     .font(.caption.monospacedDigit())
