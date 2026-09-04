@@ -79,6 +79,9 @@ their version from the ref they run on. Two consequences worth knowing:
   such a tag by hand instead.
 - `release-android` does not read the ref; it takes the tag as a required
   input. Omitting it fails with `Required input 'tag' not provided`.
+- Dispatching needs `actions: write` in the job's `permissions`. Without it
+  the token may read workflows but not start them, and every dispatch fails
+  with `HTTP 403: Resource not accessible by integration`.
 
 The cut does not finish when the tag is pushed. It waits for the three builds,
 then checks that a GitHub Release actually exists for the tag with files

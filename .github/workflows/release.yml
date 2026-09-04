@@ -27,7 +27,12 @@ on:
         type: boolean
 
 permissions:
+  # contents: to commit the bump and push the tag.
+  # actions: to dispatch the platform release workflows — without it the
+  # dispatch fails with "HTTP 403: Resource not accessible by integration",
+  # which is what the token says when it may read workflows but not start them.
   contents: write
+  actions: write
 
 concurrency:
   group: release
