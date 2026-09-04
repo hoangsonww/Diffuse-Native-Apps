@@ -3,6 +3,10 @@ name: Release macOS
 on:
   push:
     tags: ["v*"]
+  # A tag pushed by a workflow using GITHUB_TOKEN does not start other
+  # workflows — GitHub suppresses that to avoid recursion. The Release
+  # workflow therefore dispatches this one explicitly at the new tag.
+  workflow_dispatch:
 
 # Produces an unsigned Mac app zip. Signing and notarization happen outside
 # this repository, by whoever ships the build.
