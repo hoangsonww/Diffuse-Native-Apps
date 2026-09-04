@@ -4,6 +4,8 @@ All notable changes to Diffuse are documented here.
 
 ## Unreleased
 
+## 1.1.1 — 2026-09-03
+
 ### Developer experience
 
 - Android no longer requires a preinstalled JDK. The Gradle wrapper moves from

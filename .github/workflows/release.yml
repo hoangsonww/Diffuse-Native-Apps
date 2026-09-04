@@ -1,0 +1,143 @@
+name: Release
+
+# Cutting a release by hand meant editing four files, remembering the tag
+# format, and hoping the three platform workflows agreed on what they were
+# building. They did not: v1.1.0 shipped while every version string in the tree
+# still said 1.0.0.
+#
+# This is the one entry point. Choose a bump, and it verifies the tree is
+# releasable, moves VERSION, propagates it, opens the changelog section, tags,
+# and pushes. The tag is what the existing release-apple / release-macos /
+# release-android workflows already listen for, so artifacts keep being built
+# where they always were — this only makes starting correct and repeatable.
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which part of the version to increase"
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+      dry_run:
+        description: "Work it out and report, but do not tag or push"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  cut:
+    name: Cut ${{ inputs.bump }} release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # A release must not be cut from a tree that does not agree with itself.
+      - name: Verify the current version is consistent
+        run: ./Scripts/version.sh check
+
+      - name: Work out the next version
+        id: next
+        run: |
+          set -Eeuo pipefail
+          current="$(./Scripts/version.sh)"
+          ./Scripts/version.sh bump "${{ inputs.bump }}" >/dev/null
+          next="$(./Scripts/version.sh)"
+          # Leave the tree untouched for now; the real bump happens below, once
+          # the tag has been checked for collisions.
+          git checkout -- .
+          echo "current=${current}" >> "$GITHUB_OUTPUT"
+          echo "next=${next}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${next}" >> "$GITHUB_OUTPUT"
+          echo "${current} -> ${next} (v${next})"
+
+      - name: Refuse to reuse a tag
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ steps.next.outputs.tag }}" >/dev/null; then
+            echo "::error::${{ steps.next.outputs.tag }} already exists."
+            exit 1
+          fi
+          echo "${{ steps.next.outputs.tag }} is free."
+
+      - name: Apply the bump
+        run: |
+          set -Eeuo pipefail
+          ./Scripts/version.sh set "${{ steps.next.outputs.next }}"
+          ./Scripts/version.sh check
+
+      # Promote "Unreleased" to the version being cut and open a fresh section,
+      # so the changelog is never a release behind the tag.
+      - name: Open the changelog section
+        run: |
+          python3 - "${{ steps.next.outputs.next }}" <<'PY'
+          import datetime
+          import pathlib
+          import sys
+
+          version = sys.argv[1]
+          today = datetime.date.today().isoformat()
+          path = pathlib.Path("CHANGELOG.md")
+          text = path.read_text(encoding="utf-8")
+
+          heading = "## Unreleased"
+          if heading not in text:
+              raise SystemExit("CHANGELOG.md has no '## Unreleased' section to promote.")
+
+          text = text.replace(
+              heading,
+              f"## Unreleased\n\n## {version} — {today}",
+              1,
+          )
+          path.write_text(text, encoding="utf-8")
+          print(f"Opened {version} — {today}")
+          PY
+
+      - name: Commit, tag and push
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add VERSION CHANGELOG.md Android/app/build.gradle.kts project.yml index.html
+          git commit -m "Release ${{ steps.next.outputs.tag }}
+
+          Version moved from ${{ steps.next.outputs.current }} to ${{ steps.next.outputs.next }}
+          across VERSION, the Android manifest, the Apple project, and the
+          landing page's structured data, and the changelog section was opened.
+
+          Cut by the Release workflow."
+          git tag -a "${{ steps.next.outputs.tag }}" -m "Diffuse ${{ steps.next.outputs.next }}"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+          # Pushing the tag is what starts release-apple, release-macos and
+          # release-android; they build and publish the artifacts.
+          git push origin "${{ steps.next.outputs.tag }}"
+
+      - name: Summary
+        run: |
+          {
+            echo "### ${{ steps.next.outputs.tag }}"
+            echo
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| From | ${{ steps.next.outputs.current }} |"
+            echo "| To | ${{ steps.next.outputs.next }} |"
+            echo "| Bump | ${{ inputs.bump }} |"
+            echo "| Dry run | ${{ inputs.dry_run }} |"
+            echo
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "Nothing was pushed. Rerun with dry run off to cut it."
+            else
+              echo "Tag pushed. The platform release workflows build the artifacts."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

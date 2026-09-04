@@ -675,15 +675,19 @@ main {
   height: 100%;
 }
 
+/* Let the screenshot set the frame's shape rather than asserting one.
+   iPhone framebuffers are 1206x2622 (0.46); a 9/17 box is 0.53, so cover
+   cropped about an eighth off the bottom and sliced whatever card was there in
+   half. Following the image means a new device size needs no CSS change. */
 .phone-row .shell__inner {
-  aspect-ratio: 9 / 17;
-  max-height: 26rem;
+  aspect-ratio: auto;
 }
 
 .phone-row img {
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .side-stack {
@@ -726,11 +730,14 @@ main {
   color: var(--paper);
 }
 
+/* The watch screen is portrait (416x496). Forcing it square cropped the top
+   and bottom of the glance, which is the whole point of the image. */
 .watch-card img {
+  display: block;
   width: 7.2rem;
-  height: 7.2rem;
-  object-fit: cover;
-  border-radius: 1.6rem;
+  height: auto;
+  object-fit: contain;
+  border-radius: 1.1rem;
 }
 
 .watch-card h3 {

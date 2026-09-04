@@ -30,15 +30,51 @@ flowchart LR
 
 ## Version numbers
 
-Three places carry a version. Keep them equal before tagging.
+`VERSION` at the repository root is the only place a human edits. Everything
+else is derived, and CI fails when they disagree — they drifted once already,
+with v1.1.0 shipped while every file in the tree still said 1.0.0.
 
-| Place | Field |
+| Derived from `VERSION` | Field |
 | --- | --- |
-| `project.yml` | `MARKETING_VERSION` (and bump `CURRENT_PROJECT_VERSION`) |
-| `Android/app/build.gradle.kts` | `versionName`, and increment `versionCode` |
+| `Android/app/build.gradle.kts` | `versionName`, and `versionCode` as `MAJOR*10000 + MINOR*100 + PATCH` |
+| `project.yml` | `MARKETING_VERSION` |
+| `index.html` | `softwareVersion` in the structured data |
 | `CITATION.cff` | `version` and `date-released` |
 
-`CHANGELOG.md` keeps an `## Unreleased` heading. Releasing renames it to `## <version> — <date>` and opens a fresh `## Unreleased` above it. The macOS workflow extracts the first `## ` section into the release body, so a stale `Unreleased` heading will ship as the notes.
+```bash
+Scripts/version.sh              # what is it now
+Scripts/version.sh check        # do all five agree (this is what CI runs)
+Scripts/version.sh sync         # rewrite the derived files
+Scripts/version.sh bump minor   # patch | minor | major, then sync
+```
+
+`CHANGELOG.md` keeps an `## Unreleased` heading. Cutting a release renames it to
+`## <version> — <date>` and opens a fresh `## Unreleased` above it. The macOS
+workflow extracts the first `## ` section into the release body, so a stale
+`Unreleased` heading would ship as the notes.
+
+## Cutting a release
+
+Run the **Release** workflow from the Actions tab and choose `patch`, `minor` or
+`major`. It refuses to start if the tree's versions disagree, refuses to reuse
+an existing tag, then bumps `VERSION`, propagates it, opens the changelog
+section, commits, tags, and pushes.
+
+Pushing the tag is what starts `release-apple`, `release-macos` and
+`release-android`; they build the artifacts and publish the GitHub Release, as
+they always have. The Release workflow only makes starting correct.
+
+`dry_run` works everything out and reports it in the job summary without
+tagging or pushing — use it to see what the next version would be.
+
+By hand, if you prefer:
+
+```bash
+Scripts/version.sh bump minor
+git commit -am "Release v$(Scripts/version.sh)"
+git tag -a "v$(Scripts/version.sh)" -m "Diffuse $(Scripts/version.sh)"
+git push origin HEAD "v$(Scripts/version.sh)"
+```
 
 ## Checklist
 
@@ -50,16 +86,9 @@ cd Android && ./gradlew testDebugUnitTest jacocoDebugUnitTestCoverageVerificatio
 1. `./Scripts/verify.sh` prints `Diffuse is healthy.`
 2. The Android gate above is green.
 3. Golden fixtures under `Fixtures/` are unchanged, or the diff is explained in the changelog.
-4. `docs/screenshots/` matches the shipping UI (skill `screenshots`), and the capture date in the README is current.
-5. Versions above agree; `CHANGELOG.md` has a dated section.
+4. `docs/screenshots/` matches the shipping UI — `Scripts/capture-*-screenshots.sh` — and the capture date in the README is current.
+5. `Scripts/version.sh check` passes.
 6. No signing material anywhere: `git grep -nE 'PROVISIONING_PROFILE|DEVELOPMENT_TEAM|CODE_SIGN_IDENTITY *= *"[^-]'` returns nothing meaningful.
-
-Then:
-
-```bash
-git tag -a v1.0.0 -m "Diffuse 1.0.0"
-git push origin v1.0.0
-```
 
 ## After the tag
 
