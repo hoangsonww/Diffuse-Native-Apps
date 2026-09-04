@@ -148,6 +148,13 @@ jobs:
           sudo apt-get install -y -qq shellcheck
           shellcheck -x Scripts/*.sh Scripts/hooks/*.sh .claude/hooks/*.sh
 
+      # VERSION is the only place a human edits it; the Android manifest, the
+      # Apple project, and the landing page's structured data are derived. They
+      # had already drifted once — v1.1.0 shipped while every file still said
+      # 1.0.0 — so the agreement is now enforced rather than assumed.
+      - name: Version consistency
+        run: ./Scripts/version.sh check
+
   docker:
     name: Docker toolbox image
     runs-on: ubuntu-latest
