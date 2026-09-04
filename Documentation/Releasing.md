@@ -71,6 +71,21 @@ exactly as before.
 A tag pushed by hand from a laptop does trigger them, because that is a real
 user's push rather than the token's.
 
+Dispatching happens **at the tag**, because the Apple and macOS workflows take
+their version from the ref they run on. Two consequences worth knowing:
+
+- A tag created before `workflow_dispatch` was added to those workflows cannot
+  be dispatched at all — the trigger is read from the file at that ref. Push
+  such a tag by hand instead.
+- `release-android` does not read the ref; it takes the tag as a required
+  input. Omitting it fails with `Required input 'tag' not provided`.
+
+The cut does not finish when the tag is pushed. It waits for the three builds,
+then checks that a GitHub Release actually exists for the tag with files
+attached, and fails if it does not. This job once reported success having
+produced nothing at all, which is worse than failing, because nobody goes
+looking at a green run.
+
 `dry_run` works everything out and reports it in the job summary without
 tagging or pushing — use it to see what the next version would be.
 
