@@ -4,6 +4,8 @@ All notable changes to Diffuse are documented here.
 
 ## Unreleased
 
+## 1.2.0 — 2026-09-04
+
 ## 1.1.3 — 2026-09-04
 
 ## 1.1.2 — 2026-09-04
