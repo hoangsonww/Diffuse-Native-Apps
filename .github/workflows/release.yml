@@ -109,7 +109,11 @@ jobs:
           set -Eeuo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add VERSION CHANGELOG.md Android/app/build.gradle.kts project.yml index.html
+          # Stage every tracked file the bump touched rather than naming them:
+          # this list was already wrong once — CITATION.cff was added to
+          # version.sh afterwards and silently stopped being committed, leaving
+          # master failing its own consistency check.
+          git add -u
           git commit -m "Release ${{ steps.next.outputs.tag }}
 
           Version moved from ${{ steps.next.outputs.current }} to ${{ steps.next.outputs.next }}
@@ -119,9 +123,32 @@ jobs:
           Cut by the Release workflow."
           git tag -a "${{ steps.next.outputs.tag }}" -m "Diffuse ${{ steps.next.outputs.next }}"
           git push origin HEAD:"${GITHUB_REF_NAME}"
-          # Pushing the tag is what starts release-apple, release-macos and
-          # release-android; they build and publish the artifacts.
           git push origin "${{ steps.next.outputs.tag }}"
+
+      # A tag pushed with GITHUB_TOKEN does not start anything: GitHub
+      # suppresses workflow triggers from events raised by the default token, to
+      # stop workflows retriggering themselves. So the tag alone is inert, and
+      # the platform builds have to be asked for by name, at that tag.
+      #
+      # Each is dispatched with --ref so `github.ref_name` inside them is the
+      # tag, which is what they use for the version and the release name.
+      - name: Start the platform release builds
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          tag="${{ steps.next.outputs.tag }}"
+          failed=0
+          for workflow in release-apple.yml release-macos.yml release-android.yml; do
+            if gh workflow run "${workflow}" --ref "${tag}"; then
+              echo "dispatched ${workflow} at ${tag}"
+            else
+              echo "::error::could not dispatch ${workflow} at ${tag}"
+              failed=1
+            fi
+          done
+          exit "${failed}"
 
       - name: Summary
         run: |
@@ -138,6 +165,6 @@ jobs:
             if [ "${{ inputs.dry_run }}" = "true" ]; then
               echo "Nothing was pushed. Rerun with dry run off to cut it."
             else
-              echo "Tag pushed. The platform release workflows build the artifacts."
+              echo "Tag pushed and the platform release builds dispatched at it."
             fi
           } >> "$GITHUB_STEP_SUMMARY"

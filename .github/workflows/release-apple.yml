@@ -3,6 +3,10 @@ name: Release Apple platforms
 on:
   push:
     tags: ["v*"]
+  # A tag pushed by a workflow using GITHUB_TOKEN does not start other
+  # workflows — GitHub suppresses that to avoid recursion. The Release
+  # workflow therefore dispatches this one explicitly at the new tag.
+  workflow_dispatch:
 
 # Unsigned iOS, iPadOS, and watchOS .app zips. These are build artifacts, not
 # App Store packages. No signing, no provisioning, no App Store Connect.

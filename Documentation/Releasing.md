@@ -60,9 +60,16 @@ Run the **Release** workflow from the Actions tab and choose `patch`, `minor` or
 an existing tag, then bumps `VERSION`, propagates it, opens the changelog
 section, commits, tags, and pushes.
 
-Pushing the tag is what starts `release-apple`, `release-macos` and
-`release-android`; they build the artifacts and publish the GitHub Release, as
-they always have. The Release workflow only makes starting correct.
+The tag alone does not start anything. GitHub suppresses workflow triggers from
+events raised by the default `GITHUB_TOKEN`, so a tag pushed by a workflow is
+inert — the first cut of v1.1.2 pushed a tag and built nothing. The Release
+workflow therefore dispatches `release-apple`, `release-macos` and
+`release-android` explicitly, at the new tag, and fails if any of them cannot be
+started. Those three still build the artifacts and publish the GitHub Release,
+exactly as before.
+
+A tag pushed by hand from a laptop does trigger them, because that is a real
+user's push rather than the token's.
 
 `dry_run` works everything out and reports it in the job summary without
 tagging or pushing — use it to see what the next version would be.
