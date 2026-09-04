@@ -140,15 +140,79 @@ jobs:
           set -Eeuo pipefail
           tag="${{ steps.next.outputs.tag }}"
           failed=0
-          for workflow in release-apple.yml release-macos.yml release-android.yml; do
-            if gh workflow run "${workflow}" --ref "${tag}"; then
+
+          # Dispatched at the tag, not at the branch: the Apple and macOS
+          # workflows take their version from the ref they run on. That also
+          # means the tag must already contain a workflow_dispatch trigger,
+          # which it does, because it is cut from a branch that has one — a tag
+          # made before this existed cannot be dispatched at all.
+          #
+          # release-android is the odd one out: it does not read the ref, it
+          # takes the tag as a required input. Omitting it fails the dispatch
+          # with "Required input 'tag' not provided".
+          dispatch() {
+            local workflow="$1"
+            shift
+            if gh workflow run "${workflow}" --ref "${tag}" "$@"; then
               echo "dispatched ${workflow} at ${tag}"
             else
               echo "::error::could not dispatch ${workflow} at ${tag}"
               failed=1
             fi
-          done
+          }
+
+          dispatch release-apple.yml
+          dispatch release-macos.yml
+          dispatch release-android.yml -f "tag=${tag}"
+
           exit "${failed}"
+
+      # The whole point of this job is that a release exists afterwards. It
+      # once reported success having produced nothing: the tag was pushed, no
+      # build started, and no release was published. Reporting green for that is
+      # worse than failing, because nobody goes looking.
+      #
+      # So the cut is not finished when the tag is pushed. It waits for the
+      # three builds, then checks the release is actually there with files
+      # attached, and fails if it is not.
+      - name: Verify a release was actually produced
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          tag="${{ steps.next.outputs.tag }}"
+
+          echo "Waiting for the builds triggered at ${tag}..."
+          deadline=$(( SECONDS + 2400 ))
+          while (( SECONDS < deadline )); do
+            runs="$(gh run list --json status,conclusion,name,headBranch --limit 40 \
+              --jq "[.[] | select(.headBranch == \"${tag}\")]")"
+            total="$(jq -r 'length' <<< "${runs}")"
+            finished="$(jq -r '[.[] | select(.status == "completed")] | length' <<< "${runs}")"
+            if (( total >= 3 && finished == total )); then
+              break
+            fi
+            sleep 30
+          done
+
+          echo "${runs}" | jq -r '.[] | "  \(.conclusion // .status)\t\(.name)"'
+          if [[ "$(jq -r '[.[] | select(.conclusion != "success")] | length' <<< "${runs}")" != "0" ]]; then
+            echo "::error::A platform release build did not succeed at ${tag}."
+            exit 1
+          fi
+
+          # The builds passing is not the same as a release existing.
+          if ! gh release view "${tag}" >/dev/null 2>&1; then
+            echo "::error::No GitHub Release exists for ${tag}, despite the builds succeeding."
+            exit 1
+          fi
+          assets="$(gh release view "${tag}" --json assets --jq '.assets | length')"
+          if [[ "${assets}" -eq 0 ]]; then
+            echo "::error::Release ${tag} exists but has no files attached."
+            exit 1
+          fi
+          echo "Release ${tag} is published with ${assets} file(s)."
 
       - name: Summary
         run: |
